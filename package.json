@@ -1,0 +1,16 @@
+{
+  "name": "newbanking",
+  "version": "1.0.0",
+  "description": "A program for executing all banking provesses of the Treasury General Department, including account opening, account blocking, and signature changes for all state-owned banks in Iran",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mohammad Hassan Amrollahi",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "eslint": "^9.9.0",
+    "globals": "^15.9.0"
+  }
+}
