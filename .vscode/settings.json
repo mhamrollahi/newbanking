@@ -1,0 +1,5 @@
+{
+    "editor.fontFamily": "'Operator Mono Lig Light'",
+    "terminal.integrated.fontFamily": "'Operator Mono Lig Light'",
+    "editor.fontLigatures": true,
+}
