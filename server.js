@@ -1,7 +1,4 @@
-let a 
-let b
-if (a===b){
-  if(a==b){
-    
-  }
-}
+require("dotenv").config()
+
+const startApplication = require('./app')
+startApplication()
