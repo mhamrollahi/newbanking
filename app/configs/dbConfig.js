@@ -1,4 +1,4 @@
-const msSQL = require('mssql')
+const sql = require('mssql')
 
 const sqlConfig = {
   user: process.env.MSSQL_USER,
@@ -7,3 +7,11 @@ const sqlConfig = {
   database : process.env.MSSQL_DATABASE
 }
 
+(async ()=>{
+  try{
+    await sql.connect(sqlConfig)
+    const result = sql.query(`SELECT * FROM vw_tr_accountinfo WHERE ID = ${33}`)
+  } catch(err){
+    console.log(err)
+  }
+})
