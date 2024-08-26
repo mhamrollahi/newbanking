@@ -480,7 +480,10 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 /*-- Main Wrapper --*/
 /*Content Body*/
 .content-body {
-  padding: 30px;
+  /* padding: 30px; */
+  /* MHA - Start */
+  padding: 10px;
+  /* MHA - End */
   margin-top: 110px;
   -webkit-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
@@ -14680,6 +14683,9 @@ body.skin-dark .cus-radio.light .icon::before {
 [dir="rtl"] .side-header.show+.content-body, [dir="rtl"] .side-header.show~.footer-section {
   margin-left: 0;
   margin-right: 270px;
+  /* MHA - Start */
+  /* margin-right: 250px; */
+  /* MHA - End */
 }
 
 [dir="rtl"] .side-header .side-header-close {
