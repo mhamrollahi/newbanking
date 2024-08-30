@@ -1,3 +1,4 @@
 *.log
 node_modules
 NewBanking.code-workspace
+.env
