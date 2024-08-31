@@ -1,6 +1,8 @@
 const sql = require("mssql");
 
-console.log('My Server Port : ',process.env.MSSQL_PORT)
+console.log('My Port : ',process.env.MSSQL_PORT)
+console.log('My Database  : ',process.env.MSSQL_DATABASE)
+console.log('My Server  : ',process.env.MSSQL_SERVER)
 
 const sqlConfig = {
   server: process.env.MSSQL_SERVER,
