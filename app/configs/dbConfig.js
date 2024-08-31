@@ -9,17 +9,60 @@ const sqlConfig = {
   database: process.env.MSSQL_DATABASE,
   user: process.env.MSSQL_USER,
   password: process.env.MSSQL_PASSWORD,
+  port : process.env.MSSQL_PORT,
   options:{
     trustedConnection : true,
     enableArithAbort : true,
     trustServerCertificate : true,
   },
-  port : process.env.MSSQL_PORT,
+}
+
+async function executeQuery(query,values=[],paramNames=[],isStoredProcedure = false,outputParamName = null) {
+  try{
+    const pool = await sql.connect(sqlConfig)
+    const request = pool.request()
+
+    if(values && paramNames){
+      for(let i = 0 ; i < values.length ; i++){
+        request.input(paramNames[i] , values[i])
+      }
+    }
+    
+    //Handle output parameters
+    if(outputParamName){
+      request.output(outputParamName,sql.Int)
+    }
+
+    values.forEach((val,index) => {
+      if(typeof val === 'undefined'){
+        console.error(`Undefined value found for ${paramNames[index]}`)
+      }
+    });
+
+    let result;
+    if(isStoredProcedure){
+      result = await request.execute(query)
+    }else{
+      result = await request.batch(query)
+    }
+
+    if(outputParamName){
+      result = {...result,[outputParamName]:request.parameters[outputParamName].value}
+    }
+
+    return result
+
+  }catch(err){
+    console.log(err)
+    throw error
+  }
 }
 
 module.exports = {
   connect : () => sql.connect(sqlConfig),
   sql,
+  executeQuery, 
+ 
 }
 
 // async function mydbConnect() {
