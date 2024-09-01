@@ -1,13 +1,11 @@
 const express = require('express')
 const {executeQuery} = require('../configs/dbConfig')
-// const sql =require('app/configs')
-
 
 const router = express.Router()
 
 router.get('/block',async (req,res,next)=>{
   try {
-    const query = 'SELECT * FROM CodeTableList'
+    const query = 'SELECT * FROM BG_CodeTableList'
     const result = await executeQuery(query)
     res.send(result.recordset)
     
