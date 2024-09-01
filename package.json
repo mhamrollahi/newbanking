@@ -14,12 +14,24 @@
     "eslint": "^9.9.0",
     "globals": "^15.9.0"
   },
+  "_moduleAliases": {
+    "@root": ".",
+    "@models": "app/models",
+    "@controllers": "app/controllers",
+    "@routes": "app/routes",
+    "@services": "app/services",
+    "@configs": "app/configs",
+    "@validators": "app/validators",
+    "@presenters": "app/presenters",
+    "@middlewares": "app/middlewares"
+  },
   "dependencies": {
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-handlebars": "^8.0.1",
+    "module-alias": "^2.2.3",
     "mssql": "^11.0.1",
     "nodemon": "^3.1.4"
   }

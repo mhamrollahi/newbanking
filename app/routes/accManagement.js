@@ -1,21 +1,15 @@
 const express = require('express')
-const {executeQuery} = require('../configs/dbConfig')
+const accManagementModel = require('@models/accManagement')
 
 const router = express.Router()
 
-router.get('/block',async (req,res,next)=>{
+router.get('/block',async (req,res,next) => {
   try {
-    const query = 'SELECT * FROM BG_CodeTableList'
-    const result = await executeQuery(query)
-    res.send(result.recordset)
-    
+    const result = await accManagementModel.block()
+    res.send(result)
   } catch (error) {
-    console.log(error)
-    next()
-    // res.status(500).send('Internal Server error ')    
+    next(error)
   }
-
-  // res.render('./accManagement/blockingAcc')
 
 })
 
