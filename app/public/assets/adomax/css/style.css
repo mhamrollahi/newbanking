@@ -483,6 +483,9 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   /* padding: 30px; */
   /* MHA - Start */
   padding: 10px;
+  background: rgb(244,214,227);
+  background: radial-gradient(circle, rgba(244,214,227,1) 0%, rgba(148,187,233,1) 100%);">
+
   /* MHA - End */
   margin-top: 110px;
   -webkit-transition: all 0.3s ease 0s;
@@ -9190,7 +9193,17 @@ body.header-top-green .header-notification-area>li>a .user .name {
   position: relative;
   float: left;
   width: 100%;
+ 
 }
+
+/* MHA - Start */
+.side-header-menu ul li i{
+  color: #eec400;
+}
+.side-header-menu ul li a span:hover{
+  font-size: 16px;
+}
+/* MHA - End */
 
 .side-header-menu>ul>li>a {
   position: relative;
@@ -9224,6 +9237,7 @@ body.header-top-green .header-notification-area>li>a .user .name {
 
 .side-header-menu>ul>li>a span {
   margin-left: 10px;
+  transition: all .5s ease;
 }
 
 .side-header-menu>ul>li>a span:first-child {
@@ -9282,6 +9296,7 @@ body.header-top-green .header-notification-area>li>a .user .name {
 
 .side-header-sub-menu li a span {
   margin-left: 15px;
+  transition: all .4s ease;
 }
 
 .side-header-sub-menu li a span:first-child {

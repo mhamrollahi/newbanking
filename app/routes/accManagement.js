@@ -2,7 +2,11 @@ const express = require('express')
 const accManagementControllers = require('@controllers/accManagement')
 const router = express.Router()
 
+router.get('/index',accManagementControllers.index)
 router.get('/block',accManagementControllers.block)
-router.get('/',(req,res)=>{res.render('./accManagement/index')})
+// router.post('/cancel',accManagementControllers.canceling)
+// router.get('/create',accManagementControllers.create)
+// router.post('/opening',accManagementControllers.opening)
+
 
 module.exports = router
