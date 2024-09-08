@@ -3,7 +3,7 @@
           <!-- Page Heading Start -->
           <div class="col-12 col-lg-auto mb-20">
             <div class="page-heading">
-              <h3> کاربران</h3>
+              <h3> لیست جداول کدینگ سیستم</h3>
             </div>
           </div>
           <!-- Page Heading End -->
@@ -17,7 +17,7 @@
             </div>
           </div>
           <!-- Page Button Group End -->
-          {{#if success}}
+          {{!-- {{#if success}}
           <div class="col-12 w-100 d-flex justify-content-center mt-3">
               <p class="alert alert-success w-50 text-center">{{success}}</p>
           </div>
@@ -27,7 +27,7 @@
           <div class="col-12 w-100 d-flex justify-content-center mt-3">
               <p class="alert alert-danger w-50 text-center">{{removeSuccess}}</p>
           </div>
-          {{/if}}
+          {{/if}} --}}
         </div>
         <!-- Page Headings End -->
 
@@ -46,8 +46,8 @@
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>نام کاربر</th>
-                      <th>ایمیل کاربر</th>
+                      <th>code</th>
+                      <th>نام جدول</th>
                       <th>تاریخ عضویت</th>
                       {{!-- <th>عملیات</th> --}}
                     </tr>
@@ -56,31 +56,26 @@
 
                   <!-- Table Body Start -->
                   <tbody>
-
-                    {{#each users}}
+                    {{result}}
+                    
+                    {{#each result}}
 
                        <tr class="row-table">
                          <td>
                           {{this.id}}
                          </td>
                          <td>
-                          <a href="###">
-                            {{this.full_name}}
-                            
-                          </a>
+                            {{this.Code}}
                          </td>
                          <td>
-                           {{this.email}}
+                           {{this.table_Name}}
                             <div class="table-action-buttons">
                               <a class="edit button button-box button-xs button-info" href="/admin/users/edit/{{this.id}}"><i class="zmdi zmdi-edit"></i></a>
                               <a class="delete button button-box button-xs button-danger" href="/admin/users/delete/{{this.id}}"><i class="zmdi zmdi-delete"></i></a>
                             </div>
                           </td>
-
-                           
-
                          <td>
-                           {{this.jalali_created_at}}
+                           {{this.created_at}}
                          </td>
                          
                          {{!-- <td>

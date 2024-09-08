@@ -4,8 +4,8 @@ exports.index = async(req,res,next) => {
   try {
     console.log('in baseInformation Controller ...')
     const result = await baseInfoModel.index()
-    res.send(result)
-    // res.render('./baseInformation/index')
+    // res.send(result)
+    res.render('./baseInformation/index',{layout:'main'})
   } catch (error) {
     next(error)
   }
