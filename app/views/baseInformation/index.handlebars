@@ -1,9 +1,11 @@
 <!-- Page Headings Start -->
-        <div class="row justify-content-between align-items-center mb-10">
+
+  <div style="margin-top: 80px"></div>
+        <div class="row justify-content-between align-items-center mb-20">
           <!-- Page Heading Start -->
           <div class="col-12 col-lg-auto mb-20">
             <div class="page-heading">
-              <h3> لیست جداول کدینگ سیستم</h3>
+              <h3> لیست کدینگ اصلی سیستم</h3>
             </div>
           </div>
           <!-- Page Heading End -->
@@ -12,7 +14,7 @@
           <div class="col-12 col-lg-auto mb-20">
             <div class="buttons-group">
               <a href="/admin/users/create" class="button button-primary">
-                <span><i class="zmdi zmdi-plus"></i>ایجاد کاربر جدید</span>
+                <span><i class="zmdi zmdi-plus"></i>تعریف کدینگ جدید</span>
               </a>
             </div>
           </div>
@@ -35,21 +37,17 @@
           <!-- Revenue Statistics Chart Start -->
           <div class="col-md-12 mb-30">
             <div class="box">
-              <div class="box-head">
-                <div class="row">
-                  <h4 class="title">لیست کاربران</h4>
-                </div>
-              </div>
               <div class="box-body table-responsive">
                 <table class="table table table-striped table-hover table-bordered mb-0">
                   <!-- Table Head Start -->
                   <thead>
                     <tr class="table-primary d-flex"> 
                       <th class="col-md-1">ردیف</th>
-                      <th class="col-md-2">code</th>
-                      <th class="col-md-5">نام جدول</th>
-                      <th class="col-md-4">تاریخ عضویت</th>
-                      {{!-- <th>عملیات</th> --}}
+                      <th class="col-md-1">کد</th>
+                      <th class="col-md-3">نام انگلیسی جدول</th>
+                      <th class="col-md-3">نام فارسی جدول</th>
+                      <th class="col-md-2">تاریخ ایجاد</th>
+                      <th class="col-md-2">نام درخواست کنند</th>
                     </tr>
                   </thead>
                   <!-- Table Head End -->
@@ -61,28 +59,34 @@
 
                        <tr class="row-table d-flex">
                          <td class="col-md-1">
-                          {{this.ID}}
+                          {{this.id}}
                          </td>
-                         <td class="col-md-2">
-                            {{this.Description}}
+                         <td class="col-md-1">
+                            {{this.code}}
                          </td>
-                         <td class="col-md-5">
-                           {{this.ParamTableName}}
+                         <td class="col-md-3 text-wrap text-small">
+                           {{this.en_TableName}}
                             <div class="table-action-buttons text-center">
                               <a class="edit button button-box button-xs button-info" href="/admin/users/edit/{{this.id}}"><i class="zmdi zmdi-edit"></i></a>
                               <a class="delete button button-box button-xs button-danger" href="/admin/users/delete/{{this.id}}"><i class="zmdi zmdi-delete"></i></a>
                             </div>
                           </td>
-                         <td class="col-md-4">
-                           {{this.CreationDate}}
-                         </td>
-                         
-                         {{!-- <td>
-                            <div class="table-action-buttons">
+                         <td class="col-md-3 text-wrap text-small">
+                           {{this.fa_TableName}}
+                            <div class="table-action-buttons text-center">
                               <a class="edit button button-box button-xs button-info" href="/admin/users/edit/{{this.id}}"><i class="zmdi zmdi-edit"></i></a>
                               <a class="delete button button-box button-xs button-danger" href="/admin/users/delete/{{this.id}}"><i class="zmdi zmdi-delete"></i></a>
                             </div>
-                         </td> --}}
+                         </td>
+
+                         <td class="col-md-2 text-wrap">
+                           {{this.created_at}}
+                         </td>
+
+                         <td class="col-md-2">
+                           {{this.creator}}
+                         </td>
+                         
                        </tr>
 
                     {{/each}}
