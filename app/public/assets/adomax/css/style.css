@@ -6719,7 +6719,16 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 /*Table Action Buttons*/
 .table-action-buttons {
   min-width: 80px;
+  /* MHA : Start */
+  display: none;
+  /* MHA : End */
 }
+
+/* MHA : Start  */
+.row-table:hover .table-action-buttons{
+  display: block;
+}
+/* MHA : End  */
 
 .table-action-buttons .button, .table-action-buttons .fullcalendar .fc-toolbar .fc-button, .fullcalendar .fc-toolbar .table-action-buttons .fc-button, .table-action-buttons #toast-container .toast .toast-message .btn, #toast-container .toast .toast-message .table-action-buttons .btn, .table-action-buttons .dataTables_wrapper .dt-buttons .dt-button, .dataTables_wrapper .dt-buttons .table-action-buttons .dt-button, .table-action-buttons .footable.table thead tr th .footable-filtering-search .input-group .input-group-btn .btn, .footable.table thead tr th .footable-filtering-search .input-group .input-group-btn .table-action-buttons .btn, .table-action-buttons .footable.table tbody tr td.footable-editing .btn-group .btn, .footable.table tbody tr td.footable-editing .btn-group .table-action-buttons .btn, .table-action-buttons .footable.table tfoot tr.footable-editing td .btn, .footable.table tfoot tr.footable-editing td .table-action-buttons .btn, .table-action-buttons .smart-wizard .sw-toolbar .sw-btn-group .btn, .smart-wizard .sw-toolbar .sw-btn-group .table-action-buttons .btn {
   width: 22px !important;

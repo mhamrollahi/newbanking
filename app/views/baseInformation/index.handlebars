@@ -40,15 +40,15 @@
                   <h4 class="title">لیست کاربران</h4>
                 </div>
               </div>
-              <div class="box-body">
-                <table class="table table-bordered text-center mb-0">
+              <div class="box-body table-responsive">
+                <table class="table table table-striped table-hover table-bordered mb-0">
                   <!-- Table Head Start -->
                   <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>code</th>
-                      <th>نام جدول</th>
-                      <th>تاریخ عضویت</th>
+                    <tr class="table-primary d-flex"> 
+                      <th class="col-md-1">ردیف</th>
+                      <th class="col-md-2">code</th>
+                      <th class="col-md-5">نام جدول</th>
+                      <th class="col-md-4">تاریخ عضویت</th>
                       {{!-- <th>عملیات</th> --}}
                     </tr>
                   </thead>
@@ -56,26 +56,25 @@
 
                   <!-- Table Body Start -->
                   <tbody>
-                    {{result}}
                     
                     {{#each result}}
 
-                       <tr class="row-table">
-                         <td>
-                          {{this.id}}
+                       <tr class="row-table d-flex">
+                         <td class="col-md-1">
+                          {{this.ID}}
                          </td>
-                         <td>
-                            {{this.Code}}
+                         <td class="col-md-2">
+                            {{this.Description}}
                          </td>
-                         <td>
-                           {{this.table_Name}}
-                            <div class="table-action-buttons">
+                         <td class="col-md-5">
+                           {{this.ParamTableName}}
+                            <div class="table-action-buttons text-center">
                               <a class="edit button button-box button-xs button-info" href="/admin/users/edit/{{this.id}}"><i class="zmdi zmdi-edit"></i></a>
                               <a class="delete button button-box button-xs button-danger" href="/admin/users/delete/{{this.id}}"><i class="zmdi zmdi-delete"></i></a>
                             </div>
                           </td>
-                         <td>
-                           {{this.created_at}}
+                         <td class="col-md-4">
+                           {{this.CreationDate}}
                          </td>
                          
                          {{!-- <td>

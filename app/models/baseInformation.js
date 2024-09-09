@@ -1,8 +1,8 @@
-const {executeQuery} = require('@configs/dbconfig')
+const { executeQuery } = require("@configs/dbconfig");
 
-exports.index = async () =>{
+exports.index = async () => {
   // const _id = 3
-  const query = `SELECT * FROM CodeTableList`
-  const result = await executeQuery(query)
-  return result.recordset
-}
+  const query = `SELECT * FROM BG_CodeTableList`;
+  const result = await executeQuery(query);
+  return result.recordset;
+};
