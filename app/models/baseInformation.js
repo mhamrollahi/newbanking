@@ -22,7 +22,6 @@ exports.findAll = async (page = 1, perPage = 10) => {
 exports.count = async () => {
   const query = `SELECT COUNT(id) as codeTableListCount FROM VW_CodeTableList`;
   const result = await executeQuery(query);
-  console.log(result.recordset[0].codeTableListCount);
   
   return result.recordset[0].codeTableListCount
 

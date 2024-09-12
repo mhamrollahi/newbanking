@@ -107,30 +107,31 @@
           </tbody>
           <!-- Table Body End -->
         </table>
-                    <div class="dataTables_paginate paging_simple_numbers" style="margin: 10px;">
-              <a class="paginate_button previous btn btn-success disabled">
-                <i class="zmdi zmdi-chevron-left"></i>
+            <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
+              <a href="?page={{pagination.prevPage}}" class="paginate_button previous btn btn-success {{#showDisabled pagination.hasPrevPage}}{{/showDisabled}}" >
+                <i class="zmdi zmdi-chevron-right"></i>
               </a>
               {{#if pagination.isMoreThan3Pages}}
                 <span>
-                  <a class="paginate_button current btn btn-success">1</a>
-                  <a class="paginate_button btn btn-success">2</a>
-                  <a class="paginate_button btn btn-success">3</a>
-                  <a class="paginate_button btn">. . .</a>
+                  <a href="?page=1" class="paginate_button current btn btn-success">1</a>
+                  <a href="?page=2" class="paginate_button btn btn-success">2</a>
+                  <a href="?page=3" class="paginate_button btn btn-success">3</a>
+                  <a href="?page=4" class="paginate_button btn"><h3>. . .</h3></a>
+                  <a href="?page={{pagination.totalPages}}" class="paginate_button btn btn-success">{{pagination.totalPages}}</a>
                 </span>
-
-                {{else}}
+              {{else}}
                 <span>
-                  <a class="paginate_button current btn btn-success">1</a>
-                  <a class="paginate_button btn btn-success">2</a>
+                  <a href="?page=1"class="paginate_button current btn btn-success">1</a>
+                  <a href="?page=2"class="paginate_button btn btn-success">2</a>
                 </span>
-
               {{/if}}
-                <a class="paginate_button next">
-                  <i class="zmdi zmdi-chevron-right btn btn-success"></i>
+                <a href="?page={{pagination.nextPage}}" class="paginate_button next  btn btn-success {{#showDisabled pagination.hasNextPage}}{{/showDisabled}}">
+                  <i class="zmdi zmdi-chevron-left"></i>
                 </a>
             </div>
-
+            <div class="dataTables_info" style="float:left;padding-top:25px; font-size:18px;font-weight:600"> 
+              نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
+            </div>
       </div>
     </div>
   </div>
