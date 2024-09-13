@@ -1,7 +1,8 @@
 const accManagementRouter = require('./accManagement')
-const baseInformationRouter = require('./baseInformation')
+const codeTableListRouter = require('./baseInformation/codeTableList')
+// const codingDataRouter = require('./baseInformation/codingData')
 
 module.exports = (app) => {
   app.use('/accManagement',accManagementRouter)
-  app.use('/baseInformation',baseInformationRouter)
+  app.use('/baseInformation',codeTableListRouter)
 }

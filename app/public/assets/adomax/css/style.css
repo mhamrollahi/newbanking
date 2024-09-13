@@ -738,6 +738,12 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 /*-- Page Titles --*/
+.page-heading-custom{
+  /* margin-top:10px; */
+  padding-bottom:8px; 
+  border-bottom: 1px solid #4b4b4b;
+}
+
 .page-heading h3 {
   line-height: 1;
   margin: 0;

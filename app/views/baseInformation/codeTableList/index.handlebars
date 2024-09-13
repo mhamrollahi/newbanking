@@ -1,7 +1,18 @@
-<!-- Page Headings Start -->
 
-<div style="margin-top: 80px"></div>
+<div style="margin-top: 120px"></div>
+
 <div class="row justify-content-between align-items-center mb-20">
+    <div class="row justify-content-between align-items-center mb-10" style="margin-bottom: 20px;">
+
+    <!-- Page Heading Start -->
+      <div class="col-12 col-lg-auto mb-20" style="">
+        <div class="page-heading page-heading-custom">
+          <h3 class="title">اطلاعات پایه <span>/ جدول کدینگ اصلی</span></h3>
+        </div>
+      </div><!-- Page Heading End -->
+
+    </div>
+
   <!-- Page Heading Start -->
   <div class="col-12 col-lg-auto mb-20">
     <div class="page-heading">
@@ -13,7 +24,7 @@
   <!-- Page Button Group Start -->
   <div class="col-12 col-lg-auto mb-20">
     <div class="buttons-group">
-      <a href="/admin/users/create" class="button button-primary">
+      <a href="./create" class="button button-primary">
         <span><i class="zmdi zmdi-plus"></i>تعریف کدینگ جدید</span>
       </a>
     </div>
@@ -29,18 +40,15 @@
           <div class="col-12 w-100 d-flex justify-content-center mt-3">
               <p class="alert alert-danger w-50 text-center">{{removeSuccess}}</p>
           </div>
-          {{/if}} --}}
+        {{/if}} --}}
 </div>
-<!-- Page Headings End -->
-
-<div class="row mbn-30">
+  
+<div class="row mb-30">
   <!-- Revenue Statistics Chart Start -->
   <div class="col-md-12 mb-30">
     <div class="box">
       <div class="box-body table-responsive">
-        <table
-          class="table table table-striped table-hover table-bordered mb-0"
-        >
+        <table class="table table table-striped table-hover table-bordered mb-0">
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
@@ -57,7 +65,7 @@
           <!-- Table Body Start -->
           <tbody>
 
-            {{#each result}}
+            {{#each codeTableList}}
 
               <tr class="row-table d-flex">
                 <td class="col-md-1">
@@ -129,7 +137,7 @@
                   <i class="zmdi zmdi-chevron-left"></i>
                 </a>
             </div>
-            <div class="dataTables_info" style="float:left;padding-top:25px; font-size:18px;font-weight:600"> 
+            <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
               نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
             </div>
       </div>

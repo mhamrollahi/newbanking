@@ -1,0 +1,58 @@
+<div style="margin-top: 120px"></div>
+
+<main class="container myexperince-section-wrapper my-4 mt-5">
+
+      <div class="row justify-content-between align-items-center mb-10">
+
+    <!-- Page Heading Start -->
+      <div class="col-12 col-lg-auto mb-20" style="margin:20px 0;">
+        <div class="page-heading page-heading-custom" >
+          <h3 class="title">اطلاعات پایه <span>/ جدول کدینگ اصلی</span><span>/ جدید</span></h3>
+        </div>
+      </div><!-- Page Heading End -->
+
+    </div>
+   
+    <div class="row">
+      <div class="col-12 col-sm-12 col-md-12">
+          <form method="POST" name="frmExperience" action="../update/{{experienceData.id}}" class="row g-3 needs-validation">
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="txtSubject" name="txtSubject" minlength="10" 
+                placeholder="موضوع خود را بنویسید."  title="لظفا موضوع تجربه یا خاطره خود را اینجا بنویسید"
+                autocomplete="off" autofocus="true" required value="{{experienceData.Title}}">
+              <label for="txtSubject" class="mandatory">عنوان خاطره / تجربه </label>
+              <small class="errMessage" data-err="formatted" hidden> عنوان باید بیش از ۱۰ کاراکتر باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden> عنوان اجباری می باشد. </small>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="txtFullname" name="txtFullname" minlength="6" placeholder="نام و نام خانوادگی" value="{{experienceData.fullName}}">
+              <label for="txtFullname">نام و نام خانوادگی</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="txtEmail" name="txtEmail"  placeholder="name@example.com" required value="{{experienceData.Email}}">
+              <label for="txtEmail" class="mandatory">آدرس پست الکترونیکی</label>
+              <small class="errMessage" data-err="formatted" hidden>فرمت پست الکترونیکی صحیح نمی‌باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden> پست الکترونیکی اجباری می باشد. </small>
+            </div>
+
+            <div class="form-floating mb-3">
+              <textarea class="form-control txt-experience"  id="txtExperience" name="txtExperience" rows="3" minlength="30" required
+                placeholder="متن خاطره یا تجربه خود را اینجا بنویسید ...">{{experienceData.Description}}
+                </textarea>
+              <label for="txtExperience" class="mandatory">متن تجربه / خاطره خود را اینجا بنویسید...</label>
+              <small class="errMessage" data-err="formatted" hidden>متن تجربه / عنوان باید بیش از 30 کاراکتر
+                باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden> متن تجربه/خاطره اجباری می باشد. </small>
+            </div>
+
+            <div class="col-12 my-2 text-center">
+              <button class="btn btn-success  custom-btn" type="submit" id="btnSubmit">اصلاح خاطره</button>
+              <a class="btn btn-secondary custom-btn" type="reset" id="btnCancel" href="./index">انصراف</a>
+            </div>
+          </form>
+      </div>
+    </div>
+  </main>
