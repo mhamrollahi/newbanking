@@ -3,7 +3,9 @@ const hbs = require("express-handlebars");
 const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const cookieparser = require('cookie-parser')
+const session = require('express-session')
+const flash = require('connect-flash')
 
 const {connect} = require('../configs/dbConfig')
 
@@ -14,6 +16,14 @@ module.exports = (app) => {
   
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cookieparser())
+  app.use(session({
+    secret: 'JaiShriGanesha',
+    resave:true,
+    saveUninitialized:true,
+    cookie:{maxAge:60000}
+  }))
+  app.use(flash())
   app.use(cors());
 
   app.use(loggerMiddleware);

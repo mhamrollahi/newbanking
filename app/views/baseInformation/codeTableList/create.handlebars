@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/static/assets/css/style.css">
+
 <div style="margin-top: 120px"></div>
 
 <main class="container myexperince-section-wrapper my-4 mt-5">
@@ -15,41 +17,44 @@
    
     <div class="row">
       <div class="col-12 col-sm-12 col-md-12">
-          <form method="POST" name="frmExperience" action="../update/{{experienceData.id}}" class="row g-3 needs-validation">
+          <form method="POST" name="frmCodeTableList" action="./store" class="row g-3 needs-validation">
+            {{#if hasError}}
+              <div class="alert alert-danger">
+                {{#each errors}}
+                  <small class="errMessage">{{this}}</small>
+                {{/each}}
+              </div>
+            {{/if}}
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="txtSubject" name="txtSubject" minlength="10" 
-                placeholder="موضوع خود را بنویسید."  title="لظفا موضوع تجربه یا خاطره خود را اینجا بنویسید"
-                autocomplete="off" autofocus="true" required value="{{experienceData.Title}}">
-              <label for="txtSubject" class="mandatory">عنوان خاطره / تجربه </label>
-              <small class="errMessage" data-err="formatted" hidden> عنوان باید بیش از ۱۰ کاراکتر باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> عنوان اجباری می باشد. </small>
+              <input type="text" class="form-control" id="code" name="code" max="3" placeholder="کد را وارد کنید."  title="لظفا کد جدول را وارد کنید." autocomplete="off" autofocus="true" 1required>
+              <label for="code" class="mandatory">کد </label>
+
+              <small class="errMessage" data-err="formatted" hidden> حداکثر کد سه رقمی می‌باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden> کد اجباری می باشد. </small>
+
             </div>
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="txtFullname" name="txtFullname" minlength="6" placeholder="نام و نام خانوادگی" value="{{experienceData.fullName}}">
-              <label for="txtFullname">نام و نام خانوادگی</label>
+              <input type="text" class="form-control" id="en_TableName" name="en_TableName" maxlength="30" autocomplete="off" placeholder="نام انگلیسی جدول را وارد کنید."  1required>
+              <label for="en_TableName" class="mandatory">نام انگلیسی جدول</label>
+
+              <small class="errMessage" data-err="formatted" hidden> حداکثر نام انگلیسی جدول سی کاراکتر باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden> نام انگلیسی جدول اجباری می باشد. </small>
+
             </div>
 
             <div class="form-floating mb-3">
-              <input type="email" class="form-control" id="txtEmail" name="txtEmail"  placeholder="name@example.com" required value="{{experienceData.Email}}">
-              <label for="txtEmail" class="mandatory">آدرس پست الکترونیکی</label>
-              <small class="errMessage" data-err="formatted" hidden>فرمت پست الکترونیکی صحیح نمی‌باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> پست الکترونیکی اجباری می باشد. </small>
-            </div>
+              <input type="text" class="form-control" id="fa_TableName" name="fa_TableName" maxlength="30" autocomplete="off" placeholder="نام فارسی جدول را وارد کنید." 1required>
+              <label for="txtEmail" class="mandatory">نام فارسی جدول</label>
 
-            <div class="form-floating mb-3">
-              <textarea class="form-control txt-experience"  id="txtExperience" name="txtExperience" rows="3" minlength="30" required
-                placeholder="متن خاطره یا تجربه خود را اینجا بنویسید ...">{{experienceData.Description}}
-                </textarea>
-              <label for="txtExperience" class="mandatory">متن تجربه / خاطره خود را اینجا بنویسید...</label>
-              <small class="errMessage" data-err="formatted" hidden>متن تجربه / عنوان باید بیش از 30 کاراکتر
-                باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> متن تجربه/خاطره اجباری می باشد. </small>
+              <small class="errMessage" data-err="formatted" hidden> حداکثر نام فارسی جدول سی کاراکتر باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden>نام فارسی جدول اجباری می باشد. </small>
+
             </div>
 
             <div class="col-12 my-2 text-center">
-              <button class="btn btn-success  custom-btn" type="submit" id="btnSubmit">اصلاح خاطره</button>
+              <button class="btn btn-success  custom-btn" type="submit" id="btnSubmit">ثبت </button>
               <a class="btn btn-secondary custom-btn" type="reset" id="btnCancel" href="./index">انصراف</a>
             </div>
           </form>

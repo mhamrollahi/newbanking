@@ -1,4 +1,5 @@
 const codeTableListModel = require("@models/baseInformation/codeTableList.js");
+const codeTableListValidators = require("@validators/baseInformation/codeTableList")
 
 exports.index = async (req, res, next) => {
   try {
@@ -6,9 +7,11 @@ exports.index = async (req, res, next) => {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
     const codeTableList = await codeTableListModel.findAll(page, perPage);
-    let offset 
     const totalCodeTableLists = await codeTableListModel.count();
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
+    let offset 
+    const success = req.flash('success')
+
     offset = ((page -1) * perPage)  
     let to 
     to = offset + perPage
@@ -26,6 +29,7 @@ exports.index = async (req, res, next) => {
       to: page == totalPages ? totalCodeTableLists : to,
     };
 
+
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
       codeTableList,
@@ -35,6 +39,7 @@ exports.index = async (req, res, next) => {
           return !isDisabled ? "disabled" : "";
         },
       },
+      success,
     });
     // res.send(result)
   } catch (error) {
@@ -44,8 +49,58 @@ exports.index = async (req, res, next) => {
 
 exports.create = async(req,res,next)=>{
   try {
-      res.render('./baseInformation/codeTableList/create',{layout:'main'})    
+    const errors = req.flash('errors')
+    const success = req.flash('success')
+    const hasError = errors.length > 0
+    // console.log('errors = ',errors)
+
+    res.render('./baseInformation/codeTableList/create',{layout:'main',errors,hasError,success})    
   } catch (error) {
       next(error)
+  }
+}
+
+exports.store = async(req,res,next)=>{
+  
+  try {
+    // res.send(req.body)
+    const codeTableListData = {
+        code:req.body.code,
+        fa_TableName:req.body.fa_TableName,
+        en_TableName:req.body.en_TableName,
+        creator:"MHA"
+      }
+
+    let errors = []
+    errors = codeTableListValidators.createValidation(codeTableListData)
+      
+    if(errors.length>0){
+      req.flash('errors',errors)
+      return res.redirect('./create')
+    }
+
+    errors = await codeTableListValidators.checkUniqueEN_TableName(codeTableListData.en_TableName)
+    if(errors.length>0){
+      req.flash('errors',errors)
+      return res.redirect('./create')
+    }
+    
+
+    errors = await codeTableListValidators.checkUniqueFA_TableName(codeTableListData.fa_TableName)
+    if(errors.length>0){
+      req.flash('errors',errors)
+      return res.redirect('./create')
+    }
+    
+    const rowsAffected = await codeTableListModel.create(codeTableListData)
+
+    if(rowsAffected[0]>0){
+      console.log(rowsAffected)
+
+      req.flash('success','اطلاعات کدینگ جدید با موفقیت ثبت شد.')
+      res.redirect('./index')
+    }
+  } catch (error) {
+    next(error)
   }
 }
