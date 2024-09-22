@@ -104,3 +104,18 @@ exports.store = async(req,res,next)=>{
     next(error)
   }
 }
+
+exports.edit = async (req,res,next)=> {
+  try {
+    const errors = req.flash('errors')
+    const hasError = errors.length > 0
+    const success = req.flash('success')
+
+    const codeTableListId = await req.params.id
+    const codeTableList = await codeTableListModel.find(codeTableListId)
+
+    res.render('./baseInformation/codeTableList/edit',{layout:'main',codeTableList,errors,hasError,success})    
+  } catch (error) {
+    next(error)
+  }
+}

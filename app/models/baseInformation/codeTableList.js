@@ -49,5 +49,12 @@ exports.create = async (data)=>{
   
   const result = await executeQuery(query)
   return result.rowsAffected
-
 }
+
+exports.find = async (id) => {
+  const query = `SELECT TOP(1) * FROM VW_CodeTableList WHERE ID = ${id}`;
+  const result = await executeQuery(query);
+  // console.log(result)
+  console.log(result.rowsAffected[0])
+  return result.rowsAffected[0] == 1 ? result.recordset[0] : false;
+};
