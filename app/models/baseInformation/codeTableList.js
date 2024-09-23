@@ -51,6 +51,16 @@ exports.create = async (data)=>{
   return result.rowsAffected
 }
 
+exports.edit = async (data)=>{
+  const query = `UPDATE CodeTableList SET code = ${data.code},
+    en_TableName = ${data.en_TableName},
+    fa_TableName = ${data.fa_TableName},
+    updater = ${data.updater})`
+  
+  const result = await executeQuery(query)
+  return result.rowsAffected
+}
+
 exports.find = async (id) => {
   const query = `SELECT TOP(1) * FROM VW_CodeTableList WHERE ID = ${id}`;
   const result = await executeQuery(query);
