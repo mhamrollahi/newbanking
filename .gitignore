@@ -3,3 +3,5 @@
 node_modules
 NewBanking.code-workspace
 test.js
+package.json
+package-lock.json

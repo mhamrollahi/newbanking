@@ -48,17 +48,21 @@ exports.create = async (data)=>{
     '${data.creator}')`
   
   const result = await executeQuery(query)
-  return result.rowsAffected
+  return result.rowsAffected[0]
 }
 
-exports.edit = async (data)=>{
-  const query = `UPDATE CodeTableList SET code = ${data.code},
-    en_TableName = ${data.en_TableName},
-    fa_TableName = ${data.fa_TableName},
-    updater = ${data.updater})`
+exports.edit = async (id,data)=>{
+  const query = `UPDATE CodeTableList SET code = '${data.code}',
+    en_TableName = '${data.en_TableName}',
+    fa_TableName = '${data.fa_TableName}',
+    updater = '${data.updater}',
+    updated_at = '${data.updated_at}'
+    WHERE id = ${id} `
   
+  console.log(query)
+
   const result = await executeQuery(query)
-  return result.rowsAffected
+  return result.rowsAffected[0]
 }
 
 exports.find = async (id) => {

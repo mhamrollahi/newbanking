@@ -17,7 +17,7 @@
    
     <div class="row">
       <div class="col-12 col-sm-12 col-md-12">
-          <form method="POST" name="frmCodeTableList" action="./store" class="row g-3 needs-validation">
+          <form method="POST" name="frmCodeTableList" action="../update/{{codeTableList.id}}" class="row g-3 needs-validation">
             {{#if hasError}}
               <div class="alert alert-danger">
                 {{#each errors}}
@@ -57,13 +57,28 @@
             </div>
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" readonly id="creator" name="creator" value="{{codeTableList.creator}}" required>
+              <input type="text" class="form-control" readonly id="creator" name="creator" value="{{codeTableList.creator}}">
               <label for="creator" class="mandatory">ایجاد کننده</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" readonly id="created_at" name="created_at" value="{{codeTableList.fa_created_at}}">
+              <label for="created_at" class="mandatory">تاریخ ایجاد</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" readonly id="updater" name="creator" value="{{codeTableList.updater}}">
+              <label for="creator" class="mandatory">اصلاح کننده</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" readonly id="updated_at" name="updated_at" value="{{codeTableList.fa_updated_at}}">
+              <label for="created_at" class="mandatory">تاریخ اصلاح</label>
             </div>
 
             <div class="col-12 my-2 text-center">
               <button class="btn btn-success  custom-btn" type="submit" id="btnSubmit">اصلاح </button>
-              <a class="btn btn-secondary custom-btn" type="reset" id="btnCancel" href="./index">انصراف</a>
+              <a class="btn btn-secondary custom-btn" type="reset" id="btnCancel" href="../index">انصراف</a>
             </div>
           </form>
       </div>

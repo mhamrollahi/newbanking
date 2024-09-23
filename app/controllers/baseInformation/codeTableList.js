@@ -1,5 +1,6 @@
-const codeTableListModel = require("@models/baseInformation/codeTableList.js");
-const codeTableListValidators = require("@validators/baseInformation/codeTableList")
+const codeTableListModel = require("@models/baseInformation/codeTableList");
+const codeTableListValidators = require("@validators/baseInformation/codeTableList");
+const { DateTime } = require("mssql");
 
 exports.index = async (req, res, next) => {
   try {
@@ -94,11 +95,11 @@ exports.store = async(req,res,next)=>{
     
     const rowsAffected = await codeTableListModel.create(codeTableListData)
 
-    if(rowsAffected[0]>0){
+    if(rowsAffected>0){
       console.log(rowsAffected)
 
       req.flash('success','اطلاعات کدینگ جدید با موفقیت ثبت شد.')
-      res.redirect('./index')
+      return res.redirect('./index')
     }
   } catch (error) {
     next(error)
@@ -123,6 +124,42 @@ exports.edit = async (req,res,next)=> {
 exports.update = async (req,res,next) => {
   try {
     
+    const codeTableListId = await req.params.id
+    const codeTableListData = {
+      code : req.body.code,
+      en_TableName : req.body.en_TableName,
+      fa_TableName : req.body.fa_TableName,
+      updated_at : new Date().toLocaleDateString("en-US"),
+      updater:'MHA_Updated'
+    }    
+
+    let errors = []
+    errors = codeTableListValidators.createValidation(codeTableListData)
+      
+    if(errors.length>0){
+      req.flash('errors',errors)
+      return res.redirect(`../edit/${codeTableListId}`)
+    }
+
+    errors = await codeTableListValidators.checkUniqueEN_TableName(codeTableListData.en_TableName)
+    if(errors.length>0){
+      req.flash('errors',errors)
+      return res.redirect(`../edit/${codeTableListId}`)
+    } 
+
+    errors = await codeTableListValidators.checkUniqueFA_TableName(codeTableListData.fa_TableName)
+    if(errors.length>0){
+      req.flash('errors',errors)
+      return res.redirect(`../edit/${codeTableListId}`)
+    }
+
+    const rowsAffected = await codeTableListModel.edit(codeTableListId,codeTableListData)
+    if(rowsAffected>0){
+      req.flash('success','اطلاعات با موفقیت اصلاح شد.')
+      return res.redirect('../index')
+    }
+
+
   } catch (error) {
     next(error)
   }
