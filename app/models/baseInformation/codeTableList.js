@@ -64,7 +64,7 @@ exports.edit = async (data)=>{
 exports.delete = async(id) => {
   const query = `DELETE FROM CodeTableList WHERE id = ${id}`
   const result = await executeQuery(query)
-  return result.rowsAffected
+  return result.rowsAffected[0]
 }
 
 exports.find = async (id) => {
