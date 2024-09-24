@@ -120,9 +120,16 @@ exports.edit = async (req,res,next)=> {
   }
 }
 
-exports.update = async (req,res,next) => {
+exports.delete = async (req,res,next)=>{
   try {
+    const codeTableListId = req.params.id
+    const rowsAffected = await codeTableListModel.delete(codeTableListId)
+    console.log(rowsAffected)
     
+    req.flash('success','اطلاعات با موفقیت حذف شد.')
+    if (rowsAffected>0){
+      return res.redirect('../index')
+    }
   } catch (error) {
     next(error)
   }

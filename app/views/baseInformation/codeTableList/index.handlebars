@@ -83,7 +83,9 @@
                     ><i class="zmdi zmdi-edit"></i></a>
                     <a
                       class="delete button button-box button-xs button-danger"
-                      href="/baseInformation/codeTableList/delete/{{this.id}}"
+                      href="/baseInformation/codeTableList/delete/{{this.id}}" 
+                      onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');"   
+                      title="حذف کاربر ..." 
                     ><i class="zmdi zmdi-delete"></i></a>
                   </div>
                 </td>
@@ -97,6 +99,8 @@
                     <a
                       class="delete button button-box button-xs button-danger"
                       href="/baseInformation/codeTableList/delete/{{this.id}}"
+                      onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');"   
+                      title="حذف کاربر ..." 
                     ><i class="zmdi zmdi-delete"></i></a>
                   </div>
                 </td>
