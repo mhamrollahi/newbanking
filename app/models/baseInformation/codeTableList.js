@@ -59,8 +59,6 @@ exports.edit = async (id,data)=>{
     updated_at = '${data.updated_at}'
     WHERE id = ${id} `
   
-  console.log(query)
-
   const result = await executeQuery(query)
   return result.rowsAffected[0]
 }

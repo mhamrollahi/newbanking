@@ -136,6 +136,7 @@ exports.update = async (req, res, next) => {
   try {
     
     const codeTableListId = await req.params.id
+    
     const codeTableListData = {
       code : req.body.code,
       en_TableName : req.body.en_TableName,
@@ -152,13 +153,13 @@ exports.update = async (req, res, next) => {
       return res.redirect(`../edit/${codeTableListId}`)
     }
 
-    errors = await codeTableListValidators.checkUniqueEN_TableName(codeTableListData.en_TableName)
+    errors = await codeTableListValidators.checkUniqueEN_TableName(codeTableListData.en_TableName,true)
     if(errors.length>0){
       req.flash('errors',errors)
       return res.redirect(`../edit/${codeTableListId}`)
     } 
 
-    errors = await codeTableListValidators.checkUniqueFA_TableName(codeTableListData.fa_TableName)
+    errors = await codeTableListValidators.checkUniqueFA_TableName(codeTableListData.fa_TableName,true)
     if(errors.length>0){
       req.flash('errors',errors)
       return res.redirect(`../edit/${codeTableListId}`)
@@ -170,7 +171,21 @@ exports.update = async (req, res, next) => {
       return res.redirect('../index')
     }
 
+  } catch (error) {
+    next(error);
+  }
+};
 
+exports.delete = async (req, res, next) => {
+  try {
+    const codeTableListId = req.params.id;
+    const rowsAffected = await codeTableListModel.delete(codeTableListId);
+    console.log(rowsAffected);
+
+    req.flash("success", "اطلاعات با موفقیت حذف شد.");
+    if (rowsAffected > 0) {
+      return res.redirect("../index");
+    }
   } catch (error) {
     next(error);
   }
