@@ -50,7 +50,7 @@ async function executeQuery(query,values=[],paramNames=[],isStoredProcedure = fa
 
   }catch(err){
     console.log(err)
-    throw error
+    throw err
   }
 }
 

@@ -1,11 +1,12 @@
 module.exports = (app) => {
-  app.use((error,req,res,next) => {
-    const status = error.status || 500
+  app.use((error, req, res, next) => {
+    const status = error.status || 500;
     res.send({
-      code : 'Exception',
+      code: "Exception",
       status,
-      en_message : error.message,
-      fa_message : 'خطایی در عملیات مورد نظر رخ داده است، لحظه‌ای بعد امتحان کنید...'
-    })
-  })
- }
+      en_message: error.message,
+      fa_message:
+        "خطایی در عملیات مورد نظر رخ داده است، لحظه‌ای بعد امتحان کنید...",
+    });
+  });
+};

@@ -4,18 +4,17 @@ const { DateTime } = require("mssql");
 
 exports.index = async (req, res, next) => {
   try {
-
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
     const codeTableList = await codeTableListModel.findAll(page, perPage);
     const totalCodeTableLists = await codeTableListModel.count();
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
-    let offset 
-    const success = req.flash('success')
+    let offset;
+    const success = req.flash("success");
 
-    offset = ((page -1) * perPage)  
-    let to 
-    to = offset + perPage
+    offset = (page - 1) * perPage;
+    let to;
+    to = offset + perPage;
 
     const pagination = {
       page,
@@ -26,10 +25,9 @@ exports.index = async (req, res, next) => {
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1,
       totalCount: totalCodeTableLists,
-      offset: offset == 0 ? 1 : offset+1,
+      offset: offset == 0 ? 1 : offset + 1,
       to: page == totalPages ? totalCodeTableLists : to,
     };
-
 
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
@@ -48,52 +46,59 @@ exports.index = async (req, res, next) => {
   }
 };
 
-exports.create = async(req,res,next)=>{
+exports.create = async (req, res, next) => {
   try {
-    const errors = req.flash('errors')
-    const success = req.flash('success')
-    const hasError = errors.length > 0
+    const errors = req.flash("errors");
+    const success = req.flash("success");
+    const hasError = errors.length > 0;
     // console.log('errors = ',errors)
 
-    res.render('./baseInformation/codeTableList/create',{layout:'main',errors,hasError,success})    
+    res.render("./baseInformation/codeTableList/create", {
+      layout: "main",
+      errors,
+      hasError,
+      success,
+    });
   } catch (error) {
-      next(error)
+    next(error);
   }
-}
+};
 
-exports.store = async(req,res,next)=>{
-  
+exports.store = async (req, res, next) => {
   try {
     // res.send(req.body)
     const codeTableListData = {
-        code:req.body.code,
-        fa_TableName:req.body.fa_TableName,
-        en_TableName:req.body.en_TableName,
-        creator:"MHA"
-      }
+      code: req.body.code,
+      fa_TableName: req.body.fa_TableName,
+      en_TableName: req.body.en_TableName,
+      creator: "MHA",
+    };
 
-    let errors = []
-    errors = codeTableListValidators.createValidation(codeTableListData)
-      
-    if(errors.length>0){
-      req.flash('errors',errors)
-      return res.redirect('./create')
+    let errors = [];
+    errors = codeTableListValidators.createValidation(codeTableListData);
+
+    if (errors.length > 0) {
+      req.flash("errors", errors);
+      return res.redirect("./create");
     }
 
-    errors = await codeTableListValidators.checkUniqueEN_TableName(codeTableListData.en_TableName)
-    if(errors.length>0){
-      req.flash('errors',errors)
-      return res.redirect('./create')
+    errors = await codeTableListValidators.checkUniqueEN_TableName(
+      codeTableListData.en_TableName
+    );
+    if (errors.length > 0) {
+      req.flash("errors", errors);
+      return res.redirect("./create");
     }
-    
 
-    errors = await codeTableListValidators.checkUniqueFA_TableName(codeTableListData.fa_TableName)
-    if(errors.length>0){
-      req.flash('errors',errors)
-      return res.redirect('./create')
+    errors = await codeTableListValidators.checkUniqueFA_TableName(
+      codeTableListData.fa_TableName
+    );
+    if (errors.length > 0) {
+      req.flash("errors", errors);
+      return res.redirect("./create");
     }
-    
-    const rowsAffected = await codeTableListModel.create(codeTableListData)
+
+    const rowsAffected = await codeTableListModel.create(codeTableListData);
 
     if(rowsAffected>0){
       console.log(rowsAffected)
@@ -102,26 +107,32 @@ exports.store = async(req,res,next)=>{
       return res.redirect('./index')
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-exports.edit = async (req,res,next)=> {
+exports.edit = async (req, res, next) => {
   try {
-    const errors = req.flash('errors')
-    const hasError = errors.length > 0
-    const success = req.flash('success')
+    const errors = req.flash("errors");
+    const hasError = errors.length > 0;
+    const success = req.flash("success");
 
-    const codeTableListId = await req.params.id
-    const codeTableList = await codeTableListModel.find(codeTableListId)
+    const codeTableListId = await req.params.id;
+    const codeTableList = await codeTableListModel.find(codeTableListId);
 
-    res.render('./baseInformation/codeTableList/edit',{layout:'main',codeTableList,errors,hasError,success})    
+    res.render("./baseInformation/codeTableList/edit", {
+      layout: "main",
+      codeTableList,
+      errors,
+      hasError,
+      success,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
-exports.update = async (req,res,next) => {
+exports.update = async (req, res, next) => {
   try {
     
     const codeTableListId = await req.params.id
@@ -161,6 +172,6 @@ exports.update = async (req,res,next) => {
 
 
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
