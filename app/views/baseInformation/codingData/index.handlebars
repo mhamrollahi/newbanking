@@ -1,0 +1,147 @@
+
+<div style="margin-top: 120px"></div>
+
+<div class="row justify-content-between align-items-center mb-20">
+    <div class="row justify-content-between align-items-center mb-10" style="margin-bottom: 20px;">
+
+    <!-- Page Heading Start -->
+      <div class="col-12 col-lg-auto mb-20" style="">
+        <div class="page-heading page-heading-custom">
+          <h3 class="title">اطلاعات پایه <span>/ حزییات کدینگ دیتا</span></h3>
+        </div>
+      </div><!-- Page Heading End -->
+
+    </div>
+
+  <!-- Page Heading Start -->
+  <div class="col-12 col-lg-auto mb-20">
+    <div class="page-heading">
+      <h3> لیست کدینگ اصلی سیستم</h3>
+    </div>
+  </div>
+  <!-- Page Heading End -->
+
+  <!-- Page Button Group Start -->
+  <div class="col-12 col-lg-auto mb-20">
+    <div class="buttons-group">
+      <a href="./create" class="button button-primary">
+        <span><i class="zmdi zmdi-plus"></i>تعریف کدینگ جدید</span>
+      </a>
+    </div>
+  </div>
+  <!-- Page Button Group End -->
+  {{#if success}}
+    <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
+      <p class="alert alert-success w-50 text-center">{{success}}</p>
+    </div>
+  {{/if}}
+         
+  {{#if removeSuccess}}
+    <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
+      <p class="alert alert-danger w-50 text-center">{{removeSuccess}}</p>
+    </div>
+  {{/if}} 
+</div>
+  
+<div class="row mb-30">
+  <!-- Revenue Statistics Chart Start -->
+  <div class="col-md-12 mb-30">
+    <div class="box">
+      <div class="box-body table-responsive">
+        <table class="table table table-striped table-hover table-bordered mb-0">
+          <!-- Table Head Start -->
+          <thead>
+            <tr class="table-primary d-flex">
+              <th class="col-md-1">ردیف</th>
+              <th class="col-md-1">کد</th>
+              <th class="col-md-3">نام انگلیسی جدول</th>
+              <th class="col-md-3">نام فارسی جدول</th>
+              <th class="col-md-2">تاریخ ایجاد</th>
+              <th class="col-md-2">نام درخواست کنند</th>
+            </tr>
+          </thead>
+          <!-- Table Head End -->
+
+          <!-- Table Body Start -->
+          <tbody>
+
+            {{#each codeTableList}}
+
+              <tr class="row-table d-flex">
+                <td class="col-md-1">
+                  {{this.id}}
+                </td>
+                <td class="col-md-1">
+                  {{this.code}}
+                </td>
+                <td class="col-md-3 text-wrap text-small">
+                  {{this.en_TableName}}
+                  <div class="table-action-buttons text-center">
+                    <a
+                      class="edit button button-box button-xs button-info"
+                      href="/baseInformation/codeTableList/edit/{{this.id}}"
+                    ><i class="zmdi zmdi-edit"></i></a>
+                    <a
+                      class="delete button button-box button-xs button-danger"
+                      href="/baseInformation/codeTableList/delete/{{this.id}}"
+                    ><i class="zmdi zmdi-delete"></i></a>
+                  </div>
+                </td>
+                <td class="col-md-3 text-wrap text-small">
+                  {{this.fa_TableName}}
+                  <div class="table-action-buttons text-center">
+                    <a
+                      class="edit button button-box button-xs button-info"
+                      href="/baseInformation/codeTableList/edit/{{this.id}}"
+                    ><i class="zmdi zmdi-edit"></i></a>
+                    <a
+                      class="delete button button-box button-xs button-danger"
+                      href="/baseInformation/codeTableList/delete/{{this.id}}"
+                    ><i class="zmdi zmdi-delete"></i></a>
+                  </div>
+                </td>
+
+                <td class="col-md-2 text-wrap">
+                  {{this.fa_created_at}}
+                </td>
+
+                <td class="col-md-2">
+                  {{this.creator}}
+                </td>
+
+              </tr>
+
+            {{/each}}
+          </tbody>
+          <!-- Table Body End -->
+        </table>
+            <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
+              <a href="?page={{pagination.prevPage}}" class="paginate_button previous btn btn-success {{#showDisabled pagination.hasPrevPage}}{{/showDisabled}}" >
+                <i class="zmdi zmdi-chevron-right"></i>
+              </a>
+              {{#if pagination.isMoreThan3Pages}}
+                <span>
+                  <a href="?page=1" class="paginate_button current btn btn-success">1</a>
+                  <a href="?page=2" class="paginate_button btn btn-success">2</a>
+                  <a href="?page=3" class="paginate_button btn btn-success">3</a>
+                  <a href="?page=4" class="paginate_button btn"><h3>. . .</h3></a>
+                  <a href="?page={{pagination.totalPages}}" class="paginate_button btn btn-success">{{pagination.totalPages}}</a>
+                </span>
+              {{else}}
+                <span>
+                  <a href="?page=1"class="paginate_button current btn btn-success">1</a>
+                  <a href="?page=2"class="paginate_button btn btn-success">2</a>
+                </span>
+              {{/if}}
+                <a href="?page={{pagination.nextPage}}" class="paginate_button next  btn btn-success {{#showDisabled pagination.hasNextPage}}{{/showDisabled}}">
+                  <i class="zmdi zmdi-chevron-left"></i>
+                </a>
+            </div>
+            <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
+              نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
+            </div>
+      </div>
+    </div>
+  </div>
+  <!-- Revenue Statistics Chart End -->
+</div>

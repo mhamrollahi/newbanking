@@ -52,7 +52,7 @@
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
-              <th class="col-md-1">ردیف</th>
+              <th class="col-md-1">ID</th>
               <th class="col-md-1">کد</th>
               <th class="col-md-3">نام انگلیسی جدول</th>
               <th class="col-md-3">نام فارسی جدول</th>
@@ -75,29 +75,32 @@
                   {{this.code}}
                 </td>
                 <td class="col-md-3 text-wrap text-small">
-                  {{this.en_TableName}}
+                  <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.en_TableName}}</a>
                   <div class="table-action-buttons text-center">
-                    <a
-                      class="edit button button-box button-xs button-info"
-                      href="/baseInformation/codeTableList/edit/{{this.id}}"
-                    ><i class="zmdi zmdi-edit"></i></a>
-                    <a
-                      class="delete button button-box button-xs button-danger"
-                      href="/baseInformation/codeTableList/delete/{{this.id}}"
-                    ><i class="zmdi zmdi-delete"></i></a>
+                    <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/{{this.id}}">
+                      <i class="zmdi zmdi-file-text"></i>
+                    </a>
+                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/{{this.id}}">
+                      <i class="zmdi zmdi-edit"></i>
+                    </a>
+                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/{{this.id}}">
+                      <i class="zmdi zmdi-delete"></i>
+                    </a>
                   </div>
                 </td>
                 <td class="col-md-3 text-wrap text-small">
-                  {{this.fa_TableName}}
+                   <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.fa_TableName}}</a>
                   <div class="table-action-buttons text-center">
-                    <a
-                      class="edit button button-box button-xs button-info"
-                      href="/baseInformation/codeTableList/edit/{{this.id}}"
-                    ><i class="zmdi zmdi-edit"></i></a>
-                    <a
-                      class="delete button button-box button-xs button-danger"
-                      href="/baseInformation/codeTableList/delete/{{this.id}}"
-                    ><i class="zmdi zmdi-delete"></i></a>
+                    <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/{{this.id}}">
+                      <i class="zmdi zmdi-file-text"></i>
+                    </a>
+
+                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/{{this.id}}">
+                      <i class="zmdi zmdi-edit"></i>
+                    </a>
+                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/{{this.id}}">
+                      <i class="zmdi zmdi-delete"></i>
+                    </a>
                   </div>
                 </td>
 
