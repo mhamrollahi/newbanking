@@ -12,22 +12,22 @@
 	============================================ -->
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/static/assets/adomax/css/vendor/bootstrap.rtl.min.css"/>
+    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/bootstrap.rtl.min.css"/>
 
     <!-- Icon Font CSS -->
-    <link rel="stylesheet" href="/static/assets/adomax/css/vendor/material-design-iconic-font.min.css"/>
-    <link rel="stylesheet" href="/static/assets/adomax/css/vendor/font-awesome.min.css"/>
-    <link rel="stylesheet" href="/static/assets/adomax/css/vendor/themify-icons.css"/>
+    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/material-design-iconic-font.min.css"/>
+    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/font-awesome.min.css"/>
+    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/themify-icons.css"/>
 
     <!-- Plugins CSS -->
-    <link rel="stylesheet" href="/static/assets/adomax/css/plugins/plugins.css"/>
+    <link rel="stylesheet" href="app/public/assets/adomax/css/plugins/plugins.css"/>
 
     <!-- Helper CSS -->
-    <link rel="stylesheet" href="/static/assets/adomax/css/adomax/helper.css" />
+    <link rel="stylesheet" href="app/public/assets/adomax/css/adomax/helper.css" />
 
     <!-- Main Style CSS -->
-    <link rel="stylesheet" href="/static/assets/adomax/css/adomax/style.css" />
-    <link rel="stylesheet" href="/static/assets/adomax/CSS/style.css" />
+    <link rel="stylesheet" href="app/public/assets/adomax/css/adomax/style.css" />
+    <link rel="stylesheet" href="app/public/assets/adomax/CSS/style.css" />
   </head>
 
   <body dir="rtl">
@@ -41,7 +41,7 @@
 
             <!-- Header Logo (Header Left) Start -->
             <div class="header-logo col-auto">
-              <a href="/static/index.html">
+              <a href="app/public/index.html">
                 <img src="assets/images/lotus-36.png" alt="" />
                 {{! <img src="assets/images/adomax/logo/logo.png" alt=""> }}
                 {{! <img src="assets/images/adomax/logo/logo-light.png" class="logo-light" alt=""> }}
@@ -268,7 +268,7 @@
                             <li><a href="#"><i
                                   class="zmdi zmdi-settings"
                                 ></i>تنظیمات</a></li>
-                            <li><a href="/static/auth/logout"><i
+                            <li><a href="app/public/auth/logout"><i
                                   class="zmdi zmdi-lock-open"
                                 ></i>خروج</a></li>
                           </ul>
@@ -349,7 +349,7 @@
                   ></i>
                   <span>گزارشات</span></a>
                 <ul class="side-header-sub-menu">
-                  <li><a href="/static/user/list"><span>گزارش حساب‌ها</span></a></li>
+                  <li><a href="app/public/user/list"><span>گزارش حساب‌ها</span></a></li>
                   <li><a href="##"><span>گزارش کاربران</span></a></li>
                 </ul>
               </li>
@@ -373,9 +373,21 @@
       <!-- Side Header End -->
 
       <!-- Content Body Start -->
-      <div class="content-body">
-
-        {{{body}}}
+      <div class="content-body" style="margin-top: 100px;">
+        
+        <div style="margin: 20px;">
+          <select id="cmbCodeTableList" name="state" style="width: 300px;">
+          <option value="AL">تست 1 </option>
+          <option value="AL1">سلام خوبی</option>
+          <option value="AL2">استان یک</option>
+          <option value="AL3">تهران</option>
+          <option value="AL4">مشهد</option>
+          <option value="AL5">شیراز</option>
+          <option value="AL6">یزد</option>
+          <option value="AL7">بندرعباس</option>
+          <option value="WY">شمال تهران</option>
+        </select>
+        </div>
 
       </div>
       <!-- Content Body End -->
@@ -399,21 +411,21 @@
 ============================================ -->
 
     <!-- Global Vendor, plugins & Activation JS -->
-    <script src="/static/assets/adomax/js/vendor/modernizr-3.6.0.min.js"></script>
-    <script src="/static/assets/adomax/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="/static/assets/adomax/js/vendor/popper.min.js"></script>
-    <script src="/static/assets/adomax/js/vendor/bootstrap.min.js"></script>
+    <script src="app/public/assets/adomax/js/vendor/modernizr-3.6.0.min.js"  ></script>
+    <script src="app/public/assets/adomax/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="app/public/assets/adomax/js/vendor/popper.min.js"></script>
+    <script src="app/public/assets/adomax/js/vendor/bootstrap.min.js"></script>
     <!--Plugins JS-->
-    <script src="/static/assets/adomax/js/plugins/perfect-scrollbar.min.js"></script>
-    <script src="/static/assets/adomax/js/plugins/tippy4.min.js.js"></script>
+    <script src="app/public/assets/adomax/js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="app/public/assets/adomax/js/plugins/tippy4.min.js.js"></script>
     <!--Main JS-->
-    <script src="/static/assets/adomax/js/main.js"></script>
+    <script src="app/public/assets/adomax/js/main.js"></script>
 
-    <script src="/static/assets/vendor/select2/dist/js/select2.min.js"></script>
 
+    <script src="app/public/assets/vendor/select2/dist/js/select2.min.js"></script>
     <script>
       $(document).ready(function(){
-        $('#cmbCodeTableList').select2();
+        $('#cmbCodeTableList').select2()
       })
     </script>
   </body>

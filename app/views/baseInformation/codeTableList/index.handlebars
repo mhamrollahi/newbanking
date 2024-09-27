@@ -52,7 +52,7 @@
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
-              <th class="col-md-1">ردیف</th>
+              <th class="col-md-1">ID</th>
               <th class="col-md-1">کد</th>
               <th class="col-md-3">نام انگلیسی جدول</th>
               <th class="col-md-3">نام فارسی جدول</th>
@@ -75,33 +75,32 @@
                   {{this.code}}
                 </td>
                 <td class="col-md-3 text-wrap text-small">
-                  {{this.en_TableName}}
+                  <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.en_TableName}}</a>
                   <div class="table-action-buttons text-center">
-                    <a
-                      class="edit button button-box button-xs button-info"
-                      href="/baseInformation/codeTableList/edit/{{this.id}}"
-                    ><i class="zmdi zmdi-edit"></i></a>
-                    <a
-                      class="delete button button-box button-xs button-danger"
-                      href="/baseInformation/codeTableList/delete/{{this.id}}" 
-                      onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');"   
-                      title="حذف کاربر ..." 
-                    ><i class="zmdi zmdi-delete"></i></a>
+                    <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/{{this.id}}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>
+                      <i class="zmdi zmdi-file-text"></i>
+                    </a>
+                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/{{this.id}}">
+                      <i class="zmdi zmdi-edit"></i>
+                    </a>
+                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/{{this.id}}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
+                      <i class="zmdi zmdi-delete"></i>
+                    </a>
                   </div>
                 </td>
                 <td class="col-md-3 text-wrap text-small">
-                  {{this.fa_TableName}}
+                   <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.fa_TableName}}</a>
                   <div class="table-action-buttons text-center">
-                    <a
-                      class="edit button button-box button-xs button-info"
-                      href="/baseInformation/codeTableList/edit/{{this.id}}"
-                    ><i class="zmdi zmdi-edit"></i></a>
-                    <a
-                      class="delete button button-box button-xs button-danger"
-                      href="/baseInformation/codeTableList/delete/{{this.id}}"
-                      onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');"   
-                      title="حذف کاربر ..." 
-                    ><i class="zmdi zmdi-delete"></i></a>
+                    <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/{{this.id}}" title='برای وارد کردن جزییات جدول کلیک کنید..'>
+                      <i class="zmdi zmdi-file-text"></i>
+                    </a>
+
+                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/{{this.id}}">
+                      <i class="zmdi zmdi-edit"></i>
+                    </a>
+                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/{{this.id}}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');">
+                      <i class="zmdi zmdi-delete"></i>
+                    </a>
                   </div>
                 </td>
 
@@ -125,16 +124,16 @@
               </a>
               {{#if pagination.isMoreThan3Pages}}
                 <span>
-                  <a href="?page=1" class="paginate_button current btn btn-success">1</a>
-                  <a href="?page=2" class="paginate_button btn btn-success">2</a>
-                  <a href="?page=3" class="paginate_button btn btn-success">3</a>
+                  <a href="?page=1" class="paginate_button current btn btn-sm btn-success">1</a>
+                  <a href="?page=2" class="paginate_button btn btn-sm  btn-success">2</a>
+                  <a href="?page=3" class="paginate_button btn btn-sm  btn-success">3</a>
                   <a href="?page=4" class="paginate_button btn"><h3>. . .</h3></a>
-                  <a href="?page={{pagination.totalPages}}" class="paginate_button btn btn-success">{{pagination.totalPages}}</a>
+                  <a href="?page={{pagination.totalPages}}" class="paginate_button btn btn-sm  btn-success">{{pagination.totalPages}}</a>
                 </span>
               {{else}}
                 <span>
-                  <a href="?page=1"class="paginate_button current btn btn-success">1</a>
-                  <a href="?page=2"class="paginate_button btn btn-success">2</a>
+                  <a href="?page=1"class="paginate_button current btn btn-sm  btn-success">1</a>
+                  <a href="?page=2"class="paginate_button btn btn-sm  btn-success">2</a>
                 </span>
               {{/if}}
                 <a href="?page={{pagination.nextPage}}" class="paginate_button next  btn btn-success {{#showDisabled pagination.hasNextPage}}{{/showDisabled}}">

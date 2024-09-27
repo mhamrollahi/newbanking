@@ -1,6 +1,5 @@
 const codeTableListModel = require("@models/baseInformation/codeTableList");
 const codeTableListValidators = require("@validators/baseInformation/codeTableList");
-const { DateTime } = require("mssql");
 
 exports.index = async (req, res, next) => {
   try {
@@ -9,11 +8,12 @@ exports.index = async (req, res, next) => {
     const codeTableList = await codeTableListModel.findAll(page, perPage);
     const totalCodeTableLists = await codeTableListModel.count();
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
-    let offset;
     const success = req.flash("success");
-
-    offset = (page - 1) * perPage;
+    
+    let offset;
     let to;
+    
+    offset = (page - 1) * perPage;
     to = offset + perPage;
 
     const pagination = {
