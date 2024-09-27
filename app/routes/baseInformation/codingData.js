@@ -12,3 +12,4 @@ router.get('/codingData/index/:id',codingDataControllers.index)
 
 
 module.exports = router
+

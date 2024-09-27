@@ -57,11 +57,13 @@
 </div>
   <div style="margin:5px; width:35%;">
     <label for="cmbCodeTableList">نام جداول کدینگ</label>
-  <select id="cmbCodeTableList" name="cmbCodeTableList" style="position: relative;">
-    {{#each codeTableListData}}
-      <option value="{{this.id}}" {{#isSelected this.id}}{{/isSelected}}> {{this.fa_TableName}}  -  {{this.en_TableName}}</option>
-    {{/each}}
-  </select>
+    <form action="">
+      <select id="cmbCodeTableList" name="cmbCodeTableList" style="position: relative;" onchange="self.location=self.location.split('/')[3] + '/' + this.options[this.selectedIndex].value">
+        {{#each codeTableListData}}
+          <option value="{{this.id}}" {{#isSelected this.id}}{{/isSelected}}> {{this.fa_TableName}}  -  {{this.en_TableName}}</option>
+        {{/each}}
+      </select>
+    </form>
 </div>
 
 <div class="row mb-30">
@@ -173,5 +175,4 @@
   </div>
   <!-- Revenue Statistics Chart End -->
 </div>
-
 
