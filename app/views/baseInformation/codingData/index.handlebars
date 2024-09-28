@@ -57,8 +57,8 @@
 </div>
   <div style="margin:5px; width:35%;">
     <label for="cmbCodeTableList">نام جداول کدینگ</label>
-    <form action="">
-      <select id="cmbCodeTableList" name="cmbCodeTableList" style="position: relative;" onchange="self.location=self.location.split('/')[3] + '/' + this.options[this.selectedIndex].value">
+    <form action="" method="get">
+      <select id="cmbCodeTableList" name="cmbCodeTableList" style="position: relative;" onchange="doAction(this.value);">
         {{#each codeTableListData}}
           <option value="{{this.id}}" {{#isSelected this.id}}{{/isSelected}}> {{this.fa_TableName}}  -  {{this.en_TableName}}</option>
         {{/each}}
@@ -176,3 +176,9 @@
   <!-- Revenue Statistics Chart End -->
 </div>
 
+<script>
+ function doAction(val){
+        //Forward browser to new url
+        window.location='' + val;
+    }
+</script>
