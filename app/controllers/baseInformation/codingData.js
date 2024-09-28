@@ -1,8 +1,11 @@
 const codingDataModel = require('@models/baseInformation/codingData')
 const codeTableListModel = require('@models/baseInformation/codeTableList')
+const codingDataValidators = require('@validators/baseInformation/codingData')
+
 
 exports.index = async(req,res,next)=>{
   try {
+    
     const codeTableListId = req.params.id
     const page = 'page' in req.query ? parseInt(req.query.page) : 1 
     const perPage = 10
@@ -63,3 +66,61 @@ exports.index = async(req,res,next)=>{
       next(error)
   }
 }
+
+exports.create = async(req,res,next) => {
+  try {
+    const errors = req.flash("errors");
+    const success = req.flash("success");
+    const hasError = errors.length > 0;
+    // console.log('errors = ',errors)
+
+    res.render("./baseInformation/codingData/create", {
+      layout: "main",
+      errors,
+      hasError,
+      success,
+    });
+  } catch (error) {
+      next(error)
+  }
+}
+
+exports.store = async (req, res, next) => {
+  try {
+    // res.send(req.body)
+    const codingData = {
+      codeTableListId: req.body.codeTableListId,
+      title: req.body.title,
+      description: req.body.fa_TableName,
+      sortId: req.body.en_TableName,
+      refId: req.body.en_TableName,
+      creator: "MHA",
+    };
+
+    let errors = [];
+    errors = codingDataValidators.createValidation(codingData);
+
+    if (errors.length > 0) {
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
+    errors = await codingDataValidators.checkUnique_CodeTableListId_Title(codeTableListData.en_TableName
+    );
+    if (errors.length > 0) {
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
+    const rowsAffected = await codeTableListModel.create(codeTableListData);
+
+    if(rowsAffected>0){
+      console.log(rowsAffected)
+
+      req.flash('success','اطلاعات کدینگ جدید با موفقیت ثبت شد.')
+      return res.redirect('./index')
+    }
+  } catch (error) {
+    next(error);
+  }
+};

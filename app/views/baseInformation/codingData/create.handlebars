@@ -27,29 +27,34 @@
             {{/if}}
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="code" name="code" max="3" placeholder="کد را وارد کنید."  title="لظفا کد جدول را وارد کنید." autocomplete="off" autofocus="true" 1required>
-              <label for="code" class="mandatory">کد </label>
+              <label for="code" class="mandatory">عنوان کدینگ </label>
+              <input type="text" class="form-control" id="title" name="title" maxlength="30" placeholder="عنوان کدینگ را وارد کنید."  title="لظفا عنوان کدینگ  را وارد کنید." autocomplete="off" autofocus="true" 1required>
 
-              <small class="errMessage" data-err="formatted" hidden> حداکثر کد سه رقمی می‌باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> کد اجباری می باشد. </small>
-
-            </div>
-
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="en_TableName" name="en_TableName" maxlength="30" autocomplete="off" placeholder="نام انگلیسی جدول را وارد کنید."  1required>
-              <label for="en_TableName" class="mandatory">نام انگلیسی جدول</label>
-
-              <small class="errMessage" data-err="formatted" hidden> حداکثر نام انگلیسی جدول سی کاراکتر باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> نام انگلیسی جدول اجباری می باشد. </small>
+              <small class="errMessage" data-err="formatted" hidden> حداکثر عنوان کدینگ 30 رقمی می‌باشد.</small>
+              <small class="errMessage" data-err="mandatory" hidden> عنوان کدینگ اجباری می باشد. </small>
 
             </div>
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="fa_TableName" name="fa_TableName" maxlength="30" autocomplete="off" placeholder="نام فارسی جدول را وارد کنید." 1required>
-              <label for="fa_TableName" class="mandatory">نام فارسی جدول</label>
+              <label for="description" class="mandatory">توضیحات کدینگ</label>
+              <input type="text" class="form-control" id="description" name="description" maxlength="50" autocomplete="off" placeholder="توضیحات در خصوص کدینگ را وارد کنید.">
 
-              <small class="errMessage" data-err="formatted" hidden> حداکثر نام فارسی جدول سی کاراکتر باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden>نام فارسی جدول اجباری می باشد. </small>
+              <small class="errMessage" data-err="formatted" hidden> حداکثر توضیحات کدینگ جدول 30 کاراکتر باشد.</small>
+
+            </div>
+
+            <div class="form-floating mb-3">
+              <label for="sortId" class="mandatory">رتبه</label>
+              <input type="number" class="form-control" id="sortId" name="sortId" autocomplete="off" placeholder="رتیه کدینگ را وارد کنید." 1required>
+
+              <small class="errMessage" data-err="mandatory" hidden>رتبه جدول اجباری می باشد. </small>
+
+            </div>
+
+
+            <div class="form-floating mb-3">
+              <label for="refId" class="mandatory">کد ثانویه</label>
+              <input type="number" class="form-control" id="refId" name="refId" autocomplete="off" placeholder="کد ثانویه کدینگ را وارد کنید.">
 
             </div>
 
