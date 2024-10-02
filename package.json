@@ -26,6 +26,7 @@
     "@middlewares": "app/middlewares"
   },
   "dependencies": {
+    "@sequelize/mssql": "^7.0.0-alpha.42",
     "body-parser": "^1.20.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
@@ -36,6 +37,7 @@
     "express-session": "^1.18.0",
     "module-alias": "^2.2.3",
     "mssql": "^11.0.1",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "sequelize": "^6.37.3"
   }
 }
