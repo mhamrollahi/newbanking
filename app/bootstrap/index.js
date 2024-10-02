@@ -6,11 +6,21 @@ const bodyParser = require("body-parser");
 const cookieparser = require('cookie-parser')
 const session = require('express-session')
 const flash = require('connect-flash')
+const {sequelize} = require('@models/index.js')
 
-const {connect} = require('../configs/dbConfig')
+
+// const {connect} = require('../configs/dbConfig')
 
 
 const loggerMiddleware = require("../middlewares/loggerMiddleware");
+
+try{
+  console.log('in bootsrab ....')
+  sequelize.sync({alert:true})
+  console.log('All models were synchronized successfully')
+}catch(error){
+  console.log('Error in synchronized Database ... ',error)
+}
 
 module.exports = (app) => {
   
@@ -28,15 +38,14 @@ module.exports = (app) => {
 
   app.use(loggerMiddleware);
 
-
-  connect()
-    .then((connection) => {
-      console.log('Connected to the database successfully...')
-    })
-    .catch((error)=>{
-      console.log('Database connection failed ...!!')
-      console.log(error)
-    })
+  // connect()
+  //   .then((connection) => {
+  //     console.log('Connected to the database successfully...')
+  //   })
+  //   .catch((error)=>{
+  //     console.log('Database connection failed ...!!')
+  //     console.log(error)
+  //   })
 
   app.get('/test',(req,res)=>{
     res.send('Salam Hassan jan ....! Damam gharm .. Bazam damamm gharm ... !!!')

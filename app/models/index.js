@@ -1,10 +1,13 @@
-const Sequelize = require('@sequelize/core')
+const Sequelize = require('sequelize')
 const MsSqlDialect = require('@sequelize/mssql')
-const codeTableListModel = require('@models/baseInformation/codeTableList')
-const codingDataModel = require('@models/baseInformation/codingData')
+const codeTableListModel = require('./baseInformation/codeTableList.js')
+// const codingDataModel = require('@models/baseInformation/codingData')
+
+console.log('in sequelize section ...')
+
 
 const sequelize = new Sequelize({
-  dialect: MsSqlDialect,
+  dialect: 'mssql',
   server: process.env.MSSQL_SERVER,
   database: process.env.MSSQL_DATABASE,
   user: process.env.MSSQL_USER,
@@ -17,7 +20,22 @@ const sequelize = new Sequelize({
   },
 })
 
-exports.CodeTableList = codeTableListModel(sequelize)
-exports.CodingData = codingDataModel(sequelize)
+
+async function getConnection(){
+  try{
+    await sequelize.authenticate()
+    console.log('connected ...')
+  }catch(err){
+    console.log('connection failed !!!  ',err)
+    return err
+  }
+}
+getConnection()
+
+// const CodeTableList = codeTableListModel(sequelize)
+
+console.log('in sequelize section 2 ...')
+// exports.CodingData = codingDataModel(sequelize)
+
 
 module.exports = {sequelize}
