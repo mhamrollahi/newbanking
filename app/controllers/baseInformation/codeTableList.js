@@ -1,12 +1,38 @@
-const codeTableListModel = require("@models/baseInformation/codeTableList");
+const {CodeTableList} = require("@models/index.js");
 const codeTableListValidators = require("@validators/baseInformation/codeTableList");
+const { raw } = require("body-parser");
+
+
+exports.test1 = async(req,res,next) =>{
+  try {
+    const page = "page" in req.query ? parseInt(req.query.page) : 1;
+    const perPage = 10;
+    const result = await CodeTableList.findAll({limit: perPage, offset: Math.max(0, (page - 1) * perPage )})
+    const count = await CodeTableList.count()
+    console.log(result)
+    console.log(count)
+    res.send(result)
+  } catch (error) {
+    next(error)
+  }
+}
 
 exports.index = async (req, res, next) => {
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
-    const codeTableList = await codeTableListModel.findAll(page, perPage);
-    const totalCodeTableLists = await codeTableListModel.count();
+    const result = await CodeTableList.findOne()
+    
+    console.log(result)
+
+
+
+    const codeTableList = await CodeTableList.findAll({limit: perPage, offset: Math.max(0, (page - 1) * perPage ),raw: true,nest: true,});
+    const totalCodeTableLists = await CodeTableList.count();
+
+    console.log(codeTableList[0].en_TableName)
+    
+    // const codeTableList = await codeTableListModel.findAll(page, perPage);
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
     const success = req.flash("success");
     

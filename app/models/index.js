@@ -1,30 +1,21 @@
 const Sequelize = require('sequelize')
-const MsSqlDialect = require('@sequelize/mssql')
 const codeTableListModel = require('./baseInformation/codeTableList.js')
 // const codingDataModel = require('@models/baseInformation/codingData')
 
-console.log('in sequelize section ...')
-
-
 const sequelize = new Sequelize({
-  dialect: 'mssql',
-  server: process.env.MSSQL_SERVER,
-  database: process.env.MSSQL_DATABASE,
-  user: process.env.MSSQL_USER,
-  password: process.env.MSSQL_PASSWORD,
-  port : process.env.MSSQL_PORT,
-  options:{
-    trustedConnection : true,
-    enableArithAbort : true,
-    trustServerCertificate : true,
-  },
+  username: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  dialect: process.env.APP_DIALECT,
+  logging: false,  
+  port: process.env.MYSQL_PORT,
 })
 
 
 async function getConnection(){
   try{
     await sequelize.authenticate()
-    console.log('connected ...')
+    console.log('Sequelize is init ...')
   }catch(err){
     console.log('connection failed !!!  ',err)
     return err
@@ -32,10 +23,10 @@ async function getConnection(){
 }
 getConnection()
 
-// const CodeTableList = codeTableListModel(sequelize)
+// const test11 = codeTableListModel.test1('salam ... ')
 
-console.log('in sequelize section 2 ...')
-// exports.CodingData = codingDataModel(sequelize)
+const CodeTableList = codeTableListModel.CodeTableList(sequelize)
 
 
-module.exports = {sequelize}
+
+module.exports = {sequelize,CodeTableList}

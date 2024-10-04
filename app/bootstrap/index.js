@@ -15,11 +15,10 @@ const {sequelize} = require('@models/index.js')
 const loggerMiddleware = require("../middlewares/loggerMiddleware");
 
 try{
-  console.log('in bootsrab ....')
   sequelize.sync({alert:true})
   console.log('All models were synchronized successfully')
 }catch(error){
-  console.log('Error in synchronized Database ... ',error)
+  console.log('Error in syncing models ... ',error)
 }
 
 module.exports = (app) => {
