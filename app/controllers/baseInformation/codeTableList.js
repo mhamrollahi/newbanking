@@ -1,14 +1,14 @@
-const {CodeTableList} = require("@models/index.js");
+const {codeTableListModel} = require("@models/index.js");
 const codeTableListValidators = require("@validators/baseInformation/codeTableList");
-const { raw } = require("body-parser");
-
+const dateService = require('@services/dateService');
+const { CodeTableListModel } = require("../../models");
 
 exports.test1 = async(req,res,next) =>{
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
-    const result = await CodeTableList.findAll({limit: perPage, offset: Math.max(0, (page - 1) * perPage )})
-    const count = await CodeTableList.count()
+    const result = await CodeTableListModel.findAll({limit: perPage, offset: Math.max(0, (page - 1) * perPage )})
+    const count = await CodeTableListModel.count()
     console.log(result)
     console.log(count)
     res.send(result)
@@ -21,18 +21,22 @@ exports.index = async (req, res, next) => {
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
-    const result = await CodeTableList.findOne()
-    
-    console.log(result)
 
+    const codeTableList = await CodeTableListModel.findAll({
+      limit: perPage, 
+      offset: Math.max(0, (page - 1) * perPage ),
+      order:[
+        ['id','DESC']
+      ],
+      raw: true,
+      nest: true,});
+    const totalCodeTableLists = await CodeTableListModel.count();
 
+    const codeTableListPresent = codeTableList.map((data)=>{
+      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD")
+      return data
+    })
 
-    const codeTableList = await CodeTableList.findAll({limit: perPage, offset: Math.max(0, (page - 1) * perPage ),raw: true,nest: true,});
-    const totalCodeTableLists = await CodeTableList.count();
-
-    console.log(codeTableList[0].en_TableName)
-    
-    // const codeTableList = await codeTableListModel.findAll(page, perPage);
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
     const success = req.flash("success");
     
@@ -57,7 +61,7 @@ exports.index = async (req, res, next) => {
 
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
-      codeTableList,
+      codeTableList:codeTableListPresent,
       pagination,
       helpers: {
         showDisabled: function (isDisabled, options) {
@@ -99,42 +103,36 @@ exports.store = async (req, res, next) => {
       en_TableName: req.body.en_TableName,
       creator: "MHA",
     };
+    
+    
+    const {id} = await CodeTableListModel.create(codeTableListData);
+    console.log('id',id)
 
-    let errors = [];
-    errors = codeTableListValidators.createValidation(codeTableListData);
-
-    if (errors.length > 0) {
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
-
-    errors = await codeTableListValidators.checkUniqueEN_TableName(
-      codeTableListData.en_TableName
-    );
-    if (errors.length > 0) {
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
-
-    errors = await codeTableListValidators.checkUniqueFA_TableName(
-      codeTableListData.fa_TableName
-    );
-    if (errors.length > 0) {
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
-
-    const rowsAffected = await codeTableListModel.create(codeTableListData);
-
-    if(rowsAffected>0){
-      console.log(rowsAffected)
+    if(id){
 
       req.flash('success','اطلاعات کدینگ جدید با موفقیت ثبت شد.')
       return res.redirect('./index')
     }
+
   } catch (error) {
+
+    let errors = []
+    
+    if(error.name === 'SequelizeValidationError'){
+      errors = error.message.split('Validation error')
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+    
+    if(error.name === 'SequelizeUniqueConstraintError'){
+      errors = error.message.split('SequelizeUniqueConstraintError')
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
     next(error);
   }
+
 };
 
 exports.edit = async (req, res, next) => {

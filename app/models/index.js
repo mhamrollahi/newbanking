@@ -25,8 +25,8 @@ getConnection()
 
 // const test11 = codeTableListModel.test1('salam ... ')
 
-const CodeTableList = codeTableListModel.CodeTableList(sequelize)
+const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
 
 
 
-module.exports = {sequelize,CodeTableList}
+module.exports = {sequelize,CodeTableListModel}

@@ -52,13 +52,9 @@ exports.CodeTableList = (sequelize) => {
         notEmpty:{
           msg: 'لطفا نام انگلیسی جدول را وارد کنید.',
           },
-        min: {
-          args:5,
-          msg:'نام انگلیسی جدول حداقل باید 5 کاراکتر باشد.'
-          },
-        max: {
-          args:50,
-          msg:'نام انگلیسی جدول حداکثر باید 50 کاراکتر باشد.'
+        len: {
+          args:[5,50],
+          msg:'نام انگلیسی جدول  باید کلمه‌ای بین 5 تا 50 کاراکتر باشد.'
           },
         }
       },
@@ -77,14 +73,10 @@ exports.CodeTableList = (sequelize) => {
             notEmpty:{
               msg: 'لطفا نام فارسی جدول را وارد کنید.',
             },
-            min: {
-              args:5,
-              msg:'نام فارسی جدول حداقل باید 5 کاراکتر باشد.'
-            },
-            max: {
-              args:50,
-              msg:'نام فارسی جدول حداکثر باید 50 کاراکتر باشد.'
-            },
+            len: {
+              args:[5,50],
+              msg:'نام فارسی جدول باید کلمه‌ای بین 5 تا 50 کاراکتر باشد.'
+              },
           }
         },
         
@@ -98,18 +90,22 @@ exports.CodeTableList = (sequelize) => {
           }
       },
 
+      updatedAt:{
+        type:DataTypes.DATE,
+        default:null
+      },
+
       updater:{
           type:DataTypes.STRING(25),
       },
 
       fa_createdAt:{
         type:DataTypes.VIRTUAL,
-        get: function() {
-          return this.get('get')
+        get(){
+          const rawValue = this.getDataValue('createdAt')
+          return dateService.toPersianDate(rawValue)
         },
-        set:function(val){
-          this.setDataValue('set')
-        }
+       
       }
 
       }, {
