@@ -1,21 +1,23 @@
-const {codeTableListModel} = require("@models/index.js");
-const codeTableListValidators = require("@validators/baseInformation/codeTableList");
-const dateService = require('@services/dateService');
+const dateService = require("@services/dateService");
 const { CodeTableListModel } = require("../../models");
+const { rows } = require("mssql");
 
-exports.test1 = async(req,res,next) =>{
+exports.test1 = async (req, res, next) => {
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
-    const result = await CodeTableListModel.findAll({limit: perPage, offset: Math.max(0, (page - 1) * perPage )})
-    const count = await CodeTableListModel.count()
-    console.log(result)
-    console.log(count)
-    res.send(result)
+    const result = await CodeTableListModel.findAll({
+      limit: perPage,
+      offset: Math.max(0, (page - 1) * perPage),
+    });
+    const count = await CodeTableListModel.count();
+    console.log(result);
+    console.log(count);
+    res.send(result);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 exports.index = async (req, res, next) => {
   try {
@@ -23,26 +25,29 @@ exports.index = async (req, res, next) => {
     const perPage = 10;
 
     const codeTableList = await CodeTableListModel.findAll({
-      limit: perPage, 
-      offset: Math.max(0, (page - 1) * perPage ),
-      order:[
-        ['id','DESC']
-      ],
+      limit: perPage,
+      offset: Math.max(0, (page - 1) * perPage),
+      order: [["id", "DESC"]],
       raw: true,
-      nest: true,});
+      nest: true,
+    });
+
     const totalCodeTableLists = await CodeTableListModel.count();
 
-    const codeTableListPresent = codeTableList.map((data)=>{
-      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD")
-      return data
-    })
+    const codeTableListPresent = codeTableList.map((data) => {
+      data.fa_createdAt = dateService.toPersianDate(
+        data.createdAt,
+        "YYYY/MM/DD"
+      );
+      return data;
+    });
 
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
     const success = req.flash("success");
-    
+
     let offset;
     let to;
-    
+
     offset = (page - 1) * perPage;
     to = offset + perPage;
 
@@ -61,7 +66,7 @@ exports.index = async (req, res, next) => {
 
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
-      codeTableList:codeTableListPresent,
+      codeTableList: codeTableListPresent,
       pagination,
       helpers: {
         showDisabled: function (isDisabled, options) {
@@ -103,36 +108,31 @@ exports.store = async (req, res, next) => {
       en_TableName: req.body.en_TableName,
       creator: "MHA",
     };
-    
-    
-    const {id} = await CodeTableListModel.create(codeTableListData);
-    console.log('id',id)
 
-    if(id){
+    const { id } = await CodeTableListModel.create(codeTableListData);
+    console.log("id", id);
 
-      req.flash('success','اطلاعات کدینگ جدید با موفقیت ثبت شد.')
-      return res.redirect('./index')
+    if (id) {
+      req.flash("success", "اطلاعات کدینگ جدید با موفقیت ثبت شد.");
+      return res.redirect("./index");
     }
-
   } catch (error) {
+    let errors = [];
 
-    let errors = []
-    
-    if(error.name === 'SequelizeValidationError'){
-      errors = error.message.split('Validation error')
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
       req.flash("errors", errors);
       return res.redirect("./create");
     }
-    
-    if(error.name === 'SequelizeUniqueConstraintError'){
-      errors = error.message.split('SequelizeUniqueConstraintError')
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      errors = error.message.split("SequelizeUniqueConstraintError");
       req.flash("errors", errors);
       return res.redirect("./create");
     }
 
     next(error);
   }
-
 };
 
 exports.edit = async (req, res, next) => {
@@ -142,11 +142,17 @@ exports.edit = async (req, res, next) => {
     const success = req.flash("success");
 
     const codeTableListId = await req.params.id;
-    const codeTableList = await codeTableListModel.find(codeTableListId);
+    const codeTableList = await CodeTableListModel.findOne({
+      where: { id: codeTableListId },
+      raw: true,
+    });
+
+    console.log(codeTableList.fa_createdAt);
 
     res.render("./baseInformation/codeTableList/edit", {
       layout: "main",
       codeTableList,
+      fa_createdAt: dateService.toPersianDate(codeTableList.fa_createdAt),
       errors,
       hasError,
       success,
@@ -158,44 +164,72 @@ exports.edit = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    
-    const codeTableListId = await req.params.id
-    
+    const codeTableListId = await req.params.id;
+
     const codeTableListData = {
-      code : req.body.code,
-      en_TableName : req.body.en_TableName,
-      fa_TableName : req.body.fa_TableName,
-      updated_at : new Date().toLocaleDateString("en-US"),
-      updater:'MHA_Updated'
-    }    
+      code: req.body.code,
+      en_TableName: req.body.en_TableName,
+      fa_TableName: req.body.fa_TableName,
+      updated_at: new Date().toLocaleDateString("en-US"),
+      updater: "MHA_Updated",
+    };
 
-    let errors = []
-    errors = codeTableListValidators.createValidation(codeTableListData)
-      
-    if(errors.length>0){
-      req.flash('errors',errors)
-      return res.redirect(`../edit/${codeTableListId}`)
+    console.log(codeTableListData);
+
+    // let errors = [];
+    // errors = codeTableListValidators.createValidation(codeTableListData);
+
+    // if (errors.length > 0) {
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../edit/${codeTableListId}`);
+    // }
+
+    // errors = await codeTableListValidators.checkUniqueEN_TableName(
+    //   codeTableListData.en_TableName,
+    //   true
+    // );
+    // if (errors.length > 0) {
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../edit/${codeTableListId}`);
+    // }
+
+    // errors = await codeTableListValidators.checkUniqueFA_TableName(
+    //   codeTableListData.fa_TableName,
+    //   true
+    // );
+    // if (errors.length > 0) {
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../edit/${codeTableListId}`);
+    // }
+
+    const rowsAffected = await CodeTableListModel.update(
+      { codeTableListData },
+      { where: { id: codeTableListId } }
+    );
+
+    console.log(rowsAffected);
+
+    if (rowsAffected[0] > 0) {
+      req.flash("success", "اطلاعات با موفقیت اصلاح شد.");
+      return res.redirect("../index");
     }
-
-    errors = await codeTableListValidators.checkUniqueEN_TableName(codeTableListData.en_TableName,true)
-    if(errors.length>0){
-      req.flash('errors',errors)
-      return res.redirect(`../edit/${codeTableListId}`)
-    } 
-
-    errors = await codeTableListValidators.checkUniqueFA_TableName(codeTableListData.fa_TableName,true)
-    if(errors.length>0){
-      req.flash('errors',errors)
-      return res.redirect(`../edit/${codeTableListId}`)
-    }
-
-    const rowsAffected = await codeTableListModel.edit(codeTableListId,codeTableListData)
-    if(rowsAffected>0){
-      req.flash('success','اطلاعات با موفقیت اصلاح شد.')
-      return res.redirect('../index')
-    }
-
   } catch (error) {
+    console.log(error);
+
+    let errors = [];
+
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      errors = error.message.split("SequelizeUniqueConstraintError");
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
     next(error);
   }
 };
@@ -203,8 +237,9 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const codeTableListId = req.params.id;
-    const rowsAffected = await codeTableListModel.delete(codeTableListId);
-    console.log(rowsAffected);
+    const rowsAffected = await CodeTableListModel.destroy({
+      where: { id: codeTableListId },
+    });
 
     req.flash("success", "اطلاعات با موفقیت حذف شد.");
     if (rowsAffected > 0) {
