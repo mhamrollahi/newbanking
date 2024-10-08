@@ -145,14 +145,16 @@ exports.edit = async (req, res, next) => {
     const codeTableList = await CodeTableListModel.findOne({
       where: { id: codeTableListId },
       raw: true,
+      nest: true,
     });
 
-    console.log(codeTableList.fa_createdAt);
 
+    
     res.render("./baseInformation/codeTableList/edit", {
       layout: "main",
       codeTableList,
-      fa_createdAt: dateService.toPersianDate(codeTableList.fa_createdAt),
+      fa_createdAt: dateService.toPersianDate(codeTableList.createdAt),
+      fa_updatedAt: dateService.toPersianDate(codeTableList.updatedAt),
       errors,
       hasError,
       success,
@@ -176,34 +178,14 @@ exports.update = async (req, res, next) => {
 
     console.log(codeTableListData);
 
-    // let errors = [];
-    // errors = codeTableListValidators.createValidation(codeTableListData);
-
-    // if (errors.length > 0) {
-    //   req.flash("errors", errors);
-    //   return res.redirect(`../edit/${codeTableListId}`);
-    // }
-
-    // errors = await codeTableListValidators.checkUniqueEN_TableName(
-    //   codeTableListData.en_TableName,
-    //   true
-    // );
-    // if (errors.length > 0) {
-    //   req.flash("errors", errors);
-    //   return res.redirect(`../edit/${codeTableListId}`);
-    // }
-
-    // errors = await codeTableListValidators.checkUniqueFA_TableName(
-    //   codeTableListData.fa_TableName,
-    //   true
-    // );
-    // if (errors.length > 0) {
-    //   req.flash("errors", errors);
-    //   return res.redirect(`../edit/${codeTableListId}`);
-    // }
-
     const rowsAffected = await CodeTableListModel.update(
-      { codeTableListData },
+      {
+        code: codeTableListData.code,
+        en_TableName: codeTableListData.en_TableName,
+        fa_TableName: codeTableListData.fa_TableName,
+        updated_at: codeTableListData.updated_at,
+        updater: codeTableListData.updater,
+      },
       { where: { id: codeTableListId } }
     );
 
@@ -213,7 +195,13 @@ exports.update = async (req, res, next) => {
       req.flash("success", "اطلاعات با موفقیت اصلاح شد.");
       return res.redirect("../index");
     }
+
+    req.flash("suuccess","اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید...");
+    return res.redirect('../index')
+
   } catch (error) {
+    const codeTableListId = await req.params.id;
+
     console.log(error);
 
     let errors = [];
@@ -221,13 +209,13 @@ exports.update = async (req, res, next) => {
     if (error.name === "SequelizeValidationError") {
       errors = error.message.split("Validation error:");
       req.flash("errors", errors);
-      return res.redirect("./create");
+      return res.redirect(`../edit/${codeTableListId}`);
     }
 
     if (error.name === "SequelizeUniqueConstraintError") {
       errors = error.message.split("SequelizeUniqueConstraintError");
       req.flash("errors", errors);
-      return res.redirect("./create");
+      return res.redirect(`../edit/${codeTableListId}`);
     }
 
     next(error);
