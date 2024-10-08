@@ -116,7 +116,9 @@ exports.store = async (req, res, next) => {
       req.flash("success", "اطلاعات کدینگ جدید با موفقیت ثبت شد.");
       return res.redirect("./index");
     }
+
   } catch (error) {
+
     let errors = [];
 
     if (error.name === "SequelizeValidationError") {
@@ -148,8 +150,6 @@ exports.edit = async (req, res, next) => {
       nest: true,
     });
 
-
-    
     res.render("./baseInformation/codeTableList/edit", {
       layout: "main",
       codeTableList,
@@ -176,8 +176,6 @@ exports.update = async (req, res, next) => {
       updater: "MHA_Updated",
     };
 
-    console.log(codeTableListData);
-
     const rowsAffected = await CodeTableListModel.update(
       {
         code: codeTableListData.code,
@@ -189,7 +187,7 @@ exports.update = async (req, res, next) => {
       { where: { id: codeTableListId } }
     );
 
-    console.log(rowsAffected);
+    console.log(req.params);
 
     if (rowsAffected[0] > 0) {
       req.flash("success", "اطلاعات با موفقیت اصلاح شد.");
@@ -200,9 +198,8 @@ exports.update = async (req, res, next) => {
     return res.redirect('../index')
 
   } catch (error) {
+    
     const codeTableListId = await req.params.id;
-
-    console.log(error);
 
     let errors = [];
 
