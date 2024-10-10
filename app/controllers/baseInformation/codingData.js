@@ -1,6 +1,5 @@
-const codingDataModel = require('@models/baseInformation/codingData')
-const codeTableListModel = require('@models/baseInformation/codeTableList')
-const codingDataValidators = require('@validators/baseInformation/codingData')
+const { CodingDataModel,CodeTableListModel } = require("../../models");
+const dateService = require("@services/dateService");
 
 
 exports.index = async(req,res,next)=>{
@@ -9,18 +8,37 @@ exports.index = async(req,res,next)=>{
     const codeTableListId = req.params.id
     const page = 'page' in req.query ? parseInt(req.query.page) : 1 
     const perPage = 10
-    const totalCodingData = await codingDataModel.count(codeTableListId)
-    const codingDataList = await codingDataModel.findAll(codeTableListId,page,perPage)
+    const totalCodingData = await CodingDataModel.count({where:
+      {id : codeTableListId   }})
+  
+    const codingDataList = await CodingDataModel.findAll({
+      limit: perPage,
+      offset: Math.max(0, (page - 1) * perPage),
+      order: [["id", "DESC"]],
+      raw: true,
+      nest: true,
+    });
+  
+    const codingDataListPresent = codingDataList.map((data) => {
+      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
+      return data;
+    });
+
+  
+    // const codingDataList = await codingDataModel.findAll(codeTableListId,page,perPage)
+    
     const totalPages = Math.ceil(totalCodingData / perPage)
-    const codeTableListData = await codeTableListModel.findAll(page,1000)
+    const codeTableListData = await CodeTableListModel.findAll()
 
     const success = req.flash('success')
+    const removeSuccess = req.flash('removeSuccess')
+
     let fa_TableName = ''
     
     if(codingDataList.length > 0) {
       fa_TableName = codingDataList[0].fa_TableName
     }else{
-      const result = await codeTableListModel.find(codeTableListId)
+      const result = await CodeTableListModel.find({where:{id:codeTableListId}})
       fa_TableName = result.fa_TableName
     }
 
@@ -46,7 +64,7 @@ exports.index = async(req,res,next)=>{
 
     res.render("./baseInformation/codingData/index",{
       layout:'main',
-      codingDataList,
+      codingDataList:codingDataListPresent,
       pagination,
       helpers: {
         showDisabled: function (isDisabled, options) {
@@ -58,6 +76,7 @@ exports.index = async(req,res,next)=>{
       },
 
       success,
+      removeSuccess,
       fa_TableName,
       codeTableListData,
       

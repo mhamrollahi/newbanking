@@ -1,16 +1,10 @@
-const sequelize = require("sequelize");
-const { Model, DataTypes } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const dateService = require('@services/dateService')
-
-exports.test1 = (arg)=>{
-  arg = arg + ' test'
-  console.log('in test1 function ..  ', arg)
-}
 
 
 exports.CodeTableList = (sequelize) => {
   const CodeTableList = sequelize.define('CodeTableList',{
-      code: {
+    code: {
         type: DataTypes.STRING(3),
         allowNull: false,
         unique: {
@@ -32,9 +26,9 @@ exports.CodeTableList = (sequelize) => {
           msg: 'کد یک عدد بین یک تا سه رقم باشد.'
           },
         }
-      },
+    },
       
-      en_TableName: {
+    en_TableName: {
         type: DataTypes.STRING(50),
         allowNull: false,
         get(){
@@ -57,9 +51,9 @@ exports.CodeTableList = (sequelize) => {
           msg:'نام انگلیسی جدول  باید کلمه‌ای بین 5 تا 50 کاراکتر باشد.'
           },
         }
-      },
+    },
         
-      fa_TableName:{
+    fa_TableName:{
           type:DataTypes.STRING(50),
           allowNull: false,
           unique: {
@@ -78,43 +72,52 @@ exports.CodeTableList = (sequelize) => {
               msg:'نام فارسی جدول باید کلمه‌ای بین 5 تا 50 کاراکتر باشد.'
               },
           }
-        },
+    },
         
-      creator:{
-          type:DataTypes.STRING(25),
+    creator:{
+          type:DataTypes.STRING(50),
           allowNull: false,
           validate: {
             notNull:{
               msg: 'لطفا نام ایجاد کننده را وارد کنید.'
             },
           }
-      },
+    },
 
-      updatedAt:{
+    updatedAt:{
         type:DataTypes.DATE,
         default:null
-      },
+    },
 
-      updater:{
-          type:DataTypes.STRING(25),
-      },
+    updater:{
+          type:DataTypes.STRING(50),
+    },
 
-      fa_createdAt:{
+    fa_createdAt:{
         type:DataTypes.VIRTUAL,
         get(){
           const rawValue = this.getDataValue('createdAt')
           return dateService.toPersianDate(rawValue)
         },
        
-      }
+    },
 
-      }, {
-        sequelize,
-        validate:{
+    fa_updatedAt:{
+        type:DataTypes.VIRTUAL,
+        get(){
+          const rawValue = this.getDataValue('updatedAt')
+          return dateService.toPersianDate(rawValue)
+      },
+    },
+
+    }, {
+      sequelize,
+      validate:{
           
-      }
+    }
   })
-  // console.log(CodeTableList)
+
   return CodeTableList
+
 }
 

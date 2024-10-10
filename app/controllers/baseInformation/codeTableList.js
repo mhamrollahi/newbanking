@@ -1,6 +1,5 @@
 const dateService = require("@services/dateService");
 const { CodeTableListModel } = require("../../models");
-const { rows } = require("mssql");
 
 exports.test1 = async (req, res, next) => {
   try {
@@ -35,15 +34,13 @@ exports.index = async (req, res, next) => {
     const totalCodeTableLists = await CodeTableListModel.count();
 
     const codeTableListPresent = codeTableList.map((data) => {
-      data.fa_createdAt = dateService.toPersianDate(
-        data.createdAt,
-        "YYYY/MM/DD"
-      );
+      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
       return data;
     });
 
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
     const success = req.flash("success");
+    const removeSuccess = req.flash('removeSuccess')
 
     let offset;
     let to;
@@ -74,6 +71,7 @@ exports.index = async (req, res, next) => {
         },
       },
       success,
+      removeSuccess,
     });
     // res.send(result)
   } catch (error) {
@@ -142,6 +140,7 @@ exports.edit = async (req, res, next) => {
     const errors = req.flash("errors");
     const hasError = errors.length > 0;
     const success = req.flash("success");
+    const removeSuccess = req.flash('removeSuccess')
 
     const codeTableListId = await req.params.id;
     const codeTableList = await CodeTableListModel.findOne({
@@ -158,6 +157,7 @@ exports.edit = async (req, res, next) => {
       errors,
       hasError,
       success,
+      removeSuccess,
     });
   } catch (error) {
     next(error);
@@ -231,6 +231,13 @@ exports.delete = async (req, res, next) => {
       return res.redirect("../index");
     }
   } catch (error) {
+    
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      req.flash("removeSuccess",'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
+      return res.redirect(`../index`);
+    }
+
     next(error);
   }
+
 };

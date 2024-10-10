@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
-const codeTableListModel = require('./baseInformation/codeTableList.js')
-// const codingDataModel = require('@models/baseInformation/codingData')
+const codeTableListModel = require('./baseInformation/codeTableList')
+const codingDataModel = require('./baseInformation/codingData')
 
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,
@@ -26,7 +26,10 @@ getConnection()
 // const test11 = codeTableListModel.test1('salam ... ')
 
 const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
+const CodingDataModel = codingDataModel.CodingData(sequelize)
+
+CodingDataModel.hasMany(CodeTableListModel)
+CodeTableListModel.belongsTo(CodingDataModel)
 
 
-
-module.exports = {sequelize,CodeTableListModel}
+module.exports = {sequelize,CodeTableListModel,CodingDataModel}
