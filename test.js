@@ -24,14 +24,14 @@ async function getConnection(){
 }
 getConnection()
 
-const Test = sequelize.define('test',{
+const User = sequelize.define('user',{
   username:{
     type:Sequelize.DataTypes.STRING(30),
   }
 })
 
-Test.sync({alter:true}).then(() =>{
-  return Test.create({
+User.sync({alter:true}).then(() =>{
+  return User.create({
     username: 'test test'
   })
 }).then((data)=>{

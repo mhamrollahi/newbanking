@@ -17,8 +17,20 @@ exports.index = async(req,res,next)=>{
       order: [["id", "DESC"]],
       raw: true,
       nest: true,
+    },{
+      include:[
+        {model:CodeTableListModel},
+      ],
     });
   
+    const newData = await CodingDataModel.findByPk(3,{
+    
+      include:[{model:CodeTableListModel, attributes: ['fa_TableName']}]
+    })
+    
+    console.log(newData.dataValues);
+
+    
     const codingDataListPresent = codingDataList.map((data) => {
       data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
       return data;
