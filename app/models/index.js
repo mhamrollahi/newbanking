@@ -28,8 +28,11 @@ getConnection()
 const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
 const CodingDataModel = codingDataModel.CodingData(sequelize)
 
-CodingDataModel.hasMany(CodeTableListModel)
+CodingDataModel.hasMany(CodeTableListModel,{onDelete:'cascade'})
 CodeTableListModel.belongsTo(CodingDataModel)
 
 
-module.exports = {sequelize,CodeTableListModel,CodingDataModel}
+module.exports = {sequelize,
+  CodeTableListModel,
+  CodingDataModel,
+}

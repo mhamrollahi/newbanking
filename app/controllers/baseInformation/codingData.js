@@ -23,9 +23,9 @@ exports.index = async(req,res,next)=>{
       ],
     });
   
-    const newData = await CodingDataModel.findByPk(3,{
+    const newData = await CodeTableListModel.findByPk(1,{
     
-      include:[{model:CodeTableListModel, attributes: ['fa_TableName']}]
+      include:[{model:CodingDataModel}]
     })
     
     console.log(newData.dataValues);
