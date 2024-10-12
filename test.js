@@ -3,18 +3,20 @@ const Sequelize = require('sequelize')
 
 
 const sequelize = new Sequelize(
-  process.env.MYSQL_DATABASE,
-  process.env.MYSQL_USER,
-  process.env.MYSQL_PASSWORD,
+  'newbanking',
+  'root',
+  904957,
   {
     host: 'localhost',
     dialect: "mysql",
-    port: process.env.MYSQL_PORT,
+    port: 3306,
     logging: true,
   });
 
 async function getConnection(){
   try{
+    console.log('test 1');
+    
     await sequelize.authenticate()
     console.log('Sequelize is init ...')
   }catch(err){
@@ -25,10 +27,9 @@ async function getConnection(){
 getConnection()
 
 const User = sequelize.define('user',{
-  username:{
-    type:Sequelize.DataTypes.STRING(30),
-  }
+  username:{type:Sequelize.DataTypes.STRING(30),}
 })
+
 const Address = sequelize.define('address',{
   street:{type:Sequelize.DataTypes.STRING(30)},
   city:{type:Sequelize.DataTypes.STRING(30)},
@@ -38,17 +39,22 @@ User.hasMany(Address)
 Address.belongsTo(User)
 
 try{
-  sequelize.sync({alter:true})
-  console.log('All models were synchronized successfully')
-  
-  const newUser = await User.create({
-    username:'test1'
-  })
-  
-  const useAdrs = await Address.create({
-    street: 'test 1',
-    city:' tehran',
+  sequelize.sync({alter:true}).then(async()=>{
+
+    console.log('All models were synchronized successfully')
     
+    const newUser = await User.create({
+      username:'test1'
+    })
+    
+    const useAdrs = await Address.create({
+      street: 'Address 1 ',
+      city:'tehran',
+      UserId:newUser.id,
+    })
+
+    console.log(useAdrs)
+
   })
   
 }catch(error){
