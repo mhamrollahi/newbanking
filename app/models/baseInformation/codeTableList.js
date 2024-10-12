@@ -112,9 +112,7 @@ exports.CodeTableList = (sequelize) => {
 
     }, {
       sequelize,
-      validate:{
-          
-    }
+      validate:{}
   })
 
   return CodeTableList

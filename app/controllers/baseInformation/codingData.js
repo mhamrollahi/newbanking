@@ -12,35 +12,31 @@ exports.index = async(req,res,next)=>{
       {id : codeTableListId   }})
   
     const codingDataList = await CodingDataModel.findAll({
+      where:{CodeTableListId:codeTableListId},
       limit: perPage,
       offset: Math.max(0, (page - 1) * perPage),
       order: [["id", "DESC"]],
       raw: true,
       nest: true,
-    },{
-      include:[
-        {model:CodeTableListModel},
-      ],
+      include:{model:CodeTableListModel,
+        attributes:['fa_TableName', 'en_TableName']
+      },
     });
   
-    const newData = await CodeTableListModel.findByPk(1,{
-    
-      include:[{model:CodingDataModel}]
-    })
-    
-    console.log(newData.dataValues);
 
+    // console.log(codingDataList[0].CodeTableList.fa_TableName);
+    // console.log(codingDataList[0].CodeTableList.en_TableName);
     
-    const codingDataListPresent = codingDataList.map((data) => {
+  const codingDataListPresent = codingDataList.map((data) => {
       data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
       return data;
-    });
+  });
 
-  
-    // const codingDataList = await codingDataModel.findAll(codeTableListId,page,perPage)
-    
     const totalPages = Math.ceil(totalCodingData / perPage)
     const codeTableListData = await CodeTableListModel.findAll()
+
+    console.log(codeTableListData[0]);
+    const test1 = codeTableListData[33].fa_TableName
 
     const success = req.flash('success')
     const removeSuccess = req.flash('removeSuccess')
@@ -48,9 +44,9 @@ exports.index = async(req,res,next)=>{
     let fa_TableName = ''
     
     if(codingDataList.length > 0) {
-      fa_TableName = codingDataList[0].fa_TableName
+      fa_TableName = codingDataList[0].CodeTableList.fa_TableName
     }else{
-      const result = await CodeTableListModel.find({where:{id:codeTableListId}})
+      const result = await CodeTableListModel.findByPk(codeTableListId)
       fa_TableName = result.fa_TableName
     }
 
@@ -91,7 +87,7 @@ exports.index = async(req,res,next)=>{
       removeSuccess,
       fa_TableName,
       codeTableListData,
-      
+      test1,
     })
   } catch (error) {
       next(error)

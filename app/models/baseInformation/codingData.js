@@ -3,27 +3,25 @@ const dateService = require('@services/dateService')
 
 exports.CodingData = (sequelize) => {
   const CodingData = sequelize.define('CodingData',{
-    codeTableListId: {
-        type: DataTypes.INTEGER,
-        references:{
-          model: 'codetablelists',
-          key: 'id'
-        },
+    // codeTableListId: {
+    //     type: DataTypes.INTEGER,
+    //     references:{
+    //       model: 'codetablelists',
+    //       key: 'id'
+    //     },
        
-        allowNull: false,
-        unique: {
-          args:true,
-          msg: 'کد نمی تواند تکراری باشد.'
-        },
-        validate:{
-          isNumeric: {
-            msg: "کد فقط باید عدد باشد.",
-          }
-        }
-    },
-    
-    
-
+    //     allowNull: false,
+    //     unique: {
+    //       args:true,
+    //       msg: 'کد نمی تواند تکراری باشد.'
+    //     },
+    //     validate:{
+    //       isNumeric: {
+    //         msg: "کد فقط باید عدد باشد.",
+    //       }
+    //     }
+    // },
+  
     title: {
         type: DataTypes.STRING(50),
         allowNull: false,

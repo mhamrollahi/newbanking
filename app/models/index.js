@@ -2,6 +2,9 @@ const Sequelize = require('sequelize')
 const codeTableListModel = require('./baseInformation/codeTableList')
 const codingDataModel = require('./baseInformation/codingData')
 
+// const contactModel = require('./auth/contact')
+// const contactCategoryModel = require('./auth/contactCategory')
+
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
@@ -23,16 +26,21 @@ async function getConnection(){
 }
 getConnection()
 
-// const test11 = codeTableListModel.test1('salam ... ')
-
 const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
 const CodingDataModel = codingDataModel.CodingData(sequelize)
 
-CodingDataModel.hasMany(CodeTableListModel,{onDelete:'cascade'})
-CodeTableListModel.belongsTo(CodingDataModel)
+CodeTableListModel.hasMany(CodingDataModel )
+CodingDataModel.belongsTo(CodeTableListModel)
 
 
-module.exports = {sequelize,
+// const ContactModel = contactModel.Contact(sequelize)
+// const ContactCategoryModel = contactCategoryModel.ContactCategory(sequelize)
+// ContactCategoryModel.hasMany(ContactModel);
+// ContactModel.belongsTo(ContactCategoryModel);
+
+
+module.exports = {
+  sequelize,
   CodeTableListModel,
   CodingDataModel,
 }
