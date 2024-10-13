@@ -2,22 +2,22 @@
 
 <div style="margin-top: 120px"></div>
 
-<main class="container myexperince-section-wrapper my-4 mt-5">
+<main class="container myform-section-wrapper my-4 mt-5">
 
-      <div class="row justify-content-between align-items-center mb-10">
+  <div class="row justify-content-between align-items-center mb-10">
 
     <!-- Page Heading Start -->
       <div class="col-12 col-lg-auto mb-20" style="margin:20px 0;">
         <div class="page-heading page-heading-custom" >
-          <h3 class="title">اطلاعات پایه <span>/ جزییات کدینگ {{fa_TableName}}</span><span>/ جدید</span></h3>
+          <h3 class="title">اطلاعات پایه <span>/ جزییات کدینگ <span style="font-size:20;">{{fa_TableName}}</span></span><span>/ جدید</span></h3>
         </div>
       </div><!-- Page Heading End -->
 
-    </div>
+  </div>
    
     <div class="row">
       <div class="col-12 col-sm-12 col-md-12">
-          <form method="POST" name="frmCodeTableList" action="./store" class="row g-3 needs-validation">
+          <form method="POST" name="frmCodingData" action="./store/{{codeTableListId}}" class="row g-3 needs-validation">
             {{#if hasError}}
               <div class="alert alert-danger">
                 {{#each errors}}
@@ -25,10 +25,15 @@
                 {{/each}}
               </div>
             {{/if}}
+            {{#if removeSuccess}}
+              <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
+                <p class="alert alert-danger w-50 text-center">{{removeSuccess}}</p>
+              </div>
+            {{/if}} 
 
             <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="title" name="title" maxlength="30" placeholder="عنوان کدینگ را وارد کنید."  title="لظفا عنوان کدینگ  را وارد کنید." autocomplete="off" autofocus="true" required>
               <label for="code" class="mandatory">عنوان کدینگ </label>
-              <input type="text" class="form-control" id="title" name="title" maxlength="30" placeholder="عنوان کدینگ را وارد کنید."  title="لظفا عنوان کدینگ  را وارد کنید." autocomplete="off" autofocus="true" 1required>
 
               <small class="errMessage" data-err="formatted" hidden> حداکثر عنوان کدینگ 30 رقمی می‌باشد.</small>
               <small class="errMessage" data-err="mandatory" hidden> عنوان کدینگ اجباری می باشد. </small>
@@ -36,16 +41,16 @@
             </div>
 
             <div class="form-floating mb-3">
-              <label for="description" class="mandatory">توضیحات کدینگ</label>
               <input type="text" class="form-control" id="description" name="description" maxlength="50" autocomplete="off" placeholder="توضیحات در خصوص کدینگ را وارد کنید.">
+              <label for="description" class="mandatory">توضیحات کدینگ</label>
 
               <small class="errMessage" data-err="formatted" hidden> حداکثر توضیحات کدینگ جدول 30 کاراکتر باشد.</small>
 
             </div>
 
             <div class="form-floating mb-3">
+              <input type="number" class="form-control" id="sortId" name="sortId" autocomplete="off" placeholder="رتیه کدینگ را وارد کنید." required>
               <label for="sortId" class="mandatory">رتبه</label>
-              <input type="number" class="form-control" id="sortId" name="sortId" autocomplete="off" placeholder="رتیه کدینگ را وارد کنید." 1required>
 
               <small class="errMessage" data-err="mandatory" hidden>رتبه جدول اجباری می باشد. </small>
 
@@ -53,16 +58,18 @@
 
 
             <div class="form-floating mb-3">
-              <label for="refId" class="mandatory">کد ثانویه</label>
               <input type="number" class="form-control" id="refId" name="refId" autocomplete="off" placeholder="کد ثانویه کدینگ را وارد کنید.">
+              <label for="refId" class="mandatory">کد ثانویه</label>
 
             </div>
 
             <div class="col-12 my-2 text-center">
               <button class="btn btn-success  custom-btn" type="submit" id="btnSubmit">ثبت </button>
-              <a class="btn btn-secondary custom-btn" type="reset" id="btnCancel" href="./index">انصراف</a>
+              <a class="btn btn-secondary custom-btn" type="reset" id="btnCancel" href="../index/{{codeTableListId}}">انصراف</a>
             </div>
           </form>
       </div>
     </div>
-  </main>
+</main>
+
+

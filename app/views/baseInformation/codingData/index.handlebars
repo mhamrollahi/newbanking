@@ -16,7 +16,7 @@
     <div class="row justify-content-between align-items-center mb-10" style="margin-bottom: 20px;">
 
     <!-- Page Heading Start -->
-      <div class="col-12 col-lg-auto mb-20" style="">
+      <div class="col-12 col-lg-auto mb-10">
         <div class="page-heading page-heading-custom">
           <h3 class="title">اطلاعات پایه <span>/ جزییات کدینگ دیتا</span></h3>
         </div>
@@ -32,9 +32,9 @@
   </div>
   <!-- Page Heading End -->
   <!-- Page Button Group Start -->
-  <div class="col-12 col-lg-auto mb-20">
+  <div class="col-12 col-lg-auto ">
     <div class="buttons-group">
-      <a href="./create" class="button button-primary">
+      <a href="../create/{{codeTableListId}}" class="button button-primary">
         <span><i class="zmdi zmdi-plus"></i>تعریف کدینگ جدید</span>
       </a>
     </div>
@@ -55,7 +55,7 @@
     </div>
   {{/if}} 
 </div>
-  <div style="margin:5px; width:35%;">
+  <div style="margin:1px; width:40%;">
     <label for="cmbCodeTableList">نام جداول کدینگ</label>
     <form action="" method="get">
       <select id="cmbCodeTableList" name="cmbCodeTableList" style="position: relative;" onchange="doAction(this.value);">

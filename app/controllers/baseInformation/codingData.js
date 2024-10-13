@@ -51,7 +51,8 @@ exports.index = async(req,res,next)=>{
       const result = await CodeTableListModel.findByPk(codeTableListId)
       fa_TableName = result.fa_TableName
     }
-
+    
+    req.flash('tableName',fa_TableName)
 
     let offset;
     let to;
@@ -89,6 +90,7 @@ exports.index = async(req,res,next)=>{
       removeSuccess,
       fa_TableName,
       codeTableListData,
+      codeTableListId,
     })
   } catch (error) {
       next(error)
@@ -97,9 +99,12 @@ exports.index = async(req,res,next)=>{
 
 exports.create = async(req,res,next) => {
   try {
+    const codeTableListId = req.params.id
+
     const errors = req.flash("errors");
     const success = req.flash("success");
     const hasError = errors.length > 0;
+    const fa_TableName = req.flash('tableName')
     // console.log('errors = ',errors)
 
     res.render("./baseInformation/codingData/create", {
@@ -107,6 +112,8 @@ exports.create = async(req,res,next) => {
       errors,
       hasError,
       success,
+      codeTableListId,
+      fa_TableName,
     });
   } catch (error) {
       next(error)
@@ -119,36 +126,36 @@ exports.store = async (req, res, next) => {
     const codingData = {
       codeTableListId: req.body.codeTableListId,
       title: req.body.title,
-      description: req.body.fa_TableName,
-      sortId: req.body.en_TableName,
-      refId: req.body.en_TableName,
+      description: req.body.description,
+      sortId: req.body.sortId,
+      refId: req.body.refId,
       creator: "MHA",
     };
 
-    let errors = [];
-    errors = codingDataValidators.createValidation(codingData);
+   console.log(codingData);
+   
+    const {id} = await CodingDataModel.create(codingData);
 
-    if (errors.length > 0) {
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
-
-    errors = await codingDataValidators.checkUnique_CodeTableListId_Title(codeTableListData.en_TableName
-    );
-    if (errors.length > 0) {
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
-
-    const rowsAffected = await codeTableListModel.create(codeTableListData);
-
-    if(rowsAffected>0){
-      console.log(rowsAffected)
-
-      req.flash('success','اطلاعات کدینگ جدید با موفقیت ثبت شد.')
-      return res.redirect('./index')
+    if(id){
+      req.flash("success", "اطلاعات کدینگ جدید با موفقیت ثبت شد.");
+      return res.redirect("./index");
     }
   } catch (error) {
+
+    let errors = [];
+
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      errors = error.message.split("SequelizeUniqueConstraintError");
+      req.flash("errors", errors);
+      return res.redirect("./create");
+    }
+
     next(error);
   }
 };
