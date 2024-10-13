@@ -18,7 +18,8 @@ exports.index = async(req,res,next)=>{
       order: [["id", "DESC"]],
       raw: true,
       nest: true,
-      include:{model:CodeTableListModel,
+      include:{ 
+        model:CodeTableListModel,
         attributes:['fa_TableName', 'en_TableName']
       },
     });
@@ -33,10 +34,11 @@ exports.index = async(req,res,next)=>{
   });
 
     const totalPages = Math.ceil(totalCodingData / perPage)
-    const codeTableListData = await CodeTableListModel.findAll()
-
-    console.log(codeTableListData[0]);
-    const test1 = codeTableListData[33].fa_TableName
+    const codeTableListData = await CodeTableListModel.findAll({
+      attributes:[ 'id', 'fa_TableName','en_TableName'],
+      raw:true,
+      nest:true,
+    })
 
     const success = req.flash('success')
     const removeSuccess = req.flash('removeSuccess')
@@ -87,7 +89,6 @@ exports.index = async(req,res,next)=>{
       removeSuccess,
       fa_TableName,
       codeTableListData,
-      test1,
     })
   } catch (error) {
       next(error)
