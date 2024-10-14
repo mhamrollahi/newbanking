@@ -17,7 +17,7 @@
    
     <div class="row">
       <div class="col-12 col-sm-12 col-md-12">
-          <form method="POST" name="frmCodingData" action="./store/{{codeTableListId}}" class="row g-3 needs-validation">
+          <form method="POST" name="frmCodingData" action="../store/{{codeTableListId}}" class="row g-3 needs-validation">
             {{#if hasError}}
               <div class="alert alert-danger">
                 {{#each errors}}
@@ -58,7 +58,7 @@
 
 
             <div class="form-floating mb-3">
-              <input type="number" class="form-control" id="refId" name="refId" autocomplete="off" placeholder="کد ثانویه کدینگ را وارد کنید.">
+              <input type="text" class="form-control" id="refId" name="refId" autocomplete="off" placeholder="کد ثانویه کدینگ را وارد کنید.">
               <label for="refId" class="mandatory">کد ثانویه</label>
 
             </div>
