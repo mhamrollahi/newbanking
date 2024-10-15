@@ -48,6 +48,9 @@ exports.CodingData = (sequelize) => {
         //   msg: 'کد نمی تواند تکراری باشد.'
         // },
         validate: {
+          notNull: {
+            msg: "لطفا مرتبه کدینگ جدول را وارد کنید.",
+          },
           isNumeric: {
             msg: "کد فقط باید عدد باشد.",
           },

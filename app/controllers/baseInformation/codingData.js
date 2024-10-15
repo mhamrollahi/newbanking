@@ -109,9 +109,7 @@ exports.create = async (req, res, next) => {
     const hasError = errors.length > 0;
     const { fa_TableName } = await CodeTableListModel.findByPk(
       codeTableListId,
-      {
-        attributes: ["fa_TableName"],
-      }
+      { attributes: ["fa_TableName"] }
     );
 
     console.log(fa_TableName);
@@ -168,6 +166,124 @@ exports.store = async (req, res, next) => {
       errors = error.message.split("SequelizeUniqueConstraintError");
       req.flash("errors", errors);
       return res.redirect(`../create/${req.params.id}`);
+    }
+
+    next(error);
+  }
+};
+
+exports.edit = async (req, res, next) => {
+  try {
+    const errors = req.flash("errors");
+    const hasError = errors.length > 0;
+    const success = req.flash("success");
+    const removeSuccess = req.flash("removeSuccess");
+
+    const codeTableListId = await req.params.id;
+    const codeTableList = await CodeTableListModel.findOne({
+      where: { id: codeTableListId },
+      raw: true,
+      nest: true,
+    });
+
+    res.render("./baseInformation/codeTableList/edit", {
+      layout: "main",
+      codeTableList,
+      fa_createdAt: dateService.toPersianDate(codeTableList.createdAt),
+      fa_updatedAt: dateService.toPersianDate(codeTableList.updatedAt),
+      errors,
+      hasError,
+      success,
+      removeSuccess,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.update = async (req, res, next) => {
+  try {
+    const codingDataId = await req.params.id;
+
+    
+    const codingData = {
+      CodeTableListId: req.params.id,
+      title: req.body.title,
+      description: req.body.description === "" ? null : req.body.description,
+      sortId: req.body.sortId,
+      refId: req.body.refId === "" ? null : req.body.refId,
+      creator: "MHA",
+    };
+
+    const rowsAffected = await CodeTableListModel.update(
+      {
+        code: codingData.code,
+        en_TableName: codingData.en_TableName,
+        fa_TableName: codingData.fa_TableName,
+        updated_at: codingData.updated_at,
+        updater: codingData.updater,
+      },
+      { where: { id: codingDataId } }
+    );
+
+    console.log(req.params);
+
+    if (rowsAffected[0] > 0) {
+      req.flash("success", "اطلاعات با موفقیت اصلاح شد.");
+      return res.redirect("../index");
+    }
+
+    req.flash(
+      "suuccess",
+      "اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید..."
+    );
+    return res.redirect("../index");
+  } catch (error) {
+    const codeTableListId = await req.params.id;
+
+    let errors = [];
+
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
+      req.flash("errors", errors);
+      return res.redirect(`../edit/${codeTableListId}`);
+    }
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      errors = error.message.split("SequelizeUniqueConstraintError");
+      req.flash("errors", errors);
+      return res.redirect(`../edit/${codeTableListId}`);
+    }
+
+    next(error);
+  }
+};
+
+exports.delete = async (req, res, next) => {
+  try {
+    const codingDataId = req.params.id;
+
+    const { CodeTableListId } = await CodingDataModel.findByPk(codingDataId);
+
+    const rowsAffected = await CodingDataModel.destroy({
+      where: { id: codingDataId },
+    });
+
+    console.log(CodeTableListId);
+
+    req.flash("success", "اطلاعات با موفقیت حذف شد.");
+    if (rowsAffected > 0) {
+      return res.redirect(`../index/${CodeTableListId}`);
+    }
+  } catch (error) {
+    const { CodeTableListId } = await CodingDataModel.findByPk(req.param.id);
+
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      req.flash(
+        "removeSuccess",
+        "این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!"
+      );
+      return res.redirect(`../index/${CodeTableListId}`);
     }
 
     next(error);
