@@ -107,9 +107,14 @@ exports.create = async (req, res, next) => {
     const errors = req.flash("errors");
     const success = req.flash("success");
     const hasError = errors.length > 0;
-    const result = await CodeTableListModel.findByPk(codeTableListId, {
-      attributes: ["fa_TableName"],
-    });
+    const { fa_TableName } = await CodeTableListModel.findByPk(
+      codeTableListId,
+      {
+        attributes: ["fa_TableName"],
+      }
+    );
+
+    console.log(fa_TableName);
 
     res.render("./baseInformation/codingData/create", {
       layout: "main",
@@ -117,7 +122,7 @@ exports.create = async (req, res, next) => {
       hasError,
       success,
       codeTableListId,
-      fa_TableName: result.fa_TableName,
+      fa_TableName,
     });
   } catch (error) {
     next(error);
@@ -130,9 +135,9 @@ exports.store = async (req, res, next) => {
     const codingData = {
       CodeTableListId: req.params.id,
       title: req.body.title,
-      description: req.body.description,
+      description: req.body.description === "" ? null : req.body.description,
       sortId: req.body.sortId,
-      refId: req.body.refId,
+      refId: req.body.refId === "" ? null : req.body.refId,
       creator: "MHA",
     };
 

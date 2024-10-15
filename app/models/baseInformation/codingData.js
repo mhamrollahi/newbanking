@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const dateService = require("@services/dateService");
+const { toDefaultValue } = require("sequelize/lib/utils");
 
 exports.CodingData = (sequelize) => {
   const CodingData = sequelize.define(
@@ -29,6 +30,14 @@ exports.CodingData = (sequelize) => {
 
       description: {
         type: DataTypes.STRING(255),
+        allowNull: true,
+        defaultValue: null,
+        validate: {
+          len: {
+            args: [4, 250],
+            msg: "توضیحات می‌بایست بین 4 تا 255 حرف باشد.",
+          },
+        },
       },
 
       sortId: {
@@ -56,16 +65,13 @@ exports.CodingData = (sequelize) => {
       refId: {
         type: DataTypes.STRING(4),
         allowNull: true,
+        defaultValue: null,
 
         validate: {
-          isNumeric: {
-            msg: "کد ثانویه فقط باید عدد باشد.",
+          len: {
+            args: [1, 4],
+            msg: "کد ثانویه کدی  بین 1 تا 4 حرف  می‌باشد.",
           },
-          len: [1, 3],
-          // len: {
-          //   args: [1, 4],
-          //   msg: "کد ثانویه عددی بین 1 تا 4 کاراکتر باشد.",
-          // },
         },
       },
 
