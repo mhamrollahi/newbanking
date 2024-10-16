@@ -3,18 +3,29 @@ const dateService = require("@services/dateService");
 
 exports.index = async (req, res, next) => {
   try {
+    let order = [];
+    const { sort } = req.query;
+    console.log(sort);
+
     const codeTableListId = req.params.id;
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
     const totalCodingData = await CodingDataModel.count({
-      where: { id: codeTableListId },
+      where: { CodeTableListId: codeTableListId },
     });
+
+    order.push(["id", "Desc"]);
+    if (sort) {
+      order= []
+      order.push([sort, "Desc"]);
+    }
+    console.log(order);
 
     const codingDataList = await CodingDataModel.findAll({
       where: { CodeTableListId: codeTableListId },
       limit: perPage,
       offset: Math.max(0, (page - 1) * perPage),
-      order: [["id", "DESC"]],
+      order: order,
       raw: true,
       nest: true,
       include: {
@@ -52,8 +63,6 @@ exports.index = async (req, res, next) => {
       const result = await CodeTableListModel.findByPk(codeTableListId);
       fa_TableName = result.fa_TableName;
     }
-
-    req.flash("tableName", fa_TableName);
 
     let offset;
     let to;
@@ -143,16 +152,12 @@ exports.store = async (req, res, next) => {
 
     const { id } = await CodingDataModel.create(codingData);
 
-    console.log("new id = ", id);
-
     if (id) {
       req.flash("success", "اطلاعات کدینگ جدید با موفقیت ثبت شد.");
       return res.redirect(`../index/${req.params.id}`);
     }
   } catch (error) {
     let errors = [];
-
-    console.log("error ... ", error);
 
     if (error.name === "SequelizeValidationError") {
       errors = error.message.split("Validation error:");
@@ -179,18 +184,26 @@ exports.edit = async (req, res, next) => {
     const success = req.flash("success");
     const removeSuccess = req.flash("removeSuccess");
 
-    const codeTableListId = await req.params.id;
-    const codeTableList = await CodeTableListModel.findOne({
-      where: { id: codeTableListId },
+    const codingDataId = await req.params.id;
+    const codingData = await CodingDataModel.findOne({
+      where: { id: codingDataId },
       raw: true,
       nest: true,
+      include: {
+        model: CodeTableListModel,
+        attributes: ["id", "fa_TableName", "en_TableName"],
+      },
     });
 
-    res.render("./baseInformation/codeTableList/edit", {
+    // const { fa_TableName } = await CodeTableListModel.findByPk(codingData.id, {
+    //   attributes: ["fa_TableName"],
+    // });
+
+    res.render("./baseInformation/codingData/edit", {
       layout: "main",
-      codeTableList,
-      fa_createdAt: dateService.toPersianDate(codeTableList.createdAt),
-      fa_updatedAt: dateService.toPersianDate(codeTableList.updatedAt),
+      codingData,
+      fa_createdAt: dateService.toPersianDate(codingData.createdAt),
+      fa_updatedAt: dateService.toPersianDate(codingData.updatedAt),
       errors,
       hasError,
       success,
@@ -205,54 +218,58 @@ exports.update = async (req, res, next) => {
   try {
     const codingDataId = await req.params.id;
 
-    
     const codingData = {
-      CodeTableListId: req.params.id,
       title: req.body.title,
       description: req.body.description === "" ? null : req.body.description,
       sortId: req.body.sortId,
       refId: req.body.refId === "" ? null : req.body.refId,
-      creator: "MHA",
+      updater: "MHA_Updated",
     };
 
-    const rowsAffected = await CodeTableListModel.update(
+    const { CodeTableListId } = await CodingDataModel.findByPk(codingDataId);
+
+    console.log(CodeTableListId);
+
+    const rowsAffected = await CodingDataModel.update(
       {
-        code: codingData.code,
-        en_TableName: codingData.en_TableName,
-        fa_TableName: codingData.fa_TableName,
-        updated_at: codingData.updated_at,
+        title: codingData.title,
+        description: codingData.description,
+        sortId: codingData.sortId,
+        refId: codingData.refId,
         updater: codingData.updater,
+        updatedAt: new Date().toLocaleDateString("en-US"),
       },
       { where: { id: codingDataId } }
     );
 
-    console.log(req.params);
+    console.log(rowsAffected, "CodeTableListId = ", req.body.CodeTableListId);
 
     if (rowsAffected[0] > 0) {
       req.flash("success", "اطلاعات با موفقیت اصلاح شد.");
-      return res.redirect("../index");
+      return res.redirect(`../index/${CodeTableListId}`);
     }
 
     req.flash(
-      "suuccess",
+      "errors",
       "اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید..."
     );
-    return res.redirect("../index");
+
+    return res.redirect(`../edit/${CodeTableListId}`);
   } catch (error) {
-    const codeTableListId = await req.params.id;
+    const id = await req.params.id;
 
     let errors = [];
 
     if (error.name === "SequelizeValidationError") {
       errors = error.message.split("Validation error:");
       req.flash("errors", errors);
-      return res.redirect(`../edit/${codeTableListId}`);
+      return res.redirect(`../edit/${id}`);
     }
 
     if (error.name === "SequelizeUniqueConstraintError") {
       errors = error.message.split("SequelizeUniqueConstraintError");
       req.flash("errors", errors);
-      return res.redirect(`../edit/${codeTableListId}`);
+      return res.redirect(`../edit/${id}`);
     }
 
     next(error);

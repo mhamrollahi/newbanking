@@ -181,7 +181,7 @@ exports.update = async (req, res, next) => {
         code: codeTableListData.code,
         en_TableName: codeTableListData.en_TableName,
         fa_TableName: codeTableListData.fa_TableName,
-        updated_at: codeTableListData.updated_at,
+        updatedAt: codeTableListData.updated_at,
         updater: codeTableListData.updater,
       },
       { where: { id: codeTableListId } }
