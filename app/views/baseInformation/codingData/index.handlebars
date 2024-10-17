@@ -1,17 +1,3 @@
-<style>
-  .mySort::before{
-    content: "\f0de";
-    font-family: "FontAwesome";
-    display: inline-block;
-    position: relative;
-    top: 5px;
-    padding-right: 5px;
-    color:#aa0202
-  }
-  .mySort:hover::before{
-    {{!-- cursor: pointer;; --}}
-  }
-</style>
 <link href="/static/assets/vendor/select2/dist/css/select2.min.css" rel="stylesheet" />
 <style>
   .select2-container--default .select2-selection--single .select2-selection__rendered{
@@ -85,18 +71,31 @@
     <div class="box">
       <div class="box-body table-responsive">
         
-{{!-- <table class="table table-bordered data-table data-table-default dataTable dtr-inline" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="width: 549px;"> --}}
-
-        
-        <table class="table table-hover table-bordered mb-0" role="grid" aria-describedby="DataTables_Table_0_info">
+        <table class="table table-hover table-bordered mb-0">
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
-              <th class="col-md-1">ID</th>
-              <th class="col-md-3">عنوان </th>
-              <th class="col-md-2">توضیحات</th>
-              <th class="col-md-1">رتبه <a href="../index/{{codeTableListId}}?sort=sortId"><span class="mySort"></span></a> </th>
-              <th class="col-md-1">کد ثانویه</th>
+              <th class="col-md-1">ID 
+                <a href="?sort=id&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=id&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-3">عنوان  
+                <a href="?sort=title&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=title&desc=false" class="sort-down-cols"></a>
+              </th>
+
+              <th class="col-md-2">توضیحات 
+                <a href="?sort=description&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=description&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-1">رتبه 
+                <a href="?sort=sortId&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=sortId&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-1">کد ثانویه 
+                <a href="?sort=refId&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=refId&desc=false" class="sort-down-cols"></a>
+              </th>
               <th class="col-md-2">تاریخ ایجاد</th>
               <th class="col-md-2">نام درخواست کننده</th>
             </tr>

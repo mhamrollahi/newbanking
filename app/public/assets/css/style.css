@@ -13,6 +13,28 @@
   color:#aa0202
 }
 
+table tr th a.sort-up-cols::after{
+  content: "\f0de";
+  font-family: "FontAwesome";
+  /* display: inline-block; */
+  top: 13px;
+  padding-right: 5px;
+  min-width:4px;
+  right: -10px;
+  min-height: 4px;
+  color:#777ff3
+}
+table tr th a.sort-down-cols::after{
+  content: "\f0dd";
+  font-family: "FontAwesome";
+  /* display: inline-block; */
+  position: relative;
+  top: 6px;
+  right: -14px;
+  min-width:4px;
+  min-height: 4px;
+  color:#777ff3
+}
 .myform-section-wrapper{
 
 }

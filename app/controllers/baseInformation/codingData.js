@@ -4,8 +4,8 @@ const dateService = require("@services/dateService");
 exports.index = async (req, res, next) => {
   try {
     let order = [];
-    const { sort } = req.query;
-    console.log(sort);
+    const { sort,desc } = req.query;
+    console.log(sort,desc);
 
     const codeTableListId = req.params.id;
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
@@ -13,11 +13,13 @@ exports.index = async (req, res, next) => {
     const totalCodingData = await CodingDataModel.count({
       where: { CodeTableListId: codeTableListId },
     });
-
-    order.push(["id", "Desc"]);
+    
+    
     if (sort) {
+      order.push([sort, desc === 'true' ? "DESC" : "ASC" ] );
+    }else{
       order= []
-      order.push([sort, "Desc"]);
+      order.push(["id", "Desc"]);
     }
     console.log(order);
 

@@ -22,11 +22,22 @@ exports.index = async (req, res, next) => {
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
+    let order = []
+
+    const {sort,desc} = req.query
+
+
+    if(sort){
+      order.push([sort,desc === 'true' ? 'DESC' : 'ASC'])
+    }else{
+      order=[]
+      order.push(['id','DESC'])
+    }
 
     const codeTableList = await CodeTableListModel.findAll({
       limit: perPage,
       offset: Math.max(0, (page - 1) * perPage),
-      order: [["id", "DESC"]],
+      order: order,
       raw: true,
       nest: true,
     });

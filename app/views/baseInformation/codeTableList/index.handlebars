@@ -52,10 +52,22 @@
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
-              <th class="col-md-1">ID</th>
-              <th class="col-md-1">کد</th>
-              <th class="col-md-3">نام انگلیسی جدول</th>
-              <th class="col-md-3">نام فارسی جدول</th>
+              <th class="col-md-1">ID
+                <a href="?sort=id&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=id&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-1">کد
+                <a href="?sort=code&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=code&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-3">نام انگلیسی جدول
+                <a href="?sort=en_TableName&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=en_TableName&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-3">نام فارسی جدول
+                <a href="?sort=fa_TableName&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=fa_TableName&desc=false" class="sort-down-cols"></a>
+              </th>
               <th class="col-md-2">تاریخ ایجاد</th>
               <th class="col-md-2">نام درخواست کنند</th>
             </tr>
