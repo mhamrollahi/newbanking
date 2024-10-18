@@ -1,4 +1,3 @@
-<link href="/static/assets/datatables/datatables.min.css" rel="stylesheet" />
 
 <div style="margin-top: 120px"></div>
 
@@ -49,14 +48,26 @@
   <div class="col-md-12 mb-30">
     <div class="box">
       <div class="box-body table-responsive">
-        <table class="table table table-striped table-hover table-bordered mb-0" id="tblCodeTableList">
+        <table class="table table table-striped table-hover table-bordered mb-0">
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
-              <th class="col-md-1">ID</th>
-              <th class="col-md-1">کد</th>
-              <th class="col-md-3">نام انگلیسی جدول</th>
-              <th class="col-md-3">نام فارسی جدول</th>
+              <th class="col-md-1">ID
+                <a href="?sort=id&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=id&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-1">کد
+                <a href="?sort=code&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=code&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-3">نام انگلیسی جدول
+                <a href="?sort=en_TableName&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=en_TableName&desc=false" class="sort-down-cols"></a>
+              </th>
+              <th class="col-md-3">نام فارسی جدول
+                <a href="?sort=fa_TableName&desc=true" class="sort-up-cols"></a>
+                <a href="?sort=fa_TableName&desc=false" class="sort-down-cols"></a>
+              </th>
               <th class="col-md-2">تاریخ ایجاد</th>
               <th class="col-md-2">نام درخواست کنند</th>
             </tr>
@@ -66,13 +77,16 @@
           <!-- Table Body Start -->
 
           <tbody>
-              {{#each codeTableList}}
+
+            {{#each codeTableList}}
 
               <tr class="row-table d-flex">
-                <td class="col-md-1">{{this.id}}</td>
-                
-                <td class="col-md-1">{{this.code}}</td>
-                
+                <td class="col-md-1">
+                  {{this.id}}
+                </td>
+                <td class="col-md-1">
+                  {{this.code}}
+                </td>
                 <td class="col-md-3 text-wrap text-small">
                   <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.en_TableName}}</a>
                   <div class="table-action-buttons text-center">
@@ -87,7 +101,6 @@
                     </a>
                   </div>
                 </td>
-
                 <td class="col-md-3 text-wrap text-small">
                    <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.fa_TableName}}</a>
                   <div class="table-action-buttons text-center">
@@ -104,9 +117,13 @@
                   </div>
                 </td>
 
-                <td class="col-md-2 text-wrap">{{this.fa_createdAt}}</td>
+                <td class="col-md-2 text-wrap">
+                  {{this.fa_createdAt}}
+                </td>
 
-                <td class="col-md-2">{{this.creator}}</td>
+                <td class="col-md-2">
+                  {{this.creator}}
+                </td>
 
               </tr>
 
@@ -114,8 +131,7 @@
           </tbody>
           <!-- Table Body End -->
         </table>
-
-            {{!-- <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
+            <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
               <a href="?page={{pagination.prevPage}}" class="paginate_button previous btn btn-success {{#showDisabled pagination.hasPrevPage}}{{/showDisabled}}" >
                 <i class="zmdi zmdi-chevron-right"></i>
               </a>
@@ -139,17 +155,9 @@
             </div>
             <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
               نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
-            </div> --}}
-
+            </div>
       </div>
-    </div> 
+    </div>
   </div>
   <!-- Revenue Statistics Chart End -->
 </div>
-
-<script src="/static/assets/datatables/datatables.min.js"></script>
-
-<script>
- 
-
-</script>

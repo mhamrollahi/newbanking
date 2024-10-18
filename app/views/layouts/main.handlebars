@@ -27,7 +27,6 @@
 
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="/static/assets/adomax/css/style.css" />
-    <link rel="stylesheet" href="/static/assets/adomax/CSS/style.css" />
     <link rel="stylesheet" href="/static/assets/css/style.css">
   </head>
 
@@ -352,13 +351,40 @@
     <script src="/static/assets/adomax/js/main.js"></script>
 
     <script src="/static/assets/vendor/select2/dist/js/select2.min.js"></script>
+    <script src="/static/assets/datatables/datatables.min.js"></script>
 
     <script>
       $(document).ready(function(){
         $('#cmbCodeTableList').select2();
 
+         console.log('test dataTables ...')
+  
+        $('#tblCodeTableList').DataTable({
+            'processing' : true,
+            'serverSide' : true,
+            'searching': true,
+            'ordering':  true,
+            'responsive': true,
+            'pagingType': "full_numbers",
+            'serverMethod' : 'get',
+            'ajax' : {
+              'url' : './test1',
+            },
+            'aaSorting' : [],
+            'columns' : [
+              {data: 'id'},
+              {data: 'code'},
+              {data: 'en_TableName'},
+              {data: 'fa_TableName'},
+              {data: 'fa_createdAt'},
+              {data: 'creator'},
+            ],
+            'language': {
+              'search': "جستجوی داده‌های جدول ...:",
+              'processing': "در حال بارگذاری داده از بانک اطلاعاتی ...",
+            }    
+        })
       })
     </script>
   </body>
-
 </html>

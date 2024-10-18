@@ -1,18 +1,136 @@
 const dateService = require("@services/dateService");
-const { CodeTableListModel } = require("../../models");
+const { CodeTableListModel, CodingDataModel } = require("../../models");
+const { Sequelize,Op } = require("sequelize");
+const { raw } = require("body-parser");
 
 exports.test1 = async (req, res, next) => {
   try {
-    const page = "page" in req.query ? parseInt(req.query.page) : 1;
-    const perPage = 10;
-    const result = await CodeTableListModel.findAll({
-      limit: perPage,
-      offset: Math.max(0, (page - 1) * perPage),
+    const success = req.flash("success");
+    const removeSuccess = req.flash('removeSuccess')
+
+    // const page = "page" in req.query ? parseInt(req.query.page) : 1;
+    // const perPage = 10;
+    const codeTableList = await CodeTableListModel.findAll({
+      raw: true,
+      nest: true,
     });
+    const codeTableListPresent = codeTableList.map((data) => {
+      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
+      return data;
+    });
+
     const count = await CodeTableListModel.count();
-    console.log(result);
+    // console.log(result);
     console.log(count);
-    res.send(result);
+    // res.send(result);
+    
+    // res.json(codeTableListPresent)
+
+    let {draw,start,length,order_data} = request.query;
+    let order = []
+
+    if(typeof order_data == 'undefined')
+    {
+
+      order.push(['id','desc'])
+
+    }
+    else
+    {
+      let column_index = request.query.order[0]['column'];
+      let column_name = request.query.columns[column_index]['data'];
+      let column_sort_order = request.query.order[0]['dir'];
+      
+      order.push([column_name,column_sort_order])
+    }
+
+    //search data
+
+    let search_value = req.query.search['value'];
+
+    var search_query = `
+     AND (customer_first_name LIKE '%${search_value}%' 
+      OR customer_last_name LIKE '%${search_value}%' 
+      OR customer_email LIKE '%${search_value}%' 
+      OR customer_gender LIKE '%${search_value}%'
+     )
+    `;
+
+    //Total number of records without filtering
+
+    let total_records = CodingDataModel.count()
+    let where = []
+    where[Op.or] = [
+      { code: { [Op.like]: `%${search_value}%` } },
+      { en_TableName: { [Op.like]: `%${search_value}%` } },
+      { fa_TableName: { [Op.like]: `%${search_value}%` } },
+  ];
+    console.log(where)
+
+  const total_records_with_filter = CodingDataModel.count({
+    where:where,
+  })
+
+  const data_arr = CodeTableListModel.findAll({
+    where:where,
+    order:order,
+    limit:start,
+    offset:length,
+    raw:true,
+    nest:true,
+  })
+
+    database.query("SELECT COUNT(*) AS Total FROM customer_table", function(error, data){
+
+        var total_records = data[0].Total;
+
+        //Total number of records with filtering
+
+        database.query(`SELECT COUNT(*) AS Total FROM customer_table WHERE 1 ${search_query}`, function(error, data){
+
+            var total_records_with_filter = data[0].Total;
+
+            var query = `
+            SELECT * FROM customer_table 
+            WHERE 1 ${search_query} 
+            ORDER BY ${column_name} ${column_sort_order} 
+            LIMIT ${start}, ${length}
+            `;
+
+            var data_arr = [];
+
+            database.query(query, function(error, data){
+
+                data.forEach(function(row){
+                    data_arr.push({
+                        'customer_first_name' : row.customer_first_name,
+                        'customer_last_name' : row.customer_last_name,
+                        'customer_email' : row.customer_email,
+                        'customer_gender' : row.customer_gender
+                    });
+                });
+
+                var output = {
+                    'draw' : draw,
+                    'iTotalRecords' : total_records,
+                    'iTotalDisplayRecords' : total_records_with_filter,
+                    'aaData' : data_arr
+                };
+
+              })
+            })
+          })
+
+
+
+    res.render("./baseInformation/codeTableList/index", {
+      layout: "main",
+      codeTableList: codeTableListPresent,
+      success,
+      removeSuccess,
+    });
+
+
   } catch (error) {
     next(error);
   }
