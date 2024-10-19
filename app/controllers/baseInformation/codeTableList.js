@@ -1,136 +1,107 @@
 const dateService = require("@services/dateService");
 const { CodeTableListModel, CodingDataModel } = require("../../models");
-const { Sequelize,Op } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 const { raw } = require("body-parser");
 
 exports.test1 = async (req, res, next) => {
   try {
     const success = req.flash("success");
-    const removeSuccess = req.flash('removeSuccess')
+    const removeSuccess = req.flash("removeSuccess");
 
     // const page = "page" in req.query ? parseInt(req.query.page) : 1;
     // const perPage = 10;
-    const codeTableList = await CodeTableListModel.findAll({
-      raw: true,
-      nest: true,
-    });
-    const codeTableListPresent = codeTableList.map((data) => {
-      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
-      return data;
-    });
+    // const codeTableList = await CodeTableListModel.findAll({
+    //   raw: true,
+    //   nest: true,
+    // });
+    // const codeTableListPresent = codeTableList.map((data) => {
+    //   data.fa_createdAt = dateService.toPersianDate(
+    //     data.createdAt,
+    //     "YYYY/MM/DD"
+    //   );
+    //   return data;
+    // });
 
     const count = await CodeTableListModel.count();
     // console.log(result);
     console.log(count);
     // res.send(result);
-    
+
     // res.json(codeTableListPresent)
 
-    let {draw,start,length,order_data} = request.query;
-    let order = []
+    let { draw, start, length, order_data } = req.query;
+    let order = [];
 
-    if(typeof order_data == 'undefined')
-    {
+    if (typeof order_data == "undefined") {
+      order.push(["id", "desc"]);
+    } else {
+      let column_index = req.query.order[0]["column"];
+      let column_name = req.query.columns[column_index]["data"];
+      let column_sort_order = req.query.order[0]["dir"];
 
-      order.push(['id','desc'])
-
-    }
-    else
-    {
-      let column_index = request.query.order[0]['column'];
-      let column_name = request.query.columns[column_index]['data'];
-      let column_sort_order = request.query.order[0]['dir'];
-      
-      order.push([column_name,column_sort_order])
+      order.push([column_name, column_sort_order]);
     }
 
     //search data
 
-    let search_value = req.query.search['value'];
+    let search_value = req.query.search["value"];
 
-    var search_query = `
-     AND (customer_first_name LIKE '%${search_value}%' 
-      OR customer_last_name LIKE '%${search_value}%' 
-      OR customer_email LIKE '%${search_value}%' 
-      OR customer_gender LIKE '%${search_value}%'
-     )
-    `;
+    console.log("search_value = ", search_value);
 
     //Total number of records without filtering
 
-    let total_records = CodingDataModel.count()
-    let where = []
+    let total_records = await CodingDataModel.count();
+
+    console.log('total_records = ', total_records);
+    
+
+    let where = [];
     where[Op.or] = [
       { code: { [Op.like]: `%${search_value}%` } },
       { en_TableName: { [Op.like]: `%${search_value}%` } },
       { fa_TableName: { [Op.like]: `%${search_value}%` } },
-  ];
-    console.log(where)
+    ];
 
-  const total_records_with_filter = CodingDataModel.count({
-    where:where,
-  })
+    console.log(where);
 
-  const data_arr = CodeTableListModel.findAll({
-    where:where,
-    order:order,
-    limit:start,
-    offset:length,
-    raw:true,
-    nest:true,
-  })
+    const total_records_with_filter = await CodingDataModel.count({
+      where: where,
+    });
 
-    database.query("SELECT COUNT(*) AS Total FROM customer_table", function(error, data){
+    console.log("total_records_with_filter = ", total_records_with_filter);
 
-        var total_records = data[0].Total;
+    const data_arr = await CodeTableListModel.findAll({
+      where: where,
+      order: order,
+      limit: start,
+      offset: length,
+      raw: true,
+      nest: true,
+    });
 
-        //Total number of records with filtering
+    console.log("dat_arr = ", data_arr);
 
-        database.query(`SELECT COUNT(*) AS Total FROM customer_table WHERE 1 ${search_query}`, function(error, data){
+    data_arr.forEach(function (row) {
+      data_arr.push({
+        code: row.code,
+        fa_TableName: row.fa_TableName,
+        en_TableName: row.en_TableName,
+        fa_createdAt: dateService.toPersianDate(row.createdAt, "YYYY/MM/DD"),
+      });
+    });
 
-            var total_records_with_filter = data[0].Total;
-
-            var query = `
-            SELECT * FROM customer_table 
-            WHERE 1 ${search_query} 
-            ORDER BY ${column_name} ${column_sort_order} 
-            LIMIT ${start}, ${length}
-            `;
-
-            var data_arr = [];
-
-            database.query(query, function(error, data){
-
-                data.forEach(function(row){
-                    data_arr.push({
-                        'customer_first_name' : row.customer_first_name,
-                        'customer_last_name' : row.customer_last_name,
-                        'customer_email' : row.customer_email,
-                        'customer_gender' : row.customer_gender
-                    });
-                });
-
-                var output = {
-                    'draw' : draw,
-                    'iTotalRecords' : total_records,
-                    'iTotalDisplayRecords' : total_records_with_filter,
-                    'aaData' : data_arr
-                };
-
-              })
-            })
-          })
-
-
-
+    const output = {
+      draw: draw,
+      iTotalRecords: total_records,
+      iTotalDisplayRecords: total_records_with_filter,
+      aaData: data_arr,
+    };
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
-      codeTableList: codeTableListPresent,
+      codeTableList: output,
       success,
       removeSuccess,
     });
-
-
   } catch (error) {
     next(error);
   }
@@ -140,16 +111,15 @@ exports.index = async (req, res, next) => {
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
-    let order = []
+    let order = [];
 
-    const {sort,desc} = req.query
+    const { sort, desc } = req.query;
 
-
-    if(sort){
-      order.push([sort,desc === 'true' ? 'DESC' : 'ASC'])
-    }else{
-      order=[]
-      order.push(['id','DESC'])
+    if (sort) {
+      order.push([sort, desc === "true" ? "DESC" : "ASC"]);
+    } else {
+      order = [];
+      order.push(["id", "DESC"]);
     }
 
     const codeTableList = await CodeTableListModel.findAll({
@@ -163,13 +133,16 @@ exports.index = async (req, res, next) => {
     const totalCodeTableLists = await CodeTableListModel.count();
 
     const codeTableListPresent = codeTableList.map((data) => {
-      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
+      data.fa_createdAt = dateService.toPersianDate(
+        data.createdAt,
+        "YYYY/MM/DD"
+      );
       return data;
     });
 
     const totalPages = Math.ceil(totalCodeTableLists / perPage);
     const success = req.flash("success");
-    const removeSuccess = req.flash('removeSuccess')
+    const removeSuccess = req.flash("removeSuccess");
 
     let offset;
     let to;
@@ -243,9 +216,7 @@ exports.store = async (req, res, next) => {
       req.flash("success", "اطلاعات کدینگ جدید با موفقیت ثبت شد.");
       return res.redirect("./index");
     }
-
   } catch (error) {
-
     let errors = [];
 
     if (error.name === "SequelizeValidationError") {
@@ -269,7 +240,7 @@ exports.edit = async (req, res, next) => {
     const errors = req.flash("errors");
     const hasError = errors.length > 0;
     const success = req.flash("success");
-    const removeSuccess = req.flash('removeSuccess')
+    const removeSuccess = req.flash("removeSuccess");
 
     const codeTableListId = await req.params.id;
     const codeTableList = await CodeTableListModel.findOne({
@@ -323,11 +294,12 @@ exports.update = async (req, res, next) => {
       return res.redirect("../index");
     }
 
-    req.flash("suuccess","اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید...");
-    return res.redirect('../index')
-
+    req.flash(
+      "suuccess",
+      "اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید..."
+    );
+    return res.redirect("../index");
   } catch (error) {
-    
     const codeTableListId = await req.params.id;
 
     let errors = [];
@@ -360,13 +332,14 @@ exports.delete = async (req, res, next) => {
       return res.redirect("../index");
     }
   } catch (error) {
-    
     if (error.name === "SequelizeForeignKeyConstraintError") {
-      req.flash("removeSuccess",'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
+      req.flash(
+        "removeSuccess",
+        "این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!"
+      );
       return res.redirect(`../index`);
     }
 
     next(error);
   }
-
 };
