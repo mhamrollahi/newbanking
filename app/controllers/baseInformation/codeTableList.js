@@ -1,7 +1,6 @@
 const dateService = require("@services/dateService");
-const { CodeTableListModel, CodingDataModel } = require("../../models");
+const { CodeTableListModel } = require("../../models");
 const { Sequelize, Op } = require("sequelize");
-const { raw } = require("body-parser");
 
 exports.test1 = async (req, res, next) => {
   try {
@@ -21,16 +20,19 @@ exports.test1 = async (req, res, next) => {
     //   );
     //   return data;
     // });
-
-    const count = await CodeTableListModel.count();
-    // console.log(result);
-    console.log(count);
-    // res.send(result);
-
-    // res.json(codeTableListPresent)
-
-    let { draw, start, length, order_data } = req.query;
+    
+    console.log('req.query = ' , req.query );
+    
+    let { draw, start, length, order_data,search } = req.query;
     let order = [];
+
+    console.log('draw  = ', draw);
+    console.log('start  = ', start);
+    console.log('length  = ', length);
+    console.log('order_data = ', order_data);
+    console.log('search = ', search);
+    // console.log('search.value = ' , search.value);
+    
 
     if (typeof order_data == "undefined") {
       order.push(["id", "desc"]);
@@ -41,54 +43,74 @@ exports.test1 = async (req, res, next) => {
 
       order.push([column_name, column_sort_order]);
     }
+    
+    console.log('order = ',order);
 
+    
     //search data
-
-    let search_value = req.query.search["value"];
+    let search_value = ''
+    if(typeof search != "undefined"){
+      search_value = req.query.search["value"];
+    }
 
     console.log("search_value = ", search_value);
 
     //Total number of records without filtering
 
-    let total_records = await CodingDataModel.count();
+    let total_records = await  CodeTableListModel.count();
 
     console.log('total_records = ', total_records);
     
+    let where = '';
+    if(search_value){
+      where[Op.or] = [
+        { code: { [Op.like]: `%${search_value}%` } },
+        { en_TableName: { [Op.like]: `%${search_value}%` } },
+        { fa_TableName: { [Op.like]: `%${search_value}%` } },
+      ];
+    }
 
-    let where = [];
-    where[Op.or] = [
-      { code: { [Op.like]: `%${search_value}%` } },
-      { en_TableName: { [Op.like]: `%${search_value}%` } },
-      { fa_TableName: { [Op.like]: `%${search_value}%` } },
-    ];
+    console.log('where = ',  where);
 
-    console.log(where);
-
-    const total_records_with_filter = await CodingDataModel.count({
+    const total_records_with_filter = await CodeTableListModel.count({
       where: where,
     });
 
     console.log("total_records_with_filter = ", total_records_with_filter);
 
+
     const data_arr = await CodeTableListModel.findAll({
-      where: where,
-      order: order,
-      limit: start,
-      offset: length,
-      raw: true,
-      nest: true,
+      where: {
+        id: {
+          [Op.in]: [1,2,3,4,5,6,7,8,9,10],
+        },
+      },
     });
 
-    console.log("dat_arr = ", data_arr);
+    console.log('after findAll ..............................................................................');
+    
+    const oneRecord = await CodeTableListModel.findOne()
+    console.log('oneRecord = ' , oneRecord );
+
+
+
+    
+    console.log("dat_arr = ")
+    console.log(data_arr);
 
     data_arr.forEach(function (row) {
       data_arr.push({
+        id: row.id,
         code: row.code,
         fa_TableName: row.fa_TableName,
         en_TableName: row.en_TableName,
         fa_createdAt: dateService.toPersianDate(row.createdAt, "YYYY/MM/DD"),
+        creator: row.creator + 'Tt',
       });
     });
+
+    console.log('data_arr = ',data_arr);
+    
 
     const output = {
       draw: draw,
@@ -96,6 +118,11 @@ exports.test1 = async (req, res, next) => {
       iTotalDisplayRecords: total_records_with_filter,
       aaData: data_arr,
     };
+
+    console.log('outPut = ', output );
+    
+    res.json(output)
+    
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
       codeTableList: output,

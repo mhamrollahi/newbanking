@@ -55,8 +55,8 @@
             <tr class="table-primary d-flex">
               <th class="col-md-1">ID</th>
               <th class="col-md-1">کد</th>
-              <th class="col-md-3">نام انگلیسی جدول</th>
-              <th class="col-md-3">نام فارسی جدول</th>
+              {{!-- <th class="col-md-3">نام انگلیسی جدول</th>
+              <th class="col-md-3">نام فارسی جدول</th> --}}
               <th class="col-md-2">تاریخ ایجاد</th>
               <th class="col-md-2">نام درخواست کنند</th>
             </tr>
@@ -73,7 +73,7 @@
                 
                 <td class="col-md-1">{{this.code}}</td>
                 
-                <td class="col-md-3 text-wrap text-small">
+                {{!-- <td class="col-md-3 text-wrap text-small">
                   <a href="/baseInformation/codingData/index/{{this.id}}" style="color:#030390">{{this.en_TableName}}</a>
                   <div class="table-action-buttons text-center">
                     <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/{{this.id}}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>
@@ -102,7 +102,7 @@
                       <i class="zmdi zmdi-delete"></i>
                     </a>
                   </div>
-                </td>
+                </td> --}}
 
                 <td class="col-md-2 text-wrap">{{this.fa_createdAt}}</td>
 
@@ -148,8 +148,3 @@
 </div>
 
 <script src="/static/assets/datatables/datatables.min.js"></script>
-
-<script>
- 
-
-</script>

@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   dialect: process.env.APP_DIALECT,
-  logging: false,  
+  logging: true,  
   port: process.env.MYSQL_PORT,
 })
 
