@@ -1,7 +1,7 @@
 const dateService = require("@services/dateService");
 const { CodeTableListModel } = require("../../models");
 
-exports.test1 = async (req, res, next) => {
+exports.getData = async (req, res, next) => {
   try {
     const page = "page" in req.query ? parseInt(req.query.page) : 1;
     const perPage = 10;
@@ -12,7 +12,9 @@ exports.test1 = async (req, res, next) => {
     const count = await CodeTableListModel.count();
     console.log(result);
     console.log(count);
-    res.send(result);
+    res.json(result);
+
+
   } catch (error) {
     next(error);
   }
@@ -75,16 +77,23 @@ exports.index = async (req, res, next) => {
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
       codeTableList: codeTableListPresent,
-      pagination,
-      helpers: {
-        showDisabled: function (isDisabled, options) {
-          return !isDisabled ? "disabled" : "";
-        },
-      },
       success,
       removeSuccess,
     });
-    // res.send(result)
+
+    // res.render("./baseInformation/codeTableList/index", {
+    //   layout: "main",
+    //   codeTableList: codeTableListPresent,
+    //   pagination,
+    //   helpers: {
+    //     showDisabled: function (isDisabled, options) {
+    //       return !isDisabled ? "disabled" : "";
+    //     },
+    //   },
+    //   success,
+    //   removeSuccess,
+    // });
+
   } catch (error) {
     next(error);
   }
