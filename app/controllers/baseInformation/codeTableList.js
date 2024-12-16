@@ -4,37 +4,11 @@ const { CodeTableListModel } = require("../../models");
 exports.getData = async (req, res, next) => {
   try {
     const result = await CodeTableListModel.findAll({});
-    console.log(result);
     res.json(result);
   } catch (error) {
     next(error);
   }
 };
-
-exports.getDataTest = async(req,res,next)=>{
-  try {
-    const result = [
-      {id:1 , code: 1 , email : 'mh1.amrollahi@gmail.com',name : 'test1'},
-      {id:2 , code: 2 , email : 'mh2.amrollahi@gmail.com',name : 'test1'},
-      {id:3 , code: 3 , email : 'mh3.amrollahi@gmail.com',name : 'test1'},
-      {id:4 , code: 4 , email : 'mh4.amrollahi@gmail.com',name : 'test1'},
-      {id:5 , code: 5 , email : 'mh5.amrollahi@gmail.com',name : 'test1'},
-      {id:6 , code: 6 , email : 'mh6.amrollahi@gmail.com',name : 'test1'},
-      {id:7 , code: 7 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
-      {id:8 , code: 8 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
-      {id:9 , code: 9 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
-      {id:10 , code: 10 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
-    ]
-
-      
-    console.log(result)
-
-    res.json(result)
-
-  } catch (error) {
-    next(error)
-  }
-}
 
 
 exports.test = async(req,res,next)=>{
@@ -48,81 +22,15 @@ exports.test = async(req,res,next)=>{
 
 exports.index = async (req, res, next) => {
   try {
-    const page = "page" in req.query ? parseInt(req.query.page) : 1;
-    const perPage = 10;
-    let order = []
 
-    const {sort,desc} = req.query
-
-
-    if(sort){
-      order.push([sort,desc === 'true' ? 'DESC' : 'ASC'])
-    }else{
-      order=[]
-      order.push(['id','DESC'])
-    }
-
-    const codeTableList = await CodeTableListModel.findAll({
-      limit: perPage,
-      offset: Math.max(0, (page - 1) * perPage),
-      order: order,
-      raw: true,
-      nest: true,
-    });
-
-    const totalCodeTableLists = await CodeTableListModel.count();
-
-    const codeTableListPresent = codeTableList.map((data) => {
-      data.fa_createdAt = dateService.toPersianDate(data.createdAt,"YYYY/MM/DD");
-      return data;
-    });
-
-    const totalPages = Math.ceil(totalCodeTableLists / perPage);
     const success = req.flash("success");
     const removeSuccess = req.flash('removeSuccess')
 
-    let offset;
-    let to;
-
-    offset = (page - 1) * perPage;
-    to = offset + perPage;
-
-    const pagination = {
-      page,
-      totalPages,
-      nextPage: page < totalPages ? page + 1 : totalPages,
-      prevPage: page > 1 ? page - 1 : 1,
-      isMoreThan3Pages: totalPages > 3,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
-      totalCount: totalCodeTableLists,
-      offset: offset == 0 ? 1 : offset + 1,
-      to: page == totalPages ? totalCodeTableLists : to,
-    };
-
-
-    // console.log('totalCodeTableLists = ', totalCodeTableLists )
-
-
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",
-      codeTableList: codeTableListPresent,
       success,
       removeSuccess,
     });
-
-    // res.render("./baseInformation/codeTableList/index", {
-    //   layout: "main",
-    //   codeTableList: codeTableListPresent,
-    //   pagination,
-    //   helpers: {
-    //     showDisabled: function (isDisabled, options) {
-    //       return !isDisabled ? "disabled" : "";
-    //     },
-    //   },
-    //   success,
-    //   removeSuccess,
-    // });
 
   } catch (error) {
     next(error);
@@ -134,7 +42,6 @@ exports.create = async (req, res, next) => {
     const errors = req.flash("errors");
     const success = req.flash("success");
     const hasError = errors.length > 0;
-    // console.log('errors = ',errors)
 
     res.render("./baseInformation/codeTableList/create", {
       layout: "main",

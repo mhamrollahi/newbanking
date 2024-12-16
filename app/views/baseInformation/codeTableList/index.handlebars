@@ -1,6 +1,28 @@
 <link href="/static/assets/vendor/DataTables/datatables.min.css" rel="stylesheet" />
 
+<style>
+#dt-search-0{
+  width:100%;
+}
+.dt-info{
+  font-size: 16px;
 
+}
+.dt-felid{
+  color:#030390;
+}
+.dt-felid:hover{
+  font-size: 18px;
+  transition: all .6s ease-in;
+}
+.table-action-buttons1{
+  display: none;
+}
+.table-action-buttons1:hover .table-action-buttons1{
+  display: block;
+  transition: all .4s ease-out;
+}
+</style>
 
 
 <div style="margin-top: 120px"></div>
@@ -56,25 +78,17 @@
         <table class="table table table-striped table-hover table-bordered mb-0" id="codeTableListTable">
           <!-- Table Head Start -->
           <thead>
-            <tr class="table-primary d-flex">
+            <tr style="background-color: #2727db; color:aliceblue">
               <th class="col-md-1">id
-                <a href="?sort=id&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=id&desc=false" class="sort-down-cols"></a>
               </th>
-              <th class="col-md-1">code
-                <a href="?sort=code&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=code&desc=false" class="sort-down-cols"></a>
+              <th class="col-md-1">کدینگ
               </th>
-              <th class="col-md-3">نام انگلیسی جدول
-                <a href="?sort=en_TableName&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=en_TableName&desc=false" class="sort-down-cols"></a>
+              <th class="col-md-3 text-center">نام انگلیسی جدول
               </th>
-              <th class="col-md-3">نام فارسی جدول
-                <a href="?sort=fa_TableName&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=fa_TableName&desc=false" class="sort-down-cols"></a>
+              <th class="col-md-3 text-center">نام فارسی جدول
               </th>
-              <th class="col-md-2">تاریخ ایجاد</th>
-              <th class="col-md-2">نام درخواست کنند</th>
+              <th class="col-md-2 text-center">تاریخ ایجاد</th>
+              <th class="col-md-2 text-center">نام درخواست کنند</th>
             </tr>
           </thead>
           <!-- Table Head End -->
@@ -170,4 +184,3 @@
   </div>
   <!-- Revenue Statistics Chart End -->
 </div>
-

@@ -6731,6 +6731,7 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 }
 
 /* MHA : Start  */
+/* .row-table:hover .table-action-buttons{ */
 .row-table:hover .table-action-buttons{
   display: block;
 }
