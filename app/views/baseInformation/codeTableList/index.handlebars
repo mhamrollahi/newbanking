@@ -48,6 +48,7 @@
   <div class="col-md-12 mb-30">
     <div class="box">
       <div class="box-body table-responsive">
+        
         <table class="table table table-striped table-hover table-bordered mb-0">
           <!-- Table Head Start -->
           <thead>
@@ -131,7 +132,8 @@
           </tbody>
           <!-- Table Body End -->
         </table>
-            <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
+
+        <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
               <a href="?page={{pagination.prevPage}}" class="paginate_button previous btn btn-success {{#showDisabled pagination.hasPrevPage}}{{/showDisabled}}" >
                 <i class="zmdi zmdi-chevron-right"></i>
               </a>
@@ -152,10 +154,12 @@
                 <a href="?page={{pagination.nextPage}}" class="paginate_button next  btn btn-success {{#showDisabled pagination.hasNextPage}}{{/showDisabled}}">
                   <i class="zmdi zmdi-chevron-left"></i>
                 </a>
-            </div>
-            <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
-              نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
-            </div>
+        </div>
+
+        <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
+           نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
+        </div>
+
       </div>
     </div>
   </div>
