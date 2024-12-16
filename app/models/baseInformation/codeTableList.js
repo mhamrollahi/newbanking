@@ -31,10 +31,10 @@ exports.CodeTableList = (sequelize) => {
     en_TableName: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        get(){
-          const rawValue = this.getDataValue('en_TableName') + ' -- '
-          return rawValue.toUpperCase()
-        },
+        // get(){
+        //   const rawValue = this.getDataValue('en_TableName') + ' -- '
+        //   return rawValue.toUpperCase()
+        // },
         unique: {
           args:true,
           msg: 'نام انگلیسی جدول نمی تواند تکراری باشد.'

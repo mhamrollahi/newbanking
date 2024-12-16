@@ -3,22 +3,48 @@ const { CodeTableListModel } = require("../../models");
 
 exports.getData = async (req, res, next) => {
   try {
-    const page = "page" in req.query ? parseInt(req.query.page) : 1;
-    const perPage = 10;
-    const result = await CodeTableListModel.findAll({
-      limit: perPage,
-      offset: Math.max(0, (page - 1) * perPage),
-    });
-    const count = await CodeTableListModel.count();
+    const result = await CodeTableListModel.findAll({});
     console.log(result);
-    console.log(count);
     res.json(result);
-
-
   } catch (error) {
     next(error);
   }
 };
+
+exports.getDataTest = async(req,res,next)=>{
+  try {
+    const result = [
+      {id:1 , code: 1 , email : 'mh1.amrollahi@gmail.com',name : 'test1'},
+      {id:2 , code: 2 , email : 'mh2.amrollahi@gmail.com',name : 'test1'},
+      {id:3 , code: 3 , email : 'mh3.amrollahi@gmail.com',name : 'test1'},
+      {id:4 , code: 4 , email : 'mh4.amrollahi@gmail.com',name : 'test1'},
+      {id:5 , code: 5 , email : 'mh5.amrollahi@gmail.com',name : 'test1'},
+      {id:6 , code: 6 , email : 'mh6.amrollahi@gmail.com',name : 'test1'},
+      {id:7 , code: 7 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
+      {id:8 , code: 8 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
+      {id:9 , code: 9 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
+      {id:10 , code: 10 , email : 'mh7.amrollahi@gmail.com',name : 'test1'},
+    ]
+
+      
+    console.log(result)
+
+    res.json(result)
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+exports.test = async(req,res,next)=>{
+  try {
+    res.render('./baseInformation/codeTableList/test',{layout:''})
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 exports.index = async (req, res, next) => {
   try {
@@ -73,6 +99,10 @@ exports.index = async (req, res, next) => {
       offset: offset == 0 ? 1 : offset + 1,
       to: page == totalPages ? totalCodeTableLists : to,
     };
+
+
+    // console.log('totalCodeTableLists = ', totalCodeTableLists )
+
 
     res.render("./baseInformation/codeTableList/index", {
       layout: "main",

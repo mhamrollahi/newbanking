@@ -3,7 +3,11 @@ const router = express.Router()
 
 const codeTableListControllers = require('@controllers/baseInformation/codeTableList')
 
-router.get('/codeTableList/api/getData',codeTableListControllers.test1)
+router.get('/codeTableList/api/getData',codeTableListControllers.getData)
+
+
+router.get('/codeTableList/api/getDataTest',codeTableListControllers.getDataTest)
+router.get('/codeTableList/test',codeTableListControllers.test)
 
 router.get('/codeTableList/index',codeTableListControllers.index)
 router.get('/codeTableList/create',codeTableListControllers.create)

@@ -57,11 +57,11 @@
           <!-- Table Head Start -->
           <thead>
             <tr class="table-primary d-flex">
-              <th class="col-md-1">ID
+              <th class="col-md-1">id
                 <a href="?sort=id&desc=true" class="sort-up-cols"></a>
                 <a href="?sort=id&desc=false" class="sort-down-cols"></a>
               </th>
-              <th class="col-md-1">کد
+              <th class="col-md-1">code
                 <a href="?sort=code&desc=true" class="sort-up-cols"></a>
                 <a href="?sort=code&desc=false" class="sort-down-cols"></a>
               </th>
@@ -171,21 +171,3 @@
   <!-- Revenue Statistics Chart End -->
 </div>
 
-<script src="/static/assets/vendor/DataTables/datatables.min.js"></script>
-
-<script>
-
-  $(document).ready(function() {
-        $('#codeTableListTable').DataTable({
-            ajax: '/baseInformation/codeTableList/api/getData', // لینک JSON که از سرور می‌گیری
-            columns: [
-                { data: 'id' },
-                { data: 'code' },
-                { data: 'en_TableName' },
-                { data: 'fa_TableName' },
-                { data: 'createdAt' },
-                { data: 'creator' }
-            ]
-        });
-    });
-</script>

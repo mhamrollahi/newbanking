@@ -1,0 +1,47 @@
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تست من هستتتتتت... </title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css"
+    />
+  </head>
+  <body>
+    <h1>DataTables with Handlebars</h1>
+    <h1>DataTables with Handlebars</h1>
+    <h1>DataTables with Handlebars</h1>
+    <h1>DataTables with Handlebars</h1>
+    <table id="example" class="display">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>کد</th>
+          <th>نام فارسی جدول</th>
+          <th>نام انگلیسی جدول</th>
+          <th>تاریخ ایجاد</th>
+        </tr>
+      </thead>
+    </table>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function(){
+      $('#example').DataTable({ 
+        ajax:{url:'/baseInformation/codeTableList/api/getData',
+        dataSrc:'',
+        }, 
+        columns: [ 
+            { data: 'id' }, 
+            { data: 'code' },
+            {data : 'fa_TableName'} ,
+            {data : 'en_TableName'},
+            {data: 'fa_createdAt'}
+        ] 
+        });
+    });
+
+    </script>
+  </body>
+</html>
