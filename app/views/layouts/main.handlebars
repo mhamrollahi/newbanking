@@ -4,31 +4,18 @@
     <title>سامانه مدیریت حسابهای بانکی - MHA - </title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <!-- Favicon -->
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="assets/images/adomax/favicon.ico"
-    />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/adomax/favicon.ico"/>
 
     <!-- CSS
 	============================================ -->
 
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="/static/assets/adomax/css/vendor/bootstrap.rtl.min.css"
-    />
+    <link rel="stylesheet" href="/static/assets/adomax/css/vendor/bootstrap.rtl.min.css"/>
 
     <!-- Icon Font CSS -->
-    <link
-      rel="stylesheet"
-      href="/static/assets/adomax/css/vendor/material-design-iconic-font.min.css"
-    />
+    <link rel="stylesheet" href="/static/assets/adomax/css/vendor/material-design-iconic-font.min.css"/>
     <link
       rel="stylesheet"
       href="/static/assets/adomax/css/vendor/font-awesome.min.css"
@@ -50,7 +37,13 @@
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="/static/assets/adomax/css/style.css" />
     <link rel="stylesheet" href="/static/assets/adomax/CSS/style.css" />
+    <link rel="stylesheet" href="/static/assets/vendor/datatables/datatables.min.css" />
     <link rel="stylesheet" href="/static/assets/css/style.css" />
+
+
+    <script src="/static/assets/adomax/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="/static/assets/vendor/DataTables/datatables.js"></script>
+
   </head>
 
   <body dir="rtl">
@@ -402,6 +395,7 @@
 
         {{{body}}}
 
+
       </div>
       <!-- Content Body End -->
 
@@ -423,101 +417,30 @@
     <!-- JS
 ============================================ -->
 
+
     <!-- Global Vendor, plugins & Activation JS -->
-    <script
-      src="/static/assets/adomax/js/vendor/modernizr-3.6.0.min.js"
-    ></script>
+    <script src="/static/assets/adomax/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/static/assets/adomax/js/vendor/jquery-3.3.1.min.js"></script>
     <script src="/static/assets/adomax/js/vendor/popper.min.js"></script>
     <script src="/static/assets/adomax/js/vendor/bootstrap.min.js"></script>
     <!--Plugins JS-->
-    <script
-      src="/static/assets/adomax/js/plugins/perfect-scrollbar.min.js"
-    ></script>
+    <script src="/static/assets/adomax/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="/static/assets/adomax/js/plugins/tippy4.min.js.js"></script>
     <!--Main JS-->
     <script src="/static/assets/adomax/js/main.js"></script>
 
     <script src="/static/assets/vendor/select2/dist/js/select2.min.js"></script>
     <script src="/static/assets/vendor/DataTables/datatables.js"></script>
-
+    <script src="/static/assets/js/codeTableListDataTables.js"></script>
+    
     <script>
       $(document).ready(function(){ $('#cmbCodeTableList').select2(); })
-      $(document).ready(function() { 
-        $('#codeTableListTable').DataTable({ 
-          ajax:{
-            url:'/baseInformation/codeTableList/api/getData',
-            dataSrc:'',
-          }, 
-          columns: [ 
-            { data : 'id' }, 
-            { data : 'code',
-              render: function(data,type,row){
-                return `
-                  <a class="dt-felid" href="/baseInformation/codingData/index/${row.id}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>${data}</a>
-                   <div class="table-action-buttons text-center">
-                  </div>
-                `
-              },
-            },
-            { data : 'en_TableName',
-              render:function(data,type,row){
-                return `
-                  <div class="row-table text-center">
-                    <span>${data}</span>
-                    <div class= "table-action-buttons"> 
-                    <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/${row.id}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>
-                      <i class="zmdi zmdi-file-text"></i>
-                    </a>
-                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/${row.id}">
-                      <i class="zmdi zmdi-edit"></i>
-                    </a>
-                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
-                      <i class="zmdi zmdi-delete"></i>
-                    </a>
-                    </div>
-                  </div>
-                `
-              }
-            },
-            { data : 'fa_TableName',
-              render:function(data,type,row){
-                return `
-                  <div class="row-table text-center">
-                    <span>${data}</span>
-                    <div class= "table-action-buttons"> 
-                    <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/${row.id}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>
-                      <i class="zmdi zmdi-file-text"></i>
-                    </a>
-                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/${row.id}">
-                      <i class="zmdi zmdi-edit"></i>
-                    </a>
-                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
-                      <i class="zmdi zmdi-delete"></i>
-                    </a>
-                    </div>
-                  </div>
-                `
-              }
-            },
-            { data : 'fa_createdAt'},
-            { data : 'creator'},
-          ],
-          order: [[0, 'desc']], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی
-            language: {
-                search: "هر کدام از موارد را می توانید اینجا جستجو کنید ...:",
-                lengthMenu: "نمایش _MENU_ ردیف در هر صفحه",
-                info: "نمایش _START_ تا _END_ از _TOTAL_ ردیف",
-                paginate: {
-                    next: "بعدی",
-                    previous: "قبلی"
-                }
-            } 
-        });
-       });
+
+
 
 
     </script>
+
   </body>
 
 </html>

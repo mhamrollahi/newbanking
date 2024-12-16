@@ -3,5 +3,6 @@
   "terminal.integrated.fontFamily": "'Operator Mono Lig Light'",
   "editor.fontLigatures": true,
   "editor.tabSize": 2,
-  "editor.fontSize": 15
+  "editor.fontSize": 15,
+  "reactSnippets.settings.prettierEnabled": true
 }

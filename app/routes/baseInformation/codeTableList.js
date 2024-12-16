@@ -6,8 +6,8 @@ const codeTableListControllers = require('@controllers/baseInformation/codeTable
 router.get('/codeTableList/api/getData',codeTableListControllers.getData)
 
 
-router.get('/codeTableList/api/getDataTest',codeTableListControllers.getDataTest)
-router.get('/codeTableList/test',codeTableListControllers.test)
+// router.get('/codeTableList/api/getDataTest',codeTableListControllers.getDataTest)
+// router.get('/codeTableList/test',codeTableListControllers.test)
 
 router.get('/codeTableList/index',codeTableListControllers.index)
 router.get('/codeTableList/create',codeTableListControllers.create)
