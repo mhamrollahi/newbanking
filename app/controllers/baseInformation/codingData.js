@@ -1,53 +1,39 @@
 const { CodingDataModel, CodeTableListModel } = require("../../models");
 const dateService = require("@services/dateService");
 
-exports.index = async (req, res, next) => {
+exports.getData = async (req, res, next) => {
   try {
-    let order = [];
-    const { sort,desc } = req.query;
-    console.log(sort,desc);
-
+    
     const codeTableListId = req.params.id;
-    const page = "page" in req.query ? parseInt(req.query.page) : 1;
-    const perPage = 10;
-    const totalCodingData = await CodingDataModel.count({
+    const result = await CodingDataModel.findAll({
       where: { CodeTableListId: codeTableListId },
+      include: {
+        model: CodeTableListModel,
+        attributes: ["fa_TableName", "en_TableName"],
+      },
     });
     
-    
-    if (sort) {
-      order.push([sort, desc === 'true' ? "DESC" : "ASC" ] );
-    }else{
-      order= []
-      order.push(["id", "Desc"]);
-    }
-    console.log(order);
+    res.json(result);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.index = async (req, res, next) => {
+  try {
+
+    const codeTableListId = req.params.id;
 
     const codingDataList = await CodingDataModel.findAll({
       where: { CodeTableListId: codeTableListId },
-      limit: perPage,
-      offset: Math.max(0, (page - 1) * perPage),
-      order: order,
-      raw: true,
-      nest: true,
       include: {
         model: CodeTableListModel,
         attributes: ["fa_TableName", "en_TableName"],
       },
     });
 
-    // console.log(codingDataList[0].CodeTableList.fa_TableName);
-    // console.log(codingDataList[0].CodeTableList.en_TableName);
-
-    const codingDataListPresent = codingDataList.map((data) => {
-      data.fa_createdAt = dateService.toPersianDate(
-        data.createdAt,
-        "YYYY/MM/DD"
-      );
-      return data;
-    });
-
-    const totalPages = Math.ceil(totalCodingData / perPage);
     const codeTableListData = await CodeTableListModel.findAll({
       attributes: ["id", "fa_TableName", "en_TableName"],
       raw: true,
@@ -66,44 +52,20 @@ exports.index = async (req, res, next) => {
       fa_TableName = result.fa_TableName;
     }
 
-    let offset;
-    let to;
-
-    offset = (page - 1) * perPage;
-    to = offset + perPage;
-
-    const pagination = {
-      page,
-      totalPages,
-      nextPage: page < totalPages ? page + 1 : totalPages,
-      prevPage: page > 1 ? page - 1 : 1,
-      isMoreThan3Pages: totalPages > 3,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
-      totalCount: totalCodingData,
-      offset: offset == 0 ? 1 : offset + 1,
-      to: page == totalPages ? totalCodingData : to,
-    };
-
     res.render("./baseInformation/codingData/index", {
       layout: "main",
-      codingDataList: codingDataListPresent,
-      pagination,
-      helpers: {
-        showDisabled: function (isDisabled, options) {
-          return !isDisabled ? "disabled" : "";
-        },
-        isSelected: function (currentId, options) {
-          return codeTableListId == currentId ? "selected" : "";
-        },
+      helpers:{
+        isSelected:function (currentId,options){
+          return codeTableListId == currentId ? "selected" : ""
+        }
       },
-
       success,
       removeSuccess,
       fa_TableName,
       codeTableListData,
       codeTableListId,
     });
+
   } catch (error) {
     next(error);
   }

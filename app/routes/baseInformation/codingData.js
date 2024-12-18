@@ -3,6 +3,8 @@ const router = express.Router()
 
 const codingDataControllers = require('@controllers/baseInformation/codingData')
 
+router.get('/codingData/api/getData/:id',codingDataControllers.getData)
+
 router.get('/codingData/index/:id',codingDataControllers.index)
 router.get('/codingData/create/:id',codingDataControllers.create)
 router.post('/codingData/store/:id',codingDataControllers.store)

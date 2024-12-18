@@ -71,31 +71,15 @@
     <div class="box">
       <div class="box-body table-responsive">
         
-        <table class="table table-hover table-bordered mb-0">
+        <table class="table table-hover table-bordered mb-0" id="codingData">
           <!-- Table Head Start -->
           <thead>
-            <tr class="table-primary d-flex">
-              <th class="col-md-1">ID 
-                <a href="?sort=id&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=id&desc=false" class="sort-down-cols"></a>
-              </th>
-              <th class="col-md-3">عنوان  
-                <a href="?sort=title&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=title&desc=false" class="sort-down-cols"></a>
-              </th>
-
-              <th class="col-md-2">توضیحات 
-                <a href="?sort=description&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=description&desc=false" class="sort-down-cols"></a>
-              </th>
-              <th class="col-md-1">رتبه 
-                <a href="?sort=sortId&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=sortId&desc=false" class="sort-down-cols"></a>
-              </th>
-              <th class="col-md-1">کد ثانویه 
-                <a href="?sort=refId&desc=true" class="sort-up-cols"></a>
-                <a href="?sort=refId&desc=false" class="sort-down-cols"></a>
-              </th>
+            <tr class="table-header-custom">
+              <th class="col-md-1">ID</th>
+              <th class="col-md-3">عنوان</th>
+              <th class="col-md-2">توضیحات</th>
+              <th class="col-md-1">رتبه</th>
+              <th class="col-md-1">کد ثانویه</th>
               <th class="col-md-2">تاریخ ایجاد</th>
               <th class="col-md-2">نام درخواست کننده</th>
             </tr>
@@ -103,7 +87,7 @@
           <!-- Table Head End -->
 
           <!-- Table Body Start -->
-          <tbody>
+          {{!-- <tbody>
 
             {{#each codingDataList}}
 
@@ -156,10 +140,11 @@
               </tr>
 
             {{/each}}
-          </tbody>
+          </tbody> --}}
           <!-- Table Body End -->
         </table>
-            <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
+
+        {{!-- <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
               <a href="?page={{pagination.prevPage}}" class="paginate_button previous btn btn-success
                  {{#showDisabled pagination.hasPrevPage}}{{/showDisabled}}" >
                 <i class="zmdi zmdi-chevron-right"></i>
@@ -182,10 +167,11 @@
                   {{#showDisabled pagination.hasNextPage}}{{/showDisabled}}">
                   <i class="zmdi zmdi-chevron-left"></i>
                 </a>
-            </div>
-            <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
-              نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
-            </div>
+        </div>
+        <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
+           نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
+        </div> --}}
+
       </div>
     </div>
   </div>
