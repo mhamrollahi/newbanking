@@ -31,6 +31,10 @@ exports.CodingData = (sequelize) => {
       description: {
         type: DataTypes.STRING(255),
         allowNull: true,
+        get(){
+          const value = this.getDataValue('description')
+          return value === null ? '' : value
+        },
         defaultValue: null,
         validate: {
           len: {
@@ -69,7 +73,10 @@ exports.CodingData = (sequelize) => {
         type: DataTypes.STRING(4),
         allowNull: true,
         defaultValue: null,
-
+        get(){
+          const value = this.getDataValue('refId')
+          return value === null ? '' : value
+        },
         validate: {
           len: {
             args: [1, 4],

@@ -48,27 +48,7 @@ $(document).ready(function () {
         `;
         },
       },
-      {
-        data: "sortId",
-        render: function (data, type, row) {
-          return `
-          <div class="row-table text-center">
-            <span>${data}</span>
-            <div class= "table-action-buttons"> 
-            <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/${row.id}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>
-              <i class="zmdi zmdi-file-text"></i>
-            </a>
-            <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/${row.id}">
-              <i class="zmdi zmdi-edit"></i>
-            </a>
-            <a class="delete button button-box button-xs button-danger" href="/baseInformation/codeTableList/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
-              <i class="zmdi zmdi-delete"></i>
-            </a>
-            </div>
-          </div>
-        `;
-        },
-      },
+      { data: "sortId" },
       { data: "refId" },
       { data: "fa_createdAt" },
       { data: "creator" },
