@@ -38,12 +38,23 @@ table tr th a.sort-down-cols::after{
 .dt-felid{
   color:#030390;
 }
+.dt-info{
+  font-size: 16px;
+}
 
 .table-header-custom{
   background-color: #2727db;
-   color:aliceblue
+   color:aliceblue;
+   font-size: 13px;
 }
-
+.dt-felid:hover{
+  font-size: 18px;
+  transition: all .4s ease;
+}
 #dt-search-0{
   width:100%;
+}
+
+.table-custom tbody{
+  font-size: 14px!important;
 }
