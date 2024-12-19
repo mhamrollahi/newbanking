@@ -1,5 +1,5 @@
 const express = require('express')
-const accManagementControllers = require('@controllers/accManagement')
+const accManagementControllers = require('@controllers/accountManagement')
 const router = express.Router()
 
 router.get('/index',accManagementControllers.index)

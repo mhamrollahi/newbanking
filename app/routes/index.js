@@ -1,4 +1,4 @@
-const accManagementRouter = require('./accManagement')
+const accManagementRouter = require('./accountManagement/index')
 const codeTableListRouter = require('./baseInformation/codeTableList')
 const codingDataRouter = require('./baseInformation/codingData')
 

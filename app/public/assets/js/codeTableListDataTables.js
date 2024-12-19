@@ -6,7 +6,12 @@ $(document).ready(function () {
       dataSrc: "",
     },
     columns: [
-      { data: "id" },
+      { 
+        data: null,
+        render:function(data,type,row,meta){
+          return meta.row + 1
+        },
+      },
       {
         data: "code",
         render: function (data, type, row) {

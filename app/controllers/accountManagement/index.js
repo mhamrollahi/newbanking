@@ -2,7 +2,12 @@ const accManagementModel = require('@models/accManagement')
 
 exports.index = async(req,res,next) => {
   try {
-    res.render('./accManagement/index')
+    res.render('./accManagement/index',{
+      layout:'main',
+      title:'مدیریت حساب',
+      subTitle:'فهرست حساب'
+    })
+    
   } catch (error) {
    next(error) 
   }
