@@ -43,3 +43,7 @@ table tr th a.sort-down-cols::after{
   background-color: #2727db;
    color:aliceblue
 }
+
+#dt-search-0{
+  width:100%;
+}
