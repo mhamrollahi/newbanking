@@ -48,7 +48,7 @@ table tr th a.sort-down-cols::after{
    font-size: 13px;
 }
 .dt-felid:hover{
-  font-size: 18px;
+  font-size: 16px;
   transition: all .4s ease;
 }
 #dt-search-0{

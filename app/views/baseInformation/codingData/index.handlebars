@@ -10,28 +10,19 @@
   }
 </style>
 <div style="margin-top: 120px"></div>
-
-<div class="row justify-content-between align-items-center mb-20">
-    <div class="row justify-content-between align-items-center mb-10" style="margin-bottom: 20px;">
-
     <!-- Page Heading Start -->
-      <div class="col-12 col-lg-auto mb-10">
         <div class="page-heading page-heading-custom">
           <h3 class="title">اطلاعات پایه <span>/ جزییات کدینگ دیتا</span></h3>
         </div>
-      </div><!-- Page Heading End -->
-
-    </div>
-
   <!-- Page Heading Start -->
-  <div class="col-12 col-lg-auto mb-20">
+
     <div class="page-heading">
       <h4> جزییات کدینگ : <span style="font-style: italic;font-size: 23px;">{{fa_TableName}}</span> </h4>
     </div>
-  </div>
+
   <!-- Page Heading End -->
   <!-- Page Button Group Start -->
-  <div class="col-12 col-lg-auto ">
+  <div style="text-align: left;position: relative;top:-25px">
     <div class="buttons-group">
       <a href="../create/{{codeTableListId}}" class="button button-primary">
         <span><i class="zmdi zmdi-plus"></i>تعریف کدینگ جدید</span>
@@ -53,7 +44,9 @@
       <p class="alert alert-danger w-50 text-center">{{removeSuccess}}</p>
     </div>
   {{/if}} 
-</div>
+
+
+
   <div style="margin:1px; width:40%;">
     <label for="cmbCodeTableList">نام جداول کدینگ</label>
     <form action="" method="get">
@@ -65,9 +58,8 @@
     </form>
 </div>
 
-<div class="row mb-30">
   <!-- Revenue Statistics Chart Start -->
-  <div class="col-md-12 mb-30">
+<div class="col-md-12 mb-30">
     <div class="box">
       <div class="box-body table-responsive">
         
@@ -87,96 +79,12 @@
           <!-- Table Head End -->
 
           <!-- Table Body Start -->
-          {{!-- <tbody>
-
-            {{#each codingDataList}}
-
-              <tr class="row-table d-flex">
-
-                <td class="col-md-1">
-                  {{this.id}}
-                </td>
-
-                <td class="col-md-3">
-                  {{this.title}}
-                  <div class="table-action-buttons text-wrap text-center">
-                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codingData/edit/{{this.id}}">
-                      <i class="zmdi zmdi-edit"></i>
-                    </a>
-                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codingData/delete/{{this.id}}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
-                      <i class="zmdi zmdi-delete"></i>
-                    </a>
-                  </div>
-                </td>
-
-                <td class="col-md-2 text-wrap text-small">
-                  {{this.description}}
-                  <div class="table-action-buttons text-center">
-                    <a class="edit button button-box button-xs button-info" href="/baseInformation/codingData/edit/{{this.id}}">
-                      <i class="zmdi zmdi-edit"></i>
-                    </a>
-                    <a class="delete button button-box button-xs button-danger" href="/baseInformation/codingData/delete/{{this.id}}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
-                      <i class="zmdi zmdi-delete"></i>
-                    </a>
-                  </div>
-                </td>
-
-                <td class="col-md-1 text-small">
-                  {{this.sortId}}
-                </td>
-
-                <td class="col-md-1">
-                  {{this.refId}}
-                </td>
-
-                <td class="col-md-2 text-wrap">
-                  {{this.fa_createdAt}}
-                </td>
-
-                <td class="col-md-2">
-                  {{this.creator}}
-                </td>
-
-              </tr>
-
-            {{/each}}
-          </tbody> --}}
           <!-- Table Body End -->
         </table>
-
-        {{!-- <div class="dataTables_paginate paging_simple_numbers" style="float:right; margin: 8px;">
-              <a href="?page={{pagination.prevPage}}" class="paginate_button previous btn btn-success
-                 {{#showDisabled pagination.hasPrevPage}}{{/showDisabled}}" >
-                <i class="zmdi zmdi-chevron-right"></i>
-              </a>
-              {{#if pagination.isMoreThan3Pages}}
-                <span>
-                  <a href="?page=1" class="paginate_button current btn btn-sm btn-success">1</a>
-                  <a href="?page=2" class="paginate_button btn btn btn-sm btn-success">2</a>
-                  <a href="?page=3" class="paginate_button btn btn btn-sm btn-success">3</a>
-                  <a href="?page=4" class="paginate_button btn"><h3>. . .</h3></a>
-                  <a href="?page={{pagination.totalPages}}" class="paginate_button btn btn-sm btn-success">{{pagination.totalPages}}</a>
-                </span>
-              {{else}}
-                <span>
-                  <a href="?page=1"class="paginate_button current btn btn btn-sm btn-success">1</a>
-                  <a href="?page=2"class="paginate_button btn btn btn-sm btn-success">2</a>
-                </span>
-              {{/if}}
-                <a href="?page={{pagination.nextPage}}" class="paginate_button next  btn btn-success 
-                  {{#showDisabled pagination.hasNextPage}}{{/showDisabled}}">
-                  <i class="zmdi zmdi-chevron-left"></i>
-                </a>
-        </div>
-        <div class="dataTables_info" style="float:left;padding:25px 0 0 20px ; font-size:16px;font-weight:600"> 
-           نمایش {{pagination.offset}} تا {{pagination.to}} از تعداد کل {{pagination.totalCount}}
-        </div> --}}
-
       </div>
     </div>
   </div>
-  <!-- Revenue Statistics Chart End -->
-</div>
+
 
 <script>
  function doAction(val){
