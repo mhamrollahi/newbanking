@@ -1,4 +1,4 @@
-const accManagementModel = require('@models/accManagement')
+// const accManagementModel = require('@models/accountManagement')
 
 exports.index = async(req,res,next) => {
   try {
@@ -13,12 +13,12 @@ exports.index = async(req,res,next) => {
   }
 }
 
-exports.block = async (req,res,next)=>{
-  try {
-    const result = await accManagementModel.block()
-    res.send(result)
-  } catch (error) {
-    next(error)
-  }
-}
+// exports.block = async (req,res,next)=>{
+//   try {
+//     const result = await accManagementModel.block()
+//     res.send(result)
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 
