@@ -8,7 +8,6 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const {sequelize} = require('@models/index.js')
 
-
 // const {connect} = require('../configs/dbConfig')
 
 

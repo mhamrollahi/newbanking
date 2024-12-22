@@ -28,7 +28,7 @@ $(document).ready(function () {
             <span>${data}</span>
             <div class= "table-action-buttons"> 
             <a class="edit button button-box button-xs button-success" href="/baseInformation/codingData/index/${row.id}"  title='برای وارد کردن جزییات جدول کلیک کنید..'>
-              <i class="zmdi zmdi-file-text"></i>
+              <i class="zmdi zmdi-more"></i>
             </a>
             <a class="edit button button-box button-xs button-info" href="/baseInformation/codeTableList/edit/${row.id}">
               <i class="zmdi zmdi-edit"></i>

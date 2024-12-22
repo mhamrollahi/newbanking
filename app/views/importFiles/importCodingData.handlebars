@@ -1,0 +1,29 @@
+<div style="height: 150px;"></div>
+<div class="import-file-container">
+  <form
+    action="/importFiles/importCodingData"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
+
+    <div class="input-group mb-3">
+      <input
+        type="file"
+        name = 'excelFile'
+        class="form-control"
+        id="inputGroupFile03"
+        accept=".xlsx, .xls"
+        required
+      />
+    </div>
+    <div class="text-center">
+      <button
+        class="btn btn-success"
+        type="submit"
+        id="inputGroupFileAddon03"
+        style="width:120px;text-align: center;"
+      >تایید</button>
+    </div>
+  </form>
+</div>
