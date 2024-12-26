@@ -6726,17 +6726,22 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 
 /*Table Action Buttons*/
 .table-action-buttons {
-  transition: all 1.5s ease-in;
   min-width: 80px;
   /* MHA : Start */
-  display: none;
+  /* display: none; */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .5s ease,visibility .5s ease;
   /* MHA : End */
+ 
 }
 
 /* MHA : Start  */
 /* .row-table:hover .table-action-buttons{ */
 .row-table:hover .table-action-buttons{
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  /* display: block; */
 }
 /* MHA : End  */
 

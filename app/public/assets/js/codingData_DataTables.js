@@ -57,6 +57,7 @@ $(document).ready(function () {
       { data: "fa_createdAt" },
       { data: "creator" },
     ],
+    fixedHeader: true,
     order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
     language: {

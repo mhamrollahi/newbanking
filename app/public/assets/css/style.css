@@ -62,3 +62,7 @@ table tr th a.sort-down-cols::after{
 .table-custom tbody{
   font-size: 14px!important;
 }
+
+.dataTables_wrapper .dataTables_scrollHead {
+  z-index: 1050; /* بیشتر از z-index سایر المان‌ها */
+}
