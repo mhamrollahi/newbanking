@@ -1,4 +1,18 @@
 <div style="height: 150px;"></div>
+
+{{!-- {{#if success}}
+  <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
+    <p class="alert alert-success w-50 text-center">{{success}}</p>
+  </div>
+{{/if}}
+
+{{#if errors}}
+  <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
+    <p class="alert alert-danger w-50 text-center">{{errors}}</p>
+  </div>
+{{/if}} --}}
+
+
 <div class="import-file-container">
   <form
     action="/importFiles/importCodingData"
@@ -8,22 +22,26 @@
     <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
     <div class="input-group mb-3">
-      <input
-        type="file"
-        name = 'excelFile'
-        class="form-control"
-        id="inputGroupFile03"
-        accept=".xlsx, .xls"
-        required
-      />
+      <input type="file" name = 'excelFile' class="form-control" id="inputGroupFile03" accept=".xlsx, .xls" required/>
     </div>
     <div class="text-center">
-      <button
-        class="btn btn-success"
-        type="submit"
-        id="inputGroupFileAddon03"
-        style="width:120px;text-align: center;"
-      >تایید</button>
+      <button class="btn btn-success" type="submit" id="inputGroupFileAddon03" style="width:120px;text-align: center;">تایید</button>
     </div>
   </form>
 </div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+ <script>
+    // دریافت پیام‌های Flash
+    const successMsg = '{{success}}';
+    const errorMsg = '{{errors}}';
+
+    // نمایش پیام‌ها با Toastr
+    if (successMsg) {
+      toastr.success(successMsg, 'موفقیت');
+    }
+    if (errorMsg) {
+      toastr.error(errorMsg, 'خطا');
+    }
+</script>
+

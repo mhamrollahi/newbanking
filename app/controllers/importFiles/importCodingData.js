@@ -4,7 +4,16 @@ const {CodingDataModel} = require('../../models')
 
 exports.importCodingData = (req,res,next)=>{
   try {
-    res.render('./importFiles/importCodingData',{layout:'main'})
+
+    const success = req.flash('success')
+    const errors = req.flash('errors')
+
+    console.log(success,errors)
+    
+    res.render('./importFiles/importCodingData',{layout:'main',
+      success,
+      errors,
+    })
   } catch (error) {
       next(error)
   }
@@ -42,6 +51,7 @@ exports.importCodingData_Save =async (req,res,next)=>{
           refId : row.refId,
           createdAt: row.createdAt,
           creator:row.creator,
+          updatedAt:null,
         })
       }
     }
@@ -66,8 +76,25 @@ exports.importCodingData_Save =async (req,res,next)=>{
     })
 
   }
-    res.send('فایل با موفقیت بارگذاری شد.')
+
+    req.flash('success','فایل کدینگ با موفقیت بارگذاری شد')
+   return res.redirect('/importFiles/importCodingData')
+    // res.send('فایل با موفقیت بارگذاری شد.')
   } catch (error) {
+    let errors = []
+
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
+      req.flash("errors", errors);
+      return res.redirect(`/importFiles/importCodingData`);
+    }
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      errors = error.message.split("SequelizeUniqueConstraintError");
+      req.flash("errors", errors);
+      return res.redirect(`/importFiles/importCodingData`);
+    }
+
     next(error)
   }
 }

@@ -68,7 +68,9 @@
 /*----------------------------------------*/
 /*-- Google Font --*/
 /*-- Common Style --*/
-
+:root{
+  --margin-top-body-content:85px
+}
 @font-face {
   font-family: IRANSans;
   font-style: normal;
@@ -487,7 +489,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   background: radial-gradient(circle, rgba(244,214,227,1) 0%, rgba(148,187,233,1) 100%);">
 
   /* MHA - End */
-  margin-top: 110px;
+  margin-top: var(--margin-top-body-content)
   -webkit-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;
@@ -6724,6 +6726,7 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 
 /*Table Action Buttons*/
 .table-action-buttons {
+  transition: all 1.5s ease-in;
   min-width: 80px;
   /* MHA : Start */
   display: none;
@@ -7227,6 +7230,9 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 .header-section {
   background-color: #fafafa;
   width: 100%;
+  /* MHA:Start */
+  height: var(--margin-top-body-content);
+  /* MHA:End */
   position: fixed;
   left: 0;
   top: 0;
@@ -7259,7 +7265,8 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
   -webkit-flex: 0 0 270px;
   -ms-flex: 0 0 270px;
   flex: 0 0 270px;
-  height: 110px;
+  /* height: 110px; */
+  height: var(--margin-top-body-content);
 }
 
 .header-logo a {
@@ -7338,6 +7345,7 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 
 /*-- Side Header Toggle --*/
 .side-header-toggle {
+
   display: block;
   border: none;
   background-color: transparent;
@@ -7463,7 +7471,8 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
     left: 0;
     top: 0;
     width: 100%;
-    height: 110px;
+    /* height: 110px; */
+    height: var(--margin-top-body-content);
     background-color: #fafafa;
     z-index: 99;
     padding: 15px 80px;
@@ -7620,7 +7629,11 @@ table.data-table.collapsed tbody tr.child td.child ul li .dtr-title {
 .header-notification-area>li .adomx-dropdown-menu {
   right: 0;
   left: auto;
-  margin-top: 35px;
+  /* margin-top: 35px; */
+  
+  /* MHA:Start */
+  margin-top: 22px;
+  /* MHA:End */
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1499px), only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -9108,10 +9121,12 @@ body.header-top-green .header-notification-area>li>a .user .name {
 .side-header {
   width: 270px !important;
   background-color: #161824;
-  height: calc(100vh - 110px);
+  /* height: calc(100vh - 110px); */
+  height: calc(100vh - var(--margin-top-body-content));
   position: fixed;
   left: 0;
-  top: 110px;
+  /* top: 110px; */
+  top: var(--margin-top-body-content);
   -webkit-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;

@@ -13,6 +13,10 @@
   color:#aa0202
 }
 
+.box-codingdata{
+  margin-top: var(--margin-top-body-content);
+}
+
 table tr th a.sort-up-cols::after{
   content: "\f0de";
   font-family: "FontAwesome";
