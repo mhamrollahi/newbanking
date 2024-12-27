@@ -4,13 +4,15 @@
   <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
     <p class="alert alert-success w-50 text-center">{{success}}</p>
   </div>
-{{/if}}
+{{/if}} --}}
 
 {{#if errors}}
-  <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
-    <p class="alert alert-danger w-50 text-center">{{errors}}</p>
+  <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column">
+    <p class="alert alert-danger w-50 text-center align-self-center" style="margin-bottom: 6px;">{{errors}}</p>
+    <p class="alert alert-danger w-50 text-center align-self-center">برای مشاهد خطاهای فایل  لطفا فایل زیر را مشاهده نمایید.</p>
+
   </div>
-{{/if}} --}}
+{{/if}}
 
 
 <div class="import-file-container">
@@ -40,8 +42,10 @@
     if (successMsg) {
       toastr.success(successMsg, 'موفقیت');
     }
-    if (errorMsg) {
-      toastr.error(errorMsg, 'خطا');
-    }
+
+//    if (errorMsg) {
+//      toastr.error(errorMsg, 'خطا');
+//    }
+    
 </script>
 

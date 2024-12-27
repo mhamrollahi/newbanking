@@ -1,100 +1,120 @@
+const xlsx = require("xlsx");
+const { CodingDataModel } = require("../../models");
+const path = require('path')
+const fs = require("fs");
+const { fileURLToPath } = require("url");
 
-const xlsx = require('xlsx')
-const {CodingDataModel} = require('../../models')
-
-exports.importCodingData = (req,res,next)=>{
+exports.importCodingData = (req, res, next) => {
   try {
+    const success = req.flash("success");
+    const errors = req.flash("errors");
 
-    const success = req.flash('success')
-    const errors = req.flash('errors')
+    console.log(success, errors);
 
-    console.log(success,errors)
-    
-    res.render('./importFiles/importCodingData',{layout:'main',
+    res.render("./importFiles/importCodingData", {
+      layout: "main",
       success,
       errors,
-    })
+    });
   } catch (error) {
-      next(error)
+    next(error);
   }
-}
+};
 
-exports.importCodingData_Save =async (req,res,next)=>{
+exports.importCodingData_Save = async (req, res, next) => {
   try {
+    const workbook = xlsx.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-    const workbook = xlsx.readFile(req.file.path)
-    const sheetName = workbook.SheetNames[0]
-    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName])
+    const errorRows = [];
 
-    const errorRows = []
+    for (const [index, row] of sheetData.entries()) {
+      const errors = [];
+      if (!row.CodeTableListId) errors.push("کد پدر وارد نشده است");
+      if (row.CodeTableListId && isNaN(row.CodeTableListId))
+        errors.push("کد پدر باید عدد باشد");
+      if (!row.title) errors.push("عنوان وارد نشده است.");
+      if (!row.sortId) errors.push("ترتیب وارد نشده است.");
+      if (row.sortId && isNaN(row.sortId)) errors.push("ترتیب باید عدد باشد.");
 
-    for(const [index,row] of sheetData.entries()){
-      const errors = []
-      if(!row.CodeTableListId) errors.push('کد پدر وارد نشده است')
-      if(row.CodeTableListId && isNaN(row.CodeTableListId)) errors.push('کد پدر باید عدد باشد')
-      if(!row.title) errors.push('عنوان وارد نشده است.')
-      if(!row.sortId) errors.push('ترتیب وارد نشده است.')
-      if(row.sortId && isNaN(row.sortId)) errors.push('ترتیب باید عدد باشد.')
-      
-      if(errors.length > 0) {
+      if (errors.length > 0) {
         errorRows.push({
           Row: index + 2,
-          Errors: errors.join(', '),
+          Errors: errors.join(", "),
           OriginalData: row,
-        })
-      }else{
+        });
+      } else {
         await CodingDataModel.create({
-          CodeTableListId : row.CodeTableListId,
+          CodeTableListId: row.CodeTableListId,
           title: row.title,
-          description : row.description,
+          description: row.description,
           sortId: row.sortId,
-          refId : row.refId,
-          createdAt: row.createdAt,
-          creator:row.creator,
-          updatedAt:null,
-        })
+          refId: row.refId,
+          createdAt: row.createdAt ? row.createdAt : Date.now(),
+          creator: row.creator,
+          updatedAt: null,
+        });
       }
     }
-    if(errorRows.length>0){
-      const errorSheet = errorRows.map(row=>({
-        Row:row.Row,
-        Errors:row.Errors,
+    if (errorRows.length > 0) {
+      const errorSheet = errorRows.map((row) => ({
+        Row: row.Row,
+        Errors: row.Errors,
         ...row.OriginalData,
-      }))
+      }));
+
+      const errorWorkbook = xlsx.utils.book_new();
+      const errorWorksheet = xlsx.utils.json_to_sheet(errorSheet);
+      xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, "Errors");
+
+      const errorFilePath = `uploads/errors-${Date.now()}.xlsx`;
+      xlsx.writeFile(errorWorkbook, errorFilePath);
+
+      req.flash('errors','برخی از ردیف‌ها خطا داشتند لطفا فایل خطا را مشاهد نمایید.')
+      return res.redirect("/importFiles/importCodingData")
     
+    }
 
-    const errorWorkbook = xlsx.utils.book_new()
-    const errorWorksheet = xlsx.utils.json_to_sheet(errorSheet)
-    xlsx.utils.book_append_sheet(errorWorkbook,errorWorksheet,'Errors')
-    
-    const errorFilePath = `uploads/errors-${Date.now()}.xlsx`
-    xlsx.writeFile(errorWorkbook,errorFilePath)
+    const filePath = path.join(__dirname,'../../../uploads',req.file.filename)
+    deleteUploadedFile(filePath)
 
-    return res.status(400).json({
-      message:'برخی از ردیف‌ها خطا داشتند',
-      errorFile:errorFilePath,
-    })
+    req.flash("success", "فایل کدینگ با موفقیت بارگذاری شد");
+    return res.redirect("/importFiles/importCodingData");
 
-  }
-
-    req.flash('success','فایل کدینگ با موفقیت بارگذاری شد')
-   return res.redirect('/importFiles/importCodingData')
-    // res.send('فایل با موفقیت بارگذاری شد.')
   } catch (error) {
-    let errors = []
+
+    let errors = [];
+
+    const filePath = path.join(__dirname,'../../../uploads',req.file.filename)
+    deleteUploadedFile(filePath)
 
     if (error.name === "SequelizeValidationError") {
       errors = error.message.split("Validation error:");
-      req.flash("errors", errors);
+      
+      console.log('error = ', error)
+      console.log('errors = ', errors)
+
+      req.flash("errors", error.message);
       return res.redirect(`/importFiles/importCodingData`);
     }
 
     if (error.name === "SequelizeUniqueConstraintError") {
       errors = error.message.split("SequelizeUniqueConstraintError");
+
+      console.log('error = ', error)
+      console.log('errors = ', errors)
+
       req.flash("errors", errors);
       return res.redirect(`/importFiles/importCodingData`);
     }
 
-    next(error)
+    next(error);
   }
+};
+
+const deleteUploadedFile = async (filePath) => {
+
+  await fs.unlinkSync(filePath)
+  console.log(`فایل ${filePath} با موفقیت حدف شد.....`)
 }
