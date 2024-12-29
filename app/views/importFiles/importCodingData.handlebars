@@ -9,7 +9,9 @@
 {{#if errors}}
   <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column">
     <p class="alert alert-danger w-50 text-center align-self-center" style="margin-bottom: 6px;">{{errors}}</p>
-    <p class="alert alert-danger w-50 text-center align-self-center">برای مشاهد خطاهای فایل  لطفا فایل زیر را مشاهده نمایید.</p>
+    <p class="alert alert-danger w-50 text-center align-self-center">برای مشاهد خطاهای فایل  لطفا 
+      <a style="font-size: 17px;font-style: italic;" href="/downloadErrorFile?filePath={{errorFilePath}}">این فایل </a>
+       را مشاهده نمایید.</p>
 
   </div>
 {{/if}}
@@ -36,8 +38,7 @@
  <script>
     // دریافت پیام‌های Flash
     const successMsg = '{{success}}';
-    const errorMsg = '{{errors}}';
-
+   
     // نمایش پیام‌ها با Toastr
     if (successMsg) {
       toastr.success(successMsg, 'موفقیت');
