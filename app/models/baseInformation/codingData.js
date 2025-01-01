@@ -1,11 +1,21 @@
 const { DataTypes } = require("sequelize");
 const dateService = require("@services/dateService");
-const { toDefaultValue } = require("sequelize/lib/utils");
 
 exports.CodingData = (sequelize) => {
   const CodingData = sequelize.define(
     "CodingData",
     {
+      id:{
+        type:DataTypes.INTEGER,
+        primaryKey:true,
+        allowNull:false,
+      },      
+      
+      CodeTableListId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+      },
+
       title: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -131,6 +141,20 @@ exports.CodingData = (sequelize) => {
         },
       ],
       validate: {},
+      hooks:{
+        async beforeValidate(record,options){
+          if(!record.id){
+            const lastRecord = await CodingData.findOne({
+              where : {CodeTableListId:record.CodeTableListId},
+              order : [['id','desc']]
+            })
+         
+            const lastId = lastRecord ? lastRecord.id : record.CodeTableListId * 1000
+            record.id = lastId + 1 
+          }
+        }
+      }
+      
     }
   );
 

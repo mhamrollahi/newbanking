@@ -58,7 +58,6 @@ exports.store = async (req, res, next) => {
   try {
     // res.send(req.body)
     const codeTableListData = {
-      code: req.body.code,
       fa_TableName: req.body.fa_TableName,
       en_TableName: req.body.en_TableName,
       creator: "MHA",
@@ -126,7 +125,6 @@ exports.update = async (req, res, next) => {
     const codeTableListId = await req.params.id;
 
     const codeTableListData = {
-      code: req.body.code,
       en_TableName: req.body.en_TableName,
       fa_TableName: req.body.fa_TableName,
       updated_at: new Date().toLocaleDateString("en-US"),
@@ -135,7 +133,6 @@ exports.update = async (req, res, next) => {
 
     const rowsAffected = await CodeTableListModel.update(
       {
-        code: codeTableListData.code,
         en_TableName: codeTableListData.en_TableName,
         fa_TableName: codeTableListData.fa_TableName,
         updatedAt: codeTableListData.updated_at,

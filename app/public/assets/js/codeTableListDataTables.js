@@ -12,14 +12,14 @@ $(document).ready(function () {
           return meta.row + 1
         },
       },
-      {
-        data: "code",
-        render: function (data, type, row) {
-          return `
-          <a class="dt-felid" href="/baseInformation/codingData/index/${row.id}"  title="برای وارد کردن جزییات جدول کلیک کنید..">${data}</a>
-        `;
-        },
-      },
+      // {
+      //   data: "code",
+      //   render: function (data, type, row) {
+      //     return `
+      //     <a class="dt-felid" href="/baseInformation/codingData/index/${row.id}"  title="برای وارد کردن جزییات جدول کلیک کنید..">${data}</a>
+      //   `;
+      //   },
+      // },
       {
         data: "en_TableName",
         render: function (data, type, row) {

@@ -29,8 +29,8 @@ getConnection()
 const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
 const CodingDataModel = codingDataModel.CodingData(sequelize)
 
-CodeTableListModel.hasMany(CodingDataModel )
-CodingDataModel.belongsTo(CodeTableListModel)
+CodeTableListModel.hasMany(CodingDataModel, {foreignKey:'CodeTableListId'} )
+CodingDataModel.belongsTo(CodeTableListModel, {foreignKey:'CodeTableListId'})
 
 
 // const ContactModel = contactModel.Contact(sequelize)
