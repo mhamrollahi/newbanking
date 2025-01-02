@@ -9,7 +9,7 @@ const importCodingDataControllers = require('@controllers/importFiles/importCodi
 
 router.get('/importCodingData',importCodingDataControllers.importCodingData)
 router.post('/importCodingData',upload.single('excelFile'),importCodingDataControllers.importCodingData_Save)
-router.get('/downloadErrorFile/uploads/errors',importCodingDataControllers.downloadErrorFile)
+router.get('/downloadErrorFile',importCodingDataControllers.downloadErrorFile)
 
 
 module.exports = router

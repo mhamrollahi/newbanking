@@ -46,6 +46,28 @@ exports.importCodingData_Save = async (req, res, next) => {
           OriginalData: row,
         });
 
+      
+
+      
+        if (errorRows.length > 0) {
+          const errorSheet = errorRows.map((row) => ({
+            Row: row.Row,
+            Errors: row.Errors,
+            ...row.OriginalData,
+          }));
+        }
+
+        req.flash('errors','برخی از ردیف‌ها خطا داشتند لطفا فایل خطا را مشاهد نمایید.')
+        req.flash('errorFilePath',errorFilePath)
+  
+        console.log(errorFilePath)
+  
+        const filePath = path.join(__dirname,'../../../uploads',req.file.filename)
+        deleteUploadedFile(filePath)
+  
+
+
+
       } else 
       {
         console.log('inside of insert .... ')
@@ -74,13 +96,16 @@ exports.importCodingData_Save = async (req, res, next) => {
       const errorWorksheet = xlsx.utils.json_to_sheet(errorSheet);
       xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, "Errors");
 
-      const errorFilePath = `uploads/errors/errors_${Date.now()}.xlsx`;
+      const errorFilePath = `errors_${Date.now()}.xlsx`;
       xlsx.writeFile(errorWorkbook, errorFilePath);
 
       req.flash('errors','برخی از ردیف‌ها خطا داشتند لطفا فایل خطا را مشاهد نمایید.')
       req.flash('errorFilePath',errorFilePath)
 
       console.log(errorFilePath)
+
+      const filePath = path.join(__dirname,'../../../uploads',req.file.filename)
+      deleteUploadedFile(filePath)
 
       return res.redirect("/importFiles/importCodingData")
     
@@ -132,8 +157,10 @@ const deleteUploadedFile = async (filePath) => {
 
 exports.downloadErrorFile = async(req,res,next)=>{
   try {
-    const filePath = path.join(__dirname,'../../../uploads/errors',req.query.filePath)
+    const filePath = path.join(__dirname,'../../../',req.query.filePath)
     const fileName = path.basename(filePath)
+
+    console.log('filePath = ' , filePath,' ;fileName = ',fileName)
 
     res.download(filePath,fileName,(err)=>{
       if(err){
