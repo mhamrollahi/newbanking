@@ -26,7 +26,7 @@ exports.importCodingData_Save = async (req, res, next) => {
   const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
   const fileName = req.file.originalname;
   let errorSheet = null;
-  const errorRows = [];
+  let errorRows = [];
 
   for (const [index, row] of sheetData.entries()) {
     const errors = [];
@@ -36,6 +36,8 @@ exports.importCodingData_Save = async (req, res, next) => {
     if (!row.title) errors.push("عنوان وارد نشده است.");
     if (!row.sortId) errors.push("ترتیب وارد نشده است.");
     if (row.sortId && isNaN(row.sortId)) errors.push("ترتیب باید عدد باشد.");
+
+    // errorRows = pushErrors(errors,row,index,errorSheet)
 
     if (errors.length > 0) {
       errorRows.push({
@@ -52,8 +54,10 @@ exports.importCodingData_Save = async (req, res, next) => {
         }));
       }
     }
+
   }
-  if (errorRows.length > 0) {
+
+  if (errorSheet.length > 0) {
     const errorFilePath = createErrorSheet(errorSheet, fileName);
 
     req.flash("errorFilePath", errorFilePath);
@@ -214,7 +218,31 @@ const createErrorSheet = (_errorSheet, _filename) => {
   const errorWorksheet = xlsx.utils.json_to_sheet(_errorSheet);
   xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, "Errors");
 
-  const errorFilePath = `errors_${_filename.split(".")[0]}_${Date.now()}.xlsx`;
+  const errorFilePath = `uploads/errors/errors_${_filename.split(".")[0]}_${Date.now()}.xlsx`;
   xlsx.writeFile(errorWorkbook, errorFilePath);
   return errorFilePath;
 };
+
+
+const pushErrors = (_errors,row,index,errorSheet) => {
+  const errorRows = []
+
+  if (_errors.length > 0) {
+    errorRows.push({
+      Row: index + 2,
+      Errors: _errors.join(", "),
+      OriginalData: row,
+    });
+
+    if (errorRows.length > 0) {
+      errorSheet = errorRows.map((row) => ({
+        Row: row.Row,
+        Errors: row.Errors,
+        ...row.OriginalData,
+      }));
+    }
+  }
+
+  return errorRows
+
+}
