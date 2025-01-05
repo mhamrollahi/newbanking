@@ -6,6 +6,7 @@ const fs = require("fs");
 exports.importCodingData = (req, res, next) => {
   try {
     const success = req.flash("success");
+    const errors = req.flash("errors");
     const errorFilePath = req.flash("errorFilePath");
 
     console.log("errorFilePath = ", errorFilePath);
@@ -13,6 +14,7 @@ exports.importCodingData = (req, res, next) => {
     res.render("./importFiles/importCodingData", {
       layout: "main",
       success,
+      errors,
       errorFilePath,
     });
   } catch (error) {
@@ -21,6 +23,12 @@ exports.importCodingData = (req, res, next) => {
 };
 
 exports.importCodingData_Save = async (req, res, next) => {
+  const validateExcelFileResult = await validateExcelFile(req.file);
+  if (validateExcelFileResult) {
+    req.flash("errors", validateExcelFileResult.errors);
+    return res.redirect("/importFiles/importCodingData");
+  }
+
   const workbook = xlsx.readFile(req.file.path);
   const sheetName = workbook.SheetNames[0];
   const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
@@ -29,35 +37,22 @@ exports.importCodingData_Save = async (req, res, next) => {
   let errorRows = [];
 
   for (const [index, row] of sheetData.entries()) {
-    const errors = [];
-    if (!row.CodeTableListId) errors.push("کد پدر وارد نشده است");
-    if (row.CodeTableListId && isNaN(row.CodeTableListId))
-      errors.push("کد پدر باید عدد باشد");
-    if (!row.title) errors.push("عنوان وارد نشده است.");
-    if (!row.sortId) errors.push("ترتیب وارد نشده است.");
-    if (row.sortId && isNaN(row.sortId)) errors.push("ترتیب باید عدد باشد.");
+    const validationResult = validationRow(row, index);
 
-    // errorRows = pushErrors(errors,row,index,errorSheet)
-
-    if (errors.length > 0) {
-      errorRows.push({
-        Row: index + 2,
-        Errors: errors.join(", "),
-        OriginalData: row,
-      });
-
-      if (errorRows.length > 0) {
-        errorSheet = errorRows.map((row) => ({
-          Row: row.Row,
-          Errors: row.Errors,
-          ...row.OriginalData,
-        }));
-      }
+    if (validationResult) {
+      errorRows.push(validationResult);
     }
 
+    if (errorRows.length > 0) {
+      errorSheet = errorRows.map((row) => ({
+        Row: row.Row,
+        Errors: row.Errors,
+        ...row.OriginalData,
+      }));
+    }
   }
 
-  if (errorSheet.length > 0) {
+  if (errorSheet) {
     const errorFilePath = createErrorSheet(errorSheet, fileName);
 
     req.flash("errorFilePath", errorFilePath);
@@ -93,102 +88,104 @@ exports.importCodingData_Save = async (req, res, next) => {
         if (error.name === "SequelizeValidationError") {
           errors = error.message.split("Validation error:");
 
-          console.log("error = ", error);
-
-          req.flash("errors", error.message);
+          console.log("errors = ", errors);
+          if (errors.length > 0) {
+            errorRows.push({
+              Row: index + 1,
+              Errors: errors.join(", "),
+              OriginalData: row,
+            });
+          }
+          if (errorRows.length > 0) {
+            errorSheet = errorRows.map((row) => ({
+              Row: row.Row,
+              Errors: row.Errors,
+              ...row.OriginalData,
+            }));
+            // req.flash("errors", error.message);
+          }
         }
 
         if (error.name === "SequelizeUniqueConstraintError") {
           errors = error.message.split("SequelizeUniqueConstraintError");
 
-          console.log("error = ", error);
+          console.log("errors = ", errors);
+          if (errors.length > 0) {
+            errorRows.push({
+              Row: index + 1,
+              Errors: errors.join(", "),
+              OriginalData: row,
+            });
+          }
+          if (errorRows.length > 0) {
+            errorSheet = errorRows.map((row) => ({
+              Row: row.Row,
+              Errors: row.Errors,
+              ...row.OriginalData,
+            }));
+          }
+        }
+        if (error.name === "SequelizeForeignKeyConstraintError") {
+          errors = error.message.split("SequelizeForeignKeyConstraintError");
 
-          req.flash("errors", errors);
+          console.log("errors = ", errors);
+          if (errors.length > 0) {
+            errorRows.push({
+              Row: index + 1,
+              Errors: errors.join(", "),
+              OriginalData: row,
+            });
+          }
+          if (errorRows.length > 0) {
+            errorSheet = errorRows.map((row) => ({
+              Row: row.Row,
+              Errors: row.Errors,
+              ...row.OriginalData,
+            }));
+          }
         }
       }
 
+
+     
     }
-    const filePath = path.join(__dirname,"../../../uploads",req.file.filename);
-    deleteUploadedFile(filePath);
+
+
+
+    if (errorSheet) {
+      const errorFilePath = createErrorSheet(errorSheet, fileName);
+
+      req.flash("errorFilePath", errorFilePath);
+
+      console.log(errorFilePath);
+
+      const filePath = path.join(
+        __dirname,
+        "../../../uploads",
+        req.file.filename
+      );
+      deleteUploadedFile(filePath);
+
+      return res.redirect("/importFiles/importCodingData");
+    } else{
+      req.flash('success','اطلاعات با موفقیت در سامانه ذخیره شد.')
+      return res.redirect('/')
+    }
+
+
+
   }
 };
 
-//       } else {
-//         console.log("inside of insert .... ");
-
-//         await CodingDataModel.create({
-//           CodeTableListId: row.CodeTableListId,
-//           title: row.title,
-//           description: row.description,
-//           sortId: row.sortId,
-//           refId: row.refId,
-//           createdAt: row.createdAt ? row.createdAt : Date.now(),
-//           creator: row.creator,
-//           updatedAt: null,
-//         });
-//       }
-//     }
-
-//     if (errorRows.length > 0) {
-//       const errorSheet = errorRows.map((row) => ({
-//         Row: row.Row,
-//         Errors: row.Errors,
-//         ...row.OriginalData,
-//       }));
-
-//       const errorFilePath =  createErrorSheet(_errorSheet,__filename)
-//       // const errorWorkbook = xlsx.utils.book_new();
-//       // const errorWorksheet = xlsx.utils.json_to_sheet(errorSheet);
-//       // xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, "Errors");
-
-//       // const errorFilePath = `errors_${fileName}_${Date.now()}.xlsx`;
-//       // xlsx.writeFile(errorWorkbook, errorFilePath);
-
-//       req.flash("errors","برخی از ردیف‌ها خطا داشتند لطفا فایل خطا را مشاهد نمایید.");
-//       req.flash("errorFilePath", errorFilePath);
-
-//       console.log(errorFilePath);
-
-//       const filePath = path.join(__dirname,"../../../uploads",req.file.filename);
-//       deleteUploadedFile(filePath);
-
-//       return res.redirect("/importFiles/importCodingData");
-//     }
-
-//     const filePath = path.join(__dirname,"../../../uploads",req.file.filename);
-//     deleteUploadedFile(filePath);
-
-//     req.flash("success", "فایل کدینگ با موفقیت بارگذاری شد");
-//     return res.redirect("/importFiles/importCodingData");
-//   } catch (error) {
-//     let errors = [];
-
-//     const filePath = path.join(__dirname,"../../../uploads",req.file.filename);
-//     deleteUploadedFile(filePath);
-
-//     if (error.name === "SequelizeValidationError") {
-//       errors = error.message.split("Validation error:");
-
-//       console.log("error = ", error);
-//       console.log("errors = ", errors);
-
-//       req.flash("errors", error.message);
-//       return res.redirect(`/importFiles/importCodingData`);
-//     }
-
-//     if (error.name === "SequelizeUniqueConstraintError") {
-//       errors = error.message.split("SequelizeUniqueConstraintError");
-
-//       console.log("error = ", error);
-//       console.log("errors = ", errors);
-
-//       req.flash("errors", errors);
-//       return res.redirect(`/importFiles/importCodingData`);
-//     }
-
-//     next(error);
-//   }
-// };
+const validateExcelFile = async (file) => {
+  if (!file.mimetype.includes("spreadsheet")) {
+    return {
+      isValid: false,
+      errors: " فرمت فایل می‌بایست اکسل باشد. !فرمت فایل معتبر نیست",
+    };
+  }
+  return null;
+};
 
 const deleteUploadedFile = async (filePath) => {
   await fs.unlinkSync(filePath);
@@ -218,31 +215,29 @@ const createErrorSheet = (_errorSheet, _filename) => {
   const errorWorksheet = xlsx.utils.json_to_sheet(_errorSheet);
   xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, "Errors");
 
-  const errorFilePath = `uploads/errors/errors_${_filename.split(".")[0]}_${Date.now()}.xlsx`;
+  const errorFilePath = `uploads/errors/errors_${
+    _filename.split(".")[0]
+  }_${Date.now()}.xlsx`;
   xlsx.writeFile(errorWorkbook, errorFilePath);
   return errorFilePath;
 };
 
+const validationRow = (row, index) => {
+  const errors = [];
+  if (!row.CodeTableListId) errors.push("کد پدر وارد نشده است");
+  if (row.CodeTableListId && isNaN(row.CodeTableListId))
+    errors.push("کد پدر باید عدد باشد");
+  if (!row.title) errors.push("عنوان وارد نشده است.");
+  if (!row.sortId) errors.push("ترتیب وارد نشده است.");
+  if (row.sortId && isNaN(row.sortId)) errors.push("ترتیب باید عدد باشد.");
 
-const pushErrors = (_errors,row,index,errorSheet) => {
-  const errorRows = []
-
-  if (_errors.length > 0) {
-    errorRows.push({
-      Row: index + 2,
-      Errors: _errors.join(", "),
+  if (errors.length > 0) {
+    return {
+      Row: index + 1,
+      Errors: errors.join(", "),
       OriginalData: row,
-    });
-
-    if (errorRows.length > 0) {
-      errorSheet = errorRows.map((row) => ({
-        Row: row.Row,
-        Errors: row.Errors,
-        ...row.OriginalData,
-      }));
-    }
+    };
   }
 
-  return errorRows
-
-}
+  return null;
+};
