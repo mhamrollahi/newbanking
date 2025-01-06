@@ -125,12 +125,13 @@ exports.importCodingData_Save = async (req, res, next) => {
         }
 
         if (error.name === "SequelizeForeignKeyConstraintError") {
-          errors = error.message.split("SequelizeForeignKeyConstraintError");
+          // errors = error.message.split("SequelizeForeignKeyConstraintError");
+          errors = 'این کد در جدول کدینگ اصلی وجود ندارد'
 
           if (errors.length > 0) {
             errorRows.push({
               Row: index + 1,
-              Errors: errors.join(", "),
+              Errors: errors,
               OriginalData: row,
             });
           }
