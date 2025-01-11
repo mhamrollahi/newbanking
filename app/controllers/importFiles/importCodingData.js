@@ -27,6 +27,9 @@ exports.importCodingData_Save = async (req, res, next) => {
   const validateExcelFileResult = await validateExcelFile(req.file);
   if (validateExcelFileResult) {
     req.flash("errors", validateExcelFileResult.errors);
+    const filePath = path.join(__dirname,"../../../uploads",req.file.filename);
+    deleteUploadedFile(filePath);
+
     return res.redirect("/importFiles/importCodingData");
   }
 
