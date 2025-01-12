@@ -26,10 +26,11 @@
   >
     <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
-    <div class="input-group mb-3">
+    <div class="mb-3">
       <input type="file" name = 'excelFile' class="form-control" id="excelFile" accept=".xlsx, .xls" required1/>
-      <div id="excelFile-error" class="errMessage"></div>
+      <div id="excelFile-error" class="errMessage mt-2">خطا در فایل</div>
     </div>
+   
     <div class="text-center">
       <button class="btn btn-success" type="submit" id="inputGroupFileAddon03" style="width:120px;text-align: center;">تایید</button>
     </div>
@@ -49,37 +50,6 @@
 //    if (errorMsg) {
 //      toastr.error(errorMsg, 'خطا');
 //    }
-    const schema = yup.object().shape({
-      excelFile:yup
-        .string()
-        .required('نام فایل وارد نشده است.'),
-    })
-
-    const frmImportCodingData = document.getElementById('frmImportCodingData')
-    
-    console.log('form  = ', frmImportCodingData )
-
-
-    frmImportCodingData.addEventListener('submit',async (event)=>{
-      event.preventDefault()
-
-      const formData = {
-        excelFile = document.getElementById('excelFile').value
-      }
-    })
-
-    try{
-      await schema.validate(formData)
-      console.log('Form is validated ...!')
-    }catch(err){
-      document.querySelectorAll('.errMessage').forEach((el)=>(el.textContent = ''))
-
-      err.inner.forEach((validationError) => {
-        const field = validationError.path
-        const message = validationError.message
-        document.getElementById(`${field}-error`).textContent = message
-      })
-    }
 
 
 </script>
