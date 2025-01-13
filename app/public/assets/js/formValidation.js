@@ -90,3 +90,92 @@ function validationForm(form) {
 
 // // ثبت رویداد ارسال فرم  
 // document.getElementById('myForm').onsubmit = validateForm;
+
+
+
+// این کد بهتررررر
+// // formValidation.js  
+
+// // تابع برای ارائه پیغام خطا  
+// function setErrorMessage(inputElement, message) {  
+//   // ایجاد یک عنصر span برای نمایش پیام خطا  
+//   let errorMessage = document.createElement('span');  
+//   errorMessage.className = 'error-message';  
+//   errorMessage.style.color = 'red';  
+//   errorMessage.innerText = message;  
+  
+//   // اضافه کردن پیام به فرم  
+//   inputElement.parentNode.insertBefore(errorMessage, inputElement.nextSibling);  
+// }  
+
+// // تابع اعتبارسنجی  
+// function validateForm(form) {  
+//   // پاک کردن پیام‌های خطای قبلی  
+//   const errorMessages = form.querySelectorAll('.error-message');  
+//   errorMessages.forEach(msg => msg.remove());  
+
+//   let isValid = true;  
+
+//   // بررسی ورودی‌ها  
+//   Array.from(form.elements).forEach(input => {  
+//       const value = input.value.trim();  
+
+//       // اعتبارسنجی الزامی بودن  
+//       if (input.required && !value) {  
+//           setErrorMessage(input, 'این فیلد الزامی است.');  
+//           isValid = false;  
+//           return; // ادامه به ورودی بعدی  
+//       }  
+
+//       // اعتبارسنجی نوع ایمیل  
+//       if (input.type === 'email' && value && !value.includes('@')) {  
+//           setErrorMessage(input, 'ایمیل معتبر نیست.');  
+//           isValid = false;  
+//           return;  
+//       }  
+
+//       // اعتبارسنجی طول ورودی (برای نوع text و password)  
+//       if ((input.type === 'text' || input.type === 'password') && value) {  
+//           const minLength = input.minLength ? parseInt(input.minLength) : 0;  
+//           const maxLength = input.maxLength ? parseInt(input.maxLength) : Infinity;  
+
+//           if (value.length < minLength) {  
+//               setErrorMessage(input, `حداقل طول ورودی ${minLength} کاراکتر است.`);  
+//               isValid = false;  
+//               return;  
+//           }  
+//           if (value.length > maxLength) {  
+//               setErrorMessage(input, `حداکثر طول ورودی ${maxLength} کاراکتر است.`);  
+//               isValid = false;  
+//               return;  
+//           }  
+//       }  
+
+//       // اعتبارسنجی ورودی فایل  
+//       if (input.type === 'file') {  
+//           const allowedExtensions = /(\.xlsx|\.xls)$/i; // فقط فایل‌های Excel  
+//           if (!allowedExtensions.exec(input.value)) {  
+//               setErrorMessage(input, 'فقط فایل‌های Excel با پسوند .xlsx یا .xls مجاز هستند.');  
+//               isValid = false;  
+//               return;  
+//           } else if (input.files[0] && input.files[0].size > 5 * 1024 * 1024) { // حداکثر اندازه فایل ۵ مگابایت  
+//               setErrorMessage(input, 'حجم فایل باید کمتر از ۵ مگابایت باشد.');  
+//               isValid = false;  
+//               return;  
+//           }  
+//       }  
+//   });  
+
+//   return isValid;  
+// }  
+
+// // افزودن رویداد به فرم‌ها  
+// document.querySelectorAll('form').forEach(form => {  
+//   form.addEventListener('submit', function (event) {  
+//       const isValid = validateForm(form);  
+//       if (!isValid) {  
+//           event.preventDefault(); // جلوگیری از ارسال فرم  
+//       }  
+//   });  
+// });
+
