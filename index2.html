@@ -25,39 +25,31 @@
   </head>
   <body>
     <div class="import-file-container">
-      <form id="frmImportCodingData" class="myForm" data-validation>
+      <form id="frmImportCodingData" name="frmImportCodingData" class="myForm" data-validation>
         <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
         <div class="mb-3">
-          <input
-            type="file"
-            name="excelFile"
-            class="form-control"
-            id="excelFile"
-            accept=".xlsx, .xls"
-            required1
-          />
+          <input type="file" name="excelFile" class="form-control" id="excelFile" accept=".xlsx, .xls" required/>
         </div>
         <div class="mb-3">
-          <input
-            type="email"
-            name="myemail"
-            class="form-control"
-            id="myemal"
-            placeholder="لطفا ایمیل خود را وارد کنید."
-            required1
-          />
+          <input type="email" name="myemail" class="form-control" id="myemal" placeholder="لطفا ایمیل خود را وارد کنید." required1/>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="txtEmail" name="txtEmail"  placeholder="name@example.com" required data-farsiname="آدرس پست الکترونیکی">
+          <label for="txtEmail" class="mandatory">آدرس پست الکترونیکی</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <textarea class="form-control txt-experience"  id="txtExperience" name="txtExperience" rows="3" minlength="30" required
+            placeholder="متن خاطره یا تجربه خود را اینجا بنویسید ..." data-farsiname="متن خاطره / تجربه"></textarea>
+          <label for="txtExperience" class="mandatory">متن تجربه / خاطره خود را اینجا بنویسید...</label>
         </div>
 
         <div class="text-center">
-          <button
-            class="btn btn-success"
-            type="submit"
-            style="width: 120px; text-align: center"
-          >
-            تایید
-          </button>
+          <button class="btn btn-success" type="submit" id="btnSubmit" name="btnSubmit" style="width: 120px; text-align: center">تایید </button>
         </div>
+
       </form>
     </div>
     <!-- <script>
@@ -127,15 +119,11 @@
 <script>
   
 'use strict'
-
-const frm = document.querySelector('[data-validation]')
-const inputs =document.querySelectorAll('input, textarea')
-
-console.log(frm.checkValidity())
+const frm = frmImportCodingData
 
 const errMessages = {
   badInput : () => 'badInput',
-  // customError : () => 'customError',
+  customError : () => 'customError',
   patternMismatch : (target) =>  'فرمت وارد شده اشتباه می‌باشد.',
   rangeOverflow : () => 'rangeOverflow',
   rangeUnderflow : () => 'rangeUnderflow',
@@ -143,6 +131,7 @@ const errMessages = {
   tooLong : (target) => `حداکثر تعداد ${target.maxLength} کاراکتر را باید وارد کنید!` ,
   tooShort :(target) => `حداقل تعداد ${target.minLength} کاراکتر را باید وارد کنید!` ,
   typeMismatch : (target)=> `فرمت ${target.dataset.farsiname} نادرست می‌باشد.` ,
+  // valid : () => 'valid',
   valueMissing : () => 'مقدار مورد نظر اجباری می‌باشد.',
 }
 
@@ -154,18 +143,18 @@ function showErrors(e){
   const {target} = e
   
   const errorsEL = target.parentElement.querySelectorAll('.errMessage')
-  // target.setCustomValidity('')
 
-  errorsEL.forEach(el=>{
+  errorsEL.forEach(el => {
     el.remove()
   })
-
+ 
   validityKeys.forEach(key => {
     if(target.validity[key]){
       appendError(target,key)
     }
   })
 }
+
 
 function appendError(target,key){
   const errorEl = document.createElement('small');
@@ -174,43 +163,24 @@ function appendError(target,key){
   target.parentElement.appendChild(errorEl);
 }
 
-function setCustomValidityMessage(target,key){
-  target.setCustomValidity(errMessages[key](target))
-}
 
-inputs.forEach(function(input){
-  input.addEventListener('invalid',function(event){
-    // event.preventDefault()
-    const {target} = event
-    
-    console.log(target)
 
-    // validityKeys.forEach(key=>{
-      
-    //   console.log(target.validity[key])
-      
-    //   if(target.validity[key]){
-    //     setCustomValidityMessage(target,key)
-    //   }
-    // })
-
-    if(target.validity.valueMissing){
-      target.setCustomValidity('لطفا این فیلد را پر کنید!')
-    }else if(target.validity.typeMismatch){
-      target.setCustomValidity(`لطفا فرمت ${target.dataset.farsiname} را درست وارد کنید!`)
-    }else if(target.validity.tooShort){
-      target.setCustomValidity(`حداقل تعداد ${target.minLength} کاراکتر را باید وارد کنید!` ,)
-    }else if(target.validity.tooLong){
-      target.setCustomValidity(`حداکثر تعداد ${target.maxLength} کاراکتر را باید وارد کنید!` ,)
+//Save New Record ....
+btnSubmit.addEventListener("click", (e) => {
+  e.preventDefault()
+ 
+  try {
+    if (checkValidCaptcha()) {
+      console.log("inside a function submit ...");
+      return;
     }
-    else{
-      target.setCustomValidity('')
-    }
-    
-  })
-  
-})
+
+  } catch (err) {
+    throw err;
+  }
+});
+
 </script>
 
-  </body>
+</body>
 </html>
