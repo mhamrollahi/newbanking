@@ -17,27 +17,31 @@
 {{/if}}
 
 
-<div class="import-file-container">
+<div class="import-file-container" >
   <form
-    action="/importFiles/importCodingData"
-    method="POST"
-    enctype="multipart/form-data"
+    {{!-- action="/importFiles/importCodingData"
+    method="POST" 
+    enctype="multipart/form-data"--}}
     id="frmImportCodingData"
+    class="myForm"
   >
     <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
     <div class="mb-3">
-      <input type="file" name = 'excelFile' class="form-control" id="excelFile" accept=".xlsx, .xls" required1/>
-      <div id="excelFile-error" class="errMessage mt-2">خطا در فایل</div>
+      <input type="file" name = 'excelFile' class="form-control" id="excelFile" accept=".xlsx, .xls" required/>
+    </div>
+    <div class="mb-3">
+      <input type="email" name = 'myemail' class="form-control" id="myemal" placeholder="لطفا ایمیل خود را وارد کنید." required/>
     </div>
    
     <div class="text-center">
-      <button class="btn btn-success" type="submit" id="inputGroupFileAddon03" style="width:120px;text-align: center;">تایید</button>
+      <button class="btn btn-success" type="submit" style="width:120px;text-align: center;">تایید</button>
     </div>
   </form>
 </div>
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+ <script src="/static/assets/js/formValidation.js"></script>
  <script>
     // دریافت پیام‌های Flash
     const successMsg = '{{success}}';

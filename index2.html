@@ -1,433 +1,216 @@
-<html class="no-js" lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
   <head>
-    <meta charset="utf-8" />
-    <title>سامانه مدیریت حسابهای بانکی - MHA - </title>
-    <meta name="robots" content="noindex, follow" />
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/adomax/favicon.ico"/>
-
-    <!-- CSS
-	============================================ -->
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/bootstrap.rtl.min.css"/>
-
-    <!-- Icon Font CSS -->
-    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/material-design-iconic-font.min.css"/>
-    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/font-awesome.min.css"/>
-    <link rel="stylesheet" href="app/public/assets/adomax/css/vendor/themify-icons.css"/>
-
-    <!-- Plugins CSS -->
-    <link rel="stylesheet" href="app/public/assets/adomax/css/plugins/plugins.css"/>
-
-    <!-- Helper CSS -->
-    <link rel="stylesheet" href="app/public/assets/adomax/css/adomax/helper.css" />
-
-    <!-- Main Style CSS -->
-    <link rel="stylesheet" href="app/public/assets/adomax/css/adomax/style.css" />
-    <link rel="stylesheet" href="app/public/assets/adomax/CSS/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .errMessage {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #350101;
+      }
+      .errMessage::before {
+        content: "\f00d";
+        font-family: "FontAwesome";
+        display: inline-block;
+        position: relative;
+        top: 1px;
+        padding-left: 5px;
+        color: #aa0202;
+      }
+    </style>
+    <style href="app/public/assets/adomax/css/vendor/bootstrap.rtl.min.css"></style>
   </head>
+  <body>
+    <div class="import-file-container">
+      <form id="frmImportCodingData" class="myForm" data-validation>
+        <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
-  <body dir="rtl">
-
-    <div class="main-wrapper">
-
-      <!-- Header Section Start -->
-      <div class="header-section">
-        <div class="container-fluid">
-          <div class="row justify-content-between align-items-center">
-
-            <!-- Header Logo (Header Left) Start -->
-            <div class="header-logo col-auto">
-              <a href="app/public/index.html">
-                <img src="assets/images/lotus-36.png" alt="" />
-                {{! <img src="assets/images/adomax/logo/logo.png" alt=""> }}
-                {{! <img src="assets/images/adomax/logo/logo-light.png" class="logo-light" alt=""> }}
-              </a>
-            </div><!-- Header Logo (Header Left) End -->
-
-            <!-- Header Right Start -->
-            <div class="header-right flex-grow-1 col-auto">
-              <div class="row justify-content-between align-items-center">
-
-                <!-- Side Header Toggle & Search Start -->
-                <div class="col-auto">
-                  <div class="row align-items-center">
-
-                    <!--Side Header Toggle-->
-                    <div class="col-auto"><button class="side-header-toggle"><i
-                          class="zmdi zmdi-menu"
-                        ></i></button></div>
-
-                    <!--Header Search-->
-                    <div class="col-auto">
-
-                      <div class="header-search">
-
-                        <button class="header-search-open d-block d-xl-none"><i
-                            class="zmdi zmdi-search"
-                          ></i></button>
-
-                        <div class="header-search-form">
-                          <form action="#">
-                            <input type="text" placeholder="جستجو کنید" />
-                            <button><i class="zmdi zmdi-search"></i></button>
-                          </form>
-                          <button
-                            class="header-search-close d-block d-xl-none"
-                          ><i class="zmdi zmdi-close"></i></button>
-                        </div>
-
-                      </div>
-                    </div>
-
-                  </div>
-                </div><!-- Side Header Toggle & Search End -->
-
-                <!-- Header Notifications Area Start -->
-                <div class="col-auto">
-
-                  <ul class="header-notification-area">
-
-                    <!--Mail-->
-                    <li class="adomx-dropdown col-auto">
-                      <a class="toggle" href="#"><i
-                          class="zmdi zmdi-email-open"
-                        ></i><span class="badge"></span></a>
-
-                      <!-- Dropdown -->
-                      <div class="adomx-dropdown-menu dropdown-menu-mail">
-                        <div class="head">
-                          <h4 class="title">شما 3 ایمیل دارید.</h4>
-                        </div>
-                        <div class="body custom-scroll">
-                          <ul>
-                            <li>
-                              <a href="#">
-                                <div class="image"><img
-                                    src="assets/images/adomax/avatar/avatar-2.jpg"
-                                    alt=""
-                                  /></div>
-                                <div class="content">
-                                  <h6>زیر: اکانت جدید</h6>
-                                  <p>تغییرات زیادی در قسمت هایی از آدومکس وجود
-                                    دارد.
-                                  </p>
-                                </div>
-                                <span class="reply"><i
-                                    class="zmdi zmdi-mail-reply"
-                                  ></i></span>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="#">
-                                <div class="image"><img
-                                    src="assets/images/adomax/avatar/avatar-1.jpg"
-                                    alt=""
-                                  /></div>
-                                <div class="content">
-                                  <h6>زیر: ایمیل پشتیبانی</h6>
-                                  <p>تغییرات زیادی در قسمت هایی از آدومکس وجود
-                                    دارد.
-                                  </p>
-                                </div>
-                                <span class="reply"><i
-                                    class="zmdi zmdi-mail-reply"
-                                  ></i></span>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="#">
-                                <div class="image"><img
-                                    src="assets/images/adomax/avatar/avatar-2.jpg"
-                                    alt=""
-                                  /></div>
-                                <div class="content">
-                                  <h6>زیر: درخواست کالا</h6>
-                                  <p>تغییرات زیادی در قسمت هایی از آدومکس وجود
-                                    دارد.
-                                  </p>
-                                </div>
-                                <span class="reply"><i
-                                    class="zmdi zmdi-mail-reply"
-                                  ></i></span>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="#">
-                                <div class="image"><img
-                                    src="assets/images/adomax/avatar/avatar-1.jpg"
-                                    alt=""
-                                  /></div>
-                                <div class="content">
-                                  <h6>زیر: ایمیل پشتیبانی</h6>
-                                  <p>تغییرات زیادی در قسمت هایی از آدومکس وجود
-                                    دارد.
-                                  </p>
-                                </div>
-                                <span class="reply"><i
-                                    class="zmdi zmdi-mail-reply"
-                                  ></i></span>
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-
-                    </li>
-
-                    <!--Notification-->
-                    <li class="adomx-dropdown col-auto">
-                      <a class="toggle" href="#"><i
-                          class="zmdi zmdi-notifications"
-                        ></i><span class="badge"></span></a>
-
-                      <!-- Dropdown -->
-                      <div
-                        class="adomx-dropdown-menu dropdown-menu-notifications"
-                      >
-                        <div class="head">
-                          <h5 class="title">شما 4 اعلان جدید دارید.</h5>
-                        </div>
-                        <div class="body custom-scroll">
-                          <ul>
-                            <li>
-                              <a href="#">
-                                <i class="zmdi zmdi-notifications-none"></i>
-                                <p>تغییرات زیادی در صفحات وجود دارد.</p>
-                                <span>قبل ظهر 11:00 امروز</span>
-                              </a>
-                              <button class="delete"><i
-                                  class="zmdi zmdi-close-circle-o"
-                                ></i></button>
-                            </li>
-                            <li>
-                              <a href="#">
-                                <i class="zmdi zmdi-block"></i>
-                                <p>تغییرات زیادی در صفحات وجود دارد.</p>
-                                <span>قبل ظهر 11:00 امروز</span>
-                              </a>
-                              <button class="delete"><i
-                                  class="zmdi zmdi-close-circle-o"
-                                ></i></button>
-                            </li>
-                            <li>
-                              <a href="#">
-                                <i class="zmdi zmdi-shield-security"></i>
-                                <p>تغییرات زیادی در صفحات وجود دارد.</p>
-                                <span>قبل ظهر 11:00 امروز</span>
-                              </a>
-                              <button class="delete"><i
-                                  class="zmdi zmdi-close-circle-o"
-                                ></i></button>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="footer">
-                          <a href="#" class="view-all">مشاهده همه</a>
-                        </div>
-                      </div>
-
-                    </li>
-
-                    <!--User-->
-                    <li class="adomx-dropdown col-auto">
-                      <a class="toggle" href="#">
-                        <span class="user">
-                          <span class="avatar">
-                            <img src="{{user.avatar}}" alt="" />
-                            <span class="status"></span>
-                          </span>
-                          <span class="name">{{user.fullName}}</span>
-                        </span>
-                      </a>
-
-                      <!-- Dropdown -->
-                      <div class="adomx-dropdown-menu dropdown-menu-user">
-                        <div class="head">
-                          <h5 class="name"><a
-                              href="#"
-                            >{{user.fullName}}</a></h5>
-                          <a class="mail" href="#">{{user.email}}</a>
-                        </div>
-                        <div class="body">
-                          <ul>
-                            <li><a href="#"><i
-                                  class="zmdi zmdi-account"
-                                ></i>پروفایل</a></li>
-                            <li><a href="#"><i
-                                  class="zmdi zmdi-email-open"
-                                ></i>صندوق ورودی</a></li>
-                            <li><a href="#"><i
-                                  class="zmdi zmdi-wallpaper"
-                                ></i>فعالیت</a></li>
-                          </ul>
-                          <ul>
-                            <li><a href="#"><i
-                                  class="zmdi zmdi-settings"
-                                ></i>تنظیمات</a></li>
-                            <li><a href="app/public/auth/logout"><i
-                                  class="zmdi zmdi-lock-open"
-                                ></i>خروج</a></li>
-                          </ul>
-                        </div>
-                      </div>
-
-                    </li>
-
-                  </ul>
-
-                </div><!-- Header Notifications Area End -->
-
-              </div>
-            </div><!-- Header Right End -->
-
-          </div>
+        <div class="mb-3">
+          <input
+            type="file"
+            name="excelFile"
+            class="form-control"
+            id="excelFile"
+            accept=".xlsx, .xls"
+            required1
+          />
         </div>
-      </div><!-- Header Section End -->
-
-      <!-- Side Header Start -->
-      <div class="side-header show">
-        <button class="side-header-close"><i
-            class="zmdi zmdi-close"
-          ></i></button>
-        <!-- Side Header Inner Start -->
-        <div class="side-header-inner custom-scroll">
-
-          <nav class="side-header-menu" id="side-header-menu">
-            <ul>
-              <li><a href="/accManagement/index"><i class="fa fa-pie-chart"></i>
-                  <span>داشبورد</span></a></li>
-
-              <li class="has-sub-menu account-management"><a href="#"><i
-                    class="ti-briefcase"
-                  ></i>
-                  <span>مدیریت حساب</span></a>
-                <ul class="side-header-sub-menu">
-                  <li><a href="##"><i class="ti-pencil-alt"></i>
-                      <span>افتتاح حساب</span></a></li>
-                  <li><a href="/accManagement/block"><i class="ti-na"></i>
-                      <span>انسداد حساب</span></a></li>
-                  <li><a href="##"><i class="fa fa-window-close"></i><span
-                      >انسداد حساب دسته‌ای</span></a></li>
-                </ul>
-              </li>
-
-              <li class="has-sub-menu base-information"><a href="#"><i
-                    class="fa fa-file-text"
-                  ></i>
-                  <span>اطلاعات پایه</span></a>
-                <ul class="side-header-sub-menu">
-                  <li><a href="/baseInformation/codeTableList/index"><i class="fa fa-pencil-square-o"></i>
-                      <span>جدول کدینگ اصلی111</span></a>
-                  </li>
-                  <li><a href="/baseInformation/codingData/index"><i class="zmdi zmdi-collection-text"></i>
-                      <span>جزییات کدینگ داده</span></a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="has-sub-menu users-management"><a href="#"><i
-                    class="fa fa-users"
-                  ></i>
-                  <span>مدیریت کاربران</span></a>
-                <ul class="side-header-sub-menu">
-                  <li><a href="##"><i class="fa fa-user"></i>
-                      <span>فهرست کاربران</span></a></li>
-                  <li><a href="##"><i class="fa fa-thumbs-up"></i><span>فهرست
-                        مجوزها</span></a></li>
-                  <li><a href="##"><i class="fa fa-id-card-o"></i><span>فهرست
-                        دسترسی‌ها</span></a></li>
-                  <li><a href="##"><i class="fa fa-plus-square"></i><span>اعطای
-                        مجوز</span></a></li>
-                </ul>
-              </li>
-              <li class="has-sub-menu reports"><a href="#"><i
-                    class="fa fa-bar-chart"
-                  ></i>
-                  <span>گزارشات</span></a>
-                <ul class="side-header-sub-menu">
-                  <li><a href="app/public/user/list"><span>گزارش حساب‌ها</span></a></li>
-                  <li><a href="##"><span>گزارش کاربران</span></a></li>
-                </ul>
-              </li>
-              <li class="has-sub-menu settings"><a href="#"><i
-                    class="ti-panel"
-                  ></i>
-                  <span>تنظیمات</span></a>
-                <ul class="side-header-sub-menu">
-                  <li><a href="#"><i class="ti-hummer"></i>
-                      <span>تنظیمات صفحه اصلی</span></a></li>
-                  <li><a href="#"><i class="ti-comments"></i>
-                      <span>سایر تنظیمات </span></a></li>
-                </ul>
-              </li>
-
-            </ul>
-          </nav>
-
-        </div><!-- Side Header Inner End -->
-      </div>
-      <!-- Side Header End -->
-
-      <!-- Content Body Start -->
-      <div class="content-body" style="margin-top: 100px;">
-        
-        <div style="margin: 20px;">
-          <select id="cmbCodeTableList" name="state" style="width: 300px;">
-          <option value="AL">تست 1 </option>
-          <option value="AL1">سلام خوبی</option>
-          <option value="AL2">استان یک</option>
-          <option value="AL3">تهران</option>
-          <option value="AL4">مشهد</option>
-          <option value="AL5">شیراز</option>
-          <option value="AL6">یزد</option>
-          <option value="AL7">بندرعباس</option>
-          <option value="WY">شمال تهران</option>
-        </select>
+        <div class="mb-3">
+          <input
+            type="email"
+            name="myemail"
+            class="form-control"
+            id="myemal"
+            placeholder="لطفا ایمیل خود را وارد کنید."
+            required1
+          />
         </div>
 
-      </div>
-      <!-- Content Body End -->
-
-      <!-- Footer Section Start -->
-      <div class="footer-section">
-        <div class="container-fluid">
-
-          <div class="footer-copyright text-center">
-            <p class="text-body-light">
-              محمد حسن امراللهی &copy;
-              <span>1403</span></p>
-          </div>
-
+        <div class="text-center">
+          <button
+            class="btn btn-success"
+            type="submit"
+            style="width: 120px; text-align: center"
+          >
+            تایید
+          </button>
         </div>
-      </div><!-- Footer Section End -->
-
+      </form>
     </div>
+    <!-- <script>
+      console.log("in formValidation.js file ....");
 
-    <!-- JS
-============================================ -->
+      function setErrorMessage(inputElement, message) {
+        let errorMessage = document.createElement("span");
+        errorMessage.className = "errMessage";
+        errorMessage.innerText = message;
 
-    <!-- Global Vendor, plugins & Activation JS -->
-    <script src="app/public/assets/adomax/js/vendor/modernizr-3.6.0.min.js"  ></script>
-    <script src="app/public/assets/adomax/js/vendor/jquery-3.3.1.min.js"></script>
-    <script src="app/public/assets/adomax/js/vendor/popper.min.js"></script>
-    <script src="app/public/assets/adomax/js/vendor/bootstrap.min.js"></script>
-    <!--Plugins JS-->
-    <script src="app/public/assets/adomax/js/plugins/perfect-scrollbar.min.js"></script>
-    <script src="app/public/assets/adomax/js/plugins/tippy4.min.js.js"></script>
-    <!--Main JS-->
-    <script src="app/public/assets/adomax/js/main.js"></script>
+        inputElement.parentNode.insertBefore(
+          errorMessage,
+          inputElement.nextSibling
+        );
+      }
 
+      function validationForm(form) {
+        console.log('in validatoinFrom function .................................. ')
+        
+        const errorMessages = form.querySelectorAll(".errMessage");
 
-    <script src="app/public/assets/vendor/select2/dist/js/select2.min.js"></script>
-    <script>
-      $(document).ready(function(){
-        $('#cmbCodeTableList').select2()
-      })
-    </script>
+        errorMessages.forEach((msg) => msg.remove());
+
+        let isValid = true;
+
+        console.log("isValid = ", isValid);
+
+        Array.from(form.elements).forEach((input) => {
+          const value = input.value.trim();
+          console.log("input = ", input, ', input.value = ', input.value);
+
+          if (input.required && !value) {
+            console.log("input = ", input);
+            input.setCustomValidity("این فیلد الزامی است.");
+            setErrorMessage(input, "این فیلد الزامی است.");
+            isValid = false;
+            return;
+          }
+
+          if (input.validity.typeMismatch) {
+            if (input.type === "email") {
+              input.setCustomValidity("ایمیل معتبر نیست.");
+              setErrorMessage(input, "ایمیل معتبر نیست.");
+              isValid = false;
+              return;
+            }
+          }
+        });
+
+        return isValid;
+      }
+
+      document.getElementById('frmImportCodingData').onsubmit = validationForm
+
+      // document.querySelectorAll("form.myForm").forEach((frm) => {
+      //   console.log("test 111  - form = ", frm);
+
+      //   frm.addEventListener("submit", (e) => {
+      //     console.log('submit form ... ')
+      //     const isValid = validationForm(frm);
+      //     if (!isValid) {
+      //       e.preventDefault();
+      //     }
+      //   });
+      // });
+    </script> -->
+<script>
+  
+'use strict'
+
+const frm = document.querySelector('[data-validation]')
+const inputs =document.querySelectorAll('input, textarea')
+
+console.log(frm.checkValidity())
+
+const errMessages = {
+  badInput : () => 'badInput',
+  // customError : () => 'customError',
+  patternMismatch : (target) =>  'فرمت وارد شده اشتباه می‌باشد.',
+  rangeOverflow : () => 'rangeOverflow',
+  rangeUnderflow : () => 'rangeUnderflow',
+  stepMismatch : () => 'stepMismatch',
+  tooLong : (target) => `حداکثر تعداد ${target.maxLength} کاراکتر را باید وارد کنید!` ,
+  tooShort :(target) => `حداقل تعداد ${target.minLength} کاراکتر را باید وارد کنید!` ,
+  typeMismatch : (target)=> `فرمت ${target.dataset.farsiname} نادرست می‌باشد.` ,
+  valueMissing : () => 'مقدار مورد نظر اجباری می‌باشد.',
+}
+
+const validityKeys = Object.keys(errMessages)
+  
+frm.addEventListener('input', (e) => { showErrors(e) })
+
+function showErrors(e){
+  const {target} = e
+  
+  const errorsEL = target.parentElement.querySelectorAll('.errMessage')
+  // target.setCustomValidity('')
+
+  errorsEL.forEach(el=>{
+    el.remove()
+  })
+
+  validityKeys.forEach(key => {
+    if(target.validity[key]){
+      appendError(target,key)
+    }
+  })
+}
+
+function appendError(target,key){
+  const errorEl = document.createElement('small');
+  errorEl.innerText = errMessages[key](target);
+  errorEl.classList.add('errMessage');
+  target.parentElement.appendChild(errorEl);
+}
+
+function setCustomValidityMessage(target,key){
+  target.setCustomValidity(errMessages[key](target))
+}
+
+inputs.forEach(function(input){
+  input.addEventListener('invalid',function(event){
+    // event.preventDefault()
+    const {target} = event
+    
+    console.log(target)
+
+    // validityKeys.forEach(key=>{
+      
+    //   console.log(target.validity[key])
+      
+    //   if(target.validity[key]){
+    //     setCustomValidityMessage(target,key)
+    //   }
+    // })
+
+    if(target.validity.valueMissing){
+      target.setCustomValidity('لطفا این فیلد را پر کنید!')
+    }else if(target.validity.typeMismatch){
+      target.setCustomValidity(`لطفا فرمت ${target.dataset.farsiname} را درست وارد کنید!`)
+    }else if(target.validity.tooShort){
+      target.setCustomValidity(`حداقل تعداد ${target.minLength} کاراکتر را باید وارد کنید!` ,)
+    }else if(target.validity.tooLong){
+      target.setCustomValidity(`حداکثر تعداد ${target.maxLength} کاراکتر را باید وارد کنید!` ,)
+    }
+    else{
+      target.setCustomValidity('')
+    }
+    
+  })
+  
+})
+</script>
+
   </body>
-
 </html>

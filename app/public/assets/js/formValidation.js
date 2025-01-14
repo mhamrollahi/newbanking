@@ -1,7 +1,11 @@
+console.log('in formValidation.js file ....')
+
+
 function setErrorMessage(inputElement,message){
   
   let errorMessage = document.createElement('span')
   errorMessage.className = 'errMessage'
+  errorMessage.innerText = message
 
   inputElement.parentNode.insertBefore(errorMessage,inputElement.nextSibling)
 
@@ -14,13 +18,47 @@ function validationForm(form) {
 
   let isValid = true
 
+  console.log('isValid = ', isValid)
+
   Array.from(form.elements).forEach(input => {
     const value = input.value.trim()
+    console.log('input = ', input)
 
-    
+    if(input.required && !value){
+      console.log('input = ',input)
+      input.setCustomValidity('این فیلد الزامی است.')
+      setErrorMessage(input,'این فیلد الزامی است.')
+      isValid = false
+      return
+    }
+
+    if(input.validity.typeMismatch){
+      if(input.type === 'email'){
+        input.setCustomValidity('ایمیل معتبر نیست.')
+        setErrorMessage(input,'ایمیل معتبر نیست.')
+        isValid = false
+        return
+          
+      }
+    }
   })
 
+  return isValid
 }
+
+document.querySelectorAll('form.myForm').forEach((form) =>{
+  console.log('test 111  - form = ',form)
+ 
+  form.addEventListener('submit',(e)=>{
+    
+    console.log('test 2 = ',form)
+
+    const isValid = validationForm(form)
+    if(!isValid){
+      e.preventDefault()
+    }
+  })
+})
 
 // // formValidation.js  
 
@@ -33,35 +71,35 @@ function validationForm(form) {
 //   let isValid = true;  
 
 //   // بررسی همه ورودی‌ها  
-//   Array.from(form.elements).forEach(element => {  
-//       // تنها ورودی‌های دارای ویژگی required را بررسی کنید  
-//       if (element.hasAttribute('required') && !element.value) {  
-//           isValid = false;  
-//           element.setCustomValidity("این فیلد الزامی است.");  
-//       } else if (element.validity.tooShort) {  
-//           isValid = false;  
-//           element.setCustomValidity(`طول ورودی باید حداقل ${element.minLength} کاراکتر باشد.`);  
-//       } else if (element.validity.tooLong) {  
-//           isValid = false;  
-//           element.setCustomValidity(`طول ورودی نباید بیشتر از ${element.maxLength} کاراکتر باشد.`);  
-//       } else if (element.validity.typeMismatch) {  
-//           if (element.type === "email") {  
-//               isValid = false;  
-//               element.setCustomValidity("ایمیل معتبر نیست.");  
-//           }  
-//       } else if (element.type === "file") {  
-//           const allowedExtensions = /(\.xls|\.xlsx)$/;  
-//           if (element.files.length === 0) {  
-//               isValid = false;  
-//               element.setCustomValidity("بارگذاری فایل اکسل اجباری است.");  
-//           } else if (!allowedExtensions.exec(element.value)) {  
-//               isValid = false;  
-//               element.setCustomValidity("لطفا یک فایل اکسل معتبری انتخاب کنید (.xls یا .xlsx).");  
-//           }  
-//       } else {  
-//           element.setCustomValidity(""); // پاک کردن خطا  
-//       }  
-//   });  
+  // Array.from(form.elements).forEach(element => {  
+  //     // تنها ورودی‌های دارای ویژگی required را بررسی کنید  
+  //     if (element.hasAttribute('required') && !element.value) {  
+  //         isValid = false;  
+  //         element.setCustomValidity("این فیلد الزامی است.");  
+  //     } else if (element.validity.tooShort) {  
+  //         isValid = false;  
+  //         element.setCustomValidity(`طول ورودی باید حداقل ${element.minLength} کاراکتر باشد.`);  
+  //     } else if (element.validity.tooLong) {  
+  //         isValid = false;  
+  //         element.setCustomValidity(`طول ورودی نباید بیشتر از ${element.maxLength} کاراکتر باشد.`);  
+  //     } else if (element.validity.typeMismatch) {  
+  //         if (element.type === "email") {  
+  //             isValid = false;  
+  //             element.setCustomValidity("ایمیل معتبر نیست.");  
+  //         }  
+  //     } else if (element.type === "file") {  
+  //         const allowedExtensions = /(\.xls|\.xlsx)$/;  
+  //         if (element.files.length === 0) {  
+  //             isValid = false;  
+  //             element.setCustomValidity("بارگذاری فایل اکسل اجباری است.");  
+  //         } else if (!allowedExtensions.exec(element.value)) {  
+  //             isValid = false;  
+  //             element.setCustomValidity("لطفا یک فایل اکسل معتبری انتخاب کنید (.xls یا .xlsx).");  
+  //         }  
+  //     } else {  
+  //         element.setCustomValidity(""); // پاک کردن خطا  
+  //     }  
+  // });  
 
 //   // اگر همه اعتبارسنجی‌ها درست بود، فرم را ارسال کنید  
 //   if (isValid) {  
@@ -92,7 +130,8 @@ function validationForm(form) {
 // document.getElementById('myForm').onsubmit = validateForm;
 
 
-
+// این کد بهتررررر
+// این کد بهتررررر
 // این کد بهتررررر
 // // formValidation.js  
 
