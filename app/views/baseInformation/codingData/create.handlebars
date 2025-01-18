@@ -17,7 +17,7 @@
    
     <div class="row">
       <div class="col-12 col-sm-12 col-md-12">
-          <form method="POST" name="frmCodingData" action="../store/{{codeTableListId}}" class="row g-3 needs-validation">
+          <form method="POST" name="frmCodingData" action="../store/{{codeTableListId}}" class="row g-3 needs-validation" data-frmValidation novalidate>
             {{#if hasError}}
               <div class="alert alert-danger">
                 {{#each errors}}
@@ -32,28 +32,18 @@
             {{/if}} 
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="title" name="title" maxlength="30" placeholder="عنوان کدینگ را وارد کنید."  title="لظفا عنوان کدینگ  را وارد کنید." autocomplete="off" autofocus="true" required>
+              <input type="text" class="form-control" id="title" name="title" maxlength="30" minlength="2" placeholder="عنوان کدینگ را وارد کنید."  title="لظفا عنوان کدینگ  را وارد کنید." autocomplete="off" autofocus="true" required>
               <label for="code" class="mandatory">عنوان کدینگ </label>
-
-              <small class="errMessage" data-err="formatted" hidden> حداکثر عنوان کدینگ 30 رقمی می‌باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> عنوان کدینگ اجباری می باشد. </small>
-
             </div>
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="description" name="description" maxlength="50" autocomplete="off" placeholder="توضیحات در خصوص کدینگ را وارد کنید.">
+              <input type="text" class="form-control" id="description" name="description" maxlength="50" minlength="5" autocomplete="off" placeholder="توضیحات در خصوص کدینگ را وارد کنید.">
               <label for="description" class="mandatory">توضیحات کدینگ</label>
-
-              <small class="errMessage" data-err="formatted" hidden> حداکثر توضیحات کدینگ جدول 30 کاراکتر باشد.</small>
-
             </div>
 
             <div class="form-floating mb-3">
-              <input type="number" class="form-control" id="sortId" name="sortId" autocomplete="off" placeholder="رتیه کدینگ را وارد کنید." required>
+              <input type="number" class="form-control" id="sortId" name="sortId" autocomplete="off" min="1" data-farsiname="رتبه" placeholder="رتیه کدینگ را وارد کنید." required>
               <label for="sortId" class="mandatory">رتبه</label>
-
-              <small class="errMessage" data-err="mandatory" hidden>رتبه جدول اجباری می باشد. </small>
-
             </div>
 
             <div class="form-floating mb-3">
@@ -70,5 +60,6 @@
       </div>
     </div>
 </main>
+  <script src="/static/assets/js/formValidation.js"></script>
 
 

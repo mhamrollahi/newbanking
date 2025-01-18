@@ -2,6 +2,8 @@ const frm = document.querySelector('[data-frmValidation]')
 let errorMessage = document.createElement("div");
 errorMessage.classList.add("errMessage");
 
+console.log('form in formValidation ....',frm)
+
 const errMessages = {
   badInput : () => 'badInput',
   customError : () => 'customError',
@@ -104,7 +106,7 @@ frm.addEventListener("submit", function (event) {
 
   // اگر فرم معتبر بود، ارسال
   if (isValid) {
-    alert("فرم با موفقیت ارسال شد!");
+    // alert("فرم با موفقیت ارسال شد!");
     form.submit();
   }
 });

@@ -20,7 +20,7 @@
 
   <div class="row">
     <div class="col-12 col-sm-12 col-md-12">
-      <form  method="POST"  name="frmCodingData"  action="../update/{{codingData.id}}" class="row g-3 needs-validation">
+      <form  method="POST"  name="frmCodingData"  action="../update/{{codingData.id}}" class="row g-3 needs-validation" data-frmValidation novalidate>
         {{#if hasError}}
           <div class="alert alert-danger">
             {{#each errors}}
@@ -45,13 +45,6 @@
               required
             />
             <label for="fa_TableName" class="mandatory">نام فارسی جدول</label>
-
-            <small class="errMessage" data-err="formatted" hidden>
-              حداکثر نام فارسی جدول سی کاراکتر باشد.</small>
-            <small class="errMessage" data-err="mandatory" hidden>نام فارسی جدول
-              اجباری می باشد.
-            </small>
-
           </div>
 
         <div class="form-floating mb-3">
@@ -69,13 +62,6 @@
             required
           />
           <label for="title" class="mandatory">کد </label>
-
-          <small class="errMessage" data-err="formatted" hidden>
-            حداکثر عنوان کدینگ 30 رقمی می‌باشد.</small>
-          <small class="errMessage" data-err="mandatory" hidden>
-            عنوان کدینگ اجباری می باشد.
-          </small>
-
         </div>
 
         <div class="form-floating mb-3">
@@ -91,17 +77,11 @@
           />
           <label for="description" class="mandatory">توضیحات کدینگ</label>
 
-          <small class="errMessage" data-err="formatted" hidden>
-            حداکثر توضیحات کدینگ جدول 30 کاراکتر باشد.</small>
-
         </div>
             <div class="form-floating mb-3">
               <input type="number" class="form-control" id="sortId" name="sortId" autocomplete="off" value="{{codingData.sortId}}"
               placeholder="رتیه کدینگ را وارد کنید." required>
               <label for="sortId" class="mandatory">رتبه</label>
-
-              <small class="errMessage" data-err="mandatory" hidden>رتبه جدول اجباری می باشد. </small>
-
             </div>
 
             <div class="form-floating mb-3">
@@ -177,3 +157,5 @@
     </div>
   </div>
 </main>
+
+<script src="/static/assets/js/formValidation.js"></script>

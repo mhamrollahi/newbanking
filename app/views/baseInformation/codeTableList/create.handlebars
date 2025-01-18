@@ -17,7 +17,7 @@
    
     <div class="row">
       <div class="col-12 col-sm-12 col-md-12">
-          <form method="POST" name="frmCodeTableList" action="./store" class="row g-3 needs-validation">
+          <form method="POST" name="frmCodeTableList" action="./store" class="row g-3 needs-validation" data-frmValidation novalidate>
             {{#if hasError}}
               <div class="alert alert-danger">
                 {{#each errors}}
@@ -26,31 +26,14 @@
               </div>
             {{/if}}
 
-            {{!-- <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="code" name="code" max="3" placeholder="کد را وارد کنید."  title="لظفا کد جدول را وارد کنید." autocomplete="off" autofocus="true" 1required>
-              <label for="code" class="mandatory">کد </label>
-
-              <small class="errMessage" data-err="formatted" hidden> حداکثر کد سه رقمی می‌باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> کد اجباری می باشد. </small>
-
-            </div> --}}
-
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="en_TableName" name="en_TableName" maxlength="30" autocomplete="off" placeholder="نام انگلیسی جدول را وارد کنید."  1required>
+              <input type="text" class="form-control" id="en_TableName" name="en_TableName" minlength="3"  maxlength="50" autocomplete="off" placeholder="نام انگلیسی جدول را وارد کنید."  required>
               <label for="en_TableName" class="mandatory">نام انگلیسی جدول</label>
-
-              <small class="errMessage" data-err="formatted" hidden> حداکثر نام انگلیسی جدول سی کاراکتر باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden> نام انگلیسی جدول اجباری می باشد. </small>
-
             </div>
 
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="fa_TableName" name="fa_TableName" maxlength="30" autocomplete="off" placeholder="نام فارسی جدول را وارد کنید." 1required>
+              <input type="text" class="form-control" id="fa_TableName" name="fa_TableName" minlength="3"  maxlength="50" autocomplete="off" placeholder="نام فارسی جدول را وارد کنید." required>
               <label for="fa_TableName" class="mandatory">نام فارسی جدول</label>
-
-              <small class="errMessage" data-err="formatted" hidden> حداکثر نام فارسی جدول سی کاراکتر باشد.</small>
-              <small class="errMessage" data-err="mandatory" hidden>نام فارسی جدول اجباری می باشد. </small>
-
             </div>
 
             <div class="col-12 my-2 text-center">
@@ -61,3 +44,6 @@
       </div>
     </div>
   </main>
+
+  <script src="/static/assets/js/formValidation.js"></script>
+  

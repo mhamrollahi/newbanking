@@ -201,6 +201,7 @@ exports.update = async (req, res, next) => {
         sortId: codingData.sortId,
         refId: codingData.refId,
         updater: codingData.updater,
+        CodeTableListId:CodeTableListId,
         updatedAt: new Date().toLocaleDateString("en-US"),
       },
       { where: { id: codingDataId } }
