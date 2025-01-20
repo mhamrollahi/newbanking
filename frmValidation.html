@@ -1,50 +1,50 @@
 <!DOCTYPE html>
 <html lang="fa">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>فرم با نمایش داینامیک خطا</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      direction: rtl;
-      text-align: right;
-    }
-    .error-message {
-      color: red;
-      font-size: 0.9em;
-      margin-top: 5px;
-    }
-    .input-wrapper {
-      margin-bottom: 20px;
-    }
-  </style>
-</head>
-<body>
-  <h1>فرم نمونه با اعتبارسنجی HTML5</h1>
-  <form id="myForm" name="myForm" data-frmValidation novalidate>
-    <div class="input-wrapper">
-      <label for="email">ایمیل:</label>
-      <input type="email" id="email" name="email" required data-farsiname="ایمیل">
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>فرم با نمایش داینامیک خطا</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        direction: rtl;
+        text-align: right;
+      }
+      .error-message {
+        color: red;
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+      .input-wrapper {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>فرم نمونه با اعتبارسنجی HTML5</h1>
+    <form id="myForm" name="myForm" data-frmValidation novalidate method="POST" action="../store/{{codeTableListId}}">
+      <div class="input-wrapper">
+        <label for="email">ایمیل:</label>
+        <input type="email" id="email" name="email" required data-farsiname="ایمیل" />
+      </div>
 
-    <div class="input-wrapper">
-      <label for="password">رمز عبور:</label>
-      <input type="password" id="password" name="password" minlength="6" required>
-    </div>
+      <div class="input-wrapper">
+        <label for="password">رمز عبور:</label>
+        <input type="password" id="password" name="password" minlength="6" required />
+      </div>
 
-    <div class="input-wrapper">
-      <label for="age">سن:</label>
-      <input type="number" id="age" name="age" min="18" max="120" data-farsiname="سن" required>
-    </div>
-    
-    <div class="input-wrapper">
-      <label for="excelFile">فایل اکسل:</label>
-      <input type="file" id="excelFile" name="excelFile" accept=".xls, .xlsx" required>
-    </div>
-    <button type="submit">ارسال</button>
-  </form>
+      <div class="input-wrapper">
+        <label for="age">سن:</label>
+        <input type="number" id="age" name="age" min="18" max="120" data-farsiname="سن" required />
+      </div>
 
-  <script src="./app/public/assets/js/formValidation.js"></script>
-</body>
+      <div class="input-wrapper">
+        <label for="excelFile">فایل اکسل:</label>
+        <input type="file" id="excelFile" name="excelFile" accept=".xls, .xlsx" required />
+      </div>
+      <button type="submit">ارسال</button>
+    </form>
+
+    <script src="./app/public/assets/js/formValidation.js"></script>
+  </body>
 </html>
