@@ -1,6 +1,11 @@
+const dateService = require('@services/dateService')
+const {UserModel} = require('@models/')
+
 exports.getData = async(req,res,next)=>{
   try {
-    const result = null
+    const result = await UserModel.findAll({})
+    console.log(result)
+    
     res.json(result)
   } catch (error) {
     next(error)
@@ -28,6 +33,8 @@ exports.create = async (req,res,next)=>{
 
     res.render("./admin/user/create", {
       layout: "main",
+      title:'مدیریت کاربران سیستم',
+      subTitle:'جدید',
       errors,
       hasError,
       success,
@@ -40,14 +47,34 @@ exports.create = async (req,res,next)=>{
 exports.store = async (req,res,next)=>{
   try {
     const userData = {
-      userName:'0059935261',
-      password:'Mh@904957',
-      fullName:'Mohammad Hassan Amrollahi',
+      userName:req.body.userName,
+      password:req.body.password,
+      fullName:req.body.fullName,
       creator:'MHA',
     }
-    const {id} = 
+    console.log(userData)
+
+    const {id} = await UserModel.create(userData)
+    if(id){
+      req.flash('success','اطلاعات کاربر با موفقیت ثبت شد.')
+      return res.redirect('./index')
+    }
   } catch (error) {
-    
+    let errors = [];
+
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
+      req.flash("errors", errors);
+      return res.redirect(`./create`);
+    }
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      console.log(error.message);
+
+      errors = error.message.split("SequelizeUniqueConstraintError");
+      req.flash("errors", errors);
+      return res.redirect(`./create`);
+    }
     next(error)
   }
 }

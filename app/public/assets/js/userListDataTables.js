@@ -2,7 +2,7 @@
 $(document).ready(function () {
   $("#userListDataTable").DataTable({
     ajax: {
-      url: "/admin/usersList/api/getData",
+      url: "/admin/users/api/getData",
       dataSrc: "",
     },
     columns: [
@@ -12,8 +12,7 @@ $(document).ready(function () {
           return meta.row + 1
         },
       },
-      { data: "name" },
-      { data: "password" },
+      { data: "userName" },
       { data: "fullName" },
       { data: "fa_createdAt" },
       { data: "creator" },
@@ -21,7 +20,7 @@ $(document).ready(function () {
         render: function (data, type, row) {
           return `
           <div class="row-table text-center">
-            <div class= "table-action-buttons"> 
+            <div class= "11table-action-buttons"> 
             <a class="edit button button-box button-xs button-info" href="/admin/usersList/edit/${row.id}">
               <i class="zmdi zmdi-edit"></i>
             </a>

@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const dateService = require('@services/dateService');
-const hashService = require('@services/hashService')
+const hashService = require('@services/hashService');
 
 exports.User = (sequelize) => {
   const User = sequelize.define(
@@ -21,7 +21,7 @@ exports.User = (sequelize) => {
             msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
           },
           len: {
-            args: [11, 11],
+            args: [10, 10],
             msg: 'نام کاربری همان کدملی هست.لطفا کد ملی خود را وارد کنید.'
           },
           isNumeric: {
@@ -31,7 +31,7 @@ exports.User = (sequelize) => {
       },
 
       password: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(200),
         allowNull: false,
         validate: {
           is: {
@@ -72,6 +72,12 @@ exports.User = (sequelize) => {
         }
       },
 
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 1
+      },
+
       creator: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -84,7 +90,7 @@ exports.User = (sequelize) => {
 
       updatedAt: {
         type: DataTypes.DATE,
-        default: null
+        defaultValue: null
       },
 
       updater: {
@@ -111,17 +117,18 @@ exports.User = (sequelize) => {
       timestamps: true,
       sequelize,
       validate: {}
-    },
-
-    User.beforeCreate((user)=>{
-      user.password = hashService.hashPassword(user.password)
-    }),
-    // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-    User.beforeUpdate((user) => {
-      user.password = hashService.hashPassword(user.password)
-      user.updatedAt = new Date();
-    })
+    }
   );
+
+  User.beforeCreate((user) => {
+    user.password = hashService.hashPassword(user.password);
+    user.updatedAt = null
+  }),
+    // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
+  User.beforeUpdate((user) => {
+    user.password = hashService.hashPassword(user.password);
+    user.updatedAt = new Date();
+  });
 
   return User;
 };

@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 const codeTableListModel = require('./baseInformation/codeTableList')
 const codingDataModel = require('./baseInformation/codingData')
+const userModel = require('./admin/users/user')
 
 // const contactModel = require('./auth/contact')
 // const contactCategoryModel = require('./auth/contactCategory')
@@ -28,6 +29,7 @@ getConnection()
 
 const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
 const CodingDataModel = codingDataModel.CodingData(sequelize)
+const UserModel = userModel.User(sequelize)
 
 CodeTableListModel.hasMany(CodingDataModel, {foreignKey:'CodeTableListId'} )
 CodingDataModel.belongsTo(CodeTableListModel, {foreignKey:'CodeTableListId'})
@@ -43,4 +45,5 @@ module.exports = {
   sequelize,
   CodeTableListModel,
   CodingDataModel,
+  UserModel,
 }
