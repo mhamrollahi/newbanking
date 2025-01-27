@@ -67,3 +67,25 @@ table tr th a.sort-down-cols::after{
 .dataTables_wrapper .dataTables_scrollHead {
   z-index: 1050; /* بیشتر از z-index سایر المان‌ها */
 }
+
+.icon-pass-loginfrm{
+  position: absolute; top:18px;left:40px;font-size:20px;
+  cursor: pointer;
+  transition: all 1s ease;
+
+}
+
+.icon-pass-loginfrm:hover{
+  color: #030370;
+  font-size:22px;
+}
+
+.mandatory::after{
+  content: "\f005";
+  font-family: "FontAwesome";
+  position: absolute;
+  top:8px;
+  color:#ad030c;
+  font-size:7px
+ 
+}

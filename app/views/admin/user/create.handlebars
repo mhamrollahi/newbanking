@@ -12,7 +12,7 @@
     </div><!-- Page Heading End -->
   </div>
 
-  <div class='row'>
+  <div class='row' style="width:45%;margin:auto">
     <div class='col-12 col-sm-12 col-md-12'>
       <form method='POST' name='frmUsers' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
         {{#if hasError}}
@@ -39,10 +39,19 @@
           </label>
         </div>
 
-        <div class='form-floating mb-3'>
-          <input type='password' class='form-control' id='' name='password' maxlength='20' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' required/>
+         <div class='form-floating mb-3'>
+          <input type='password' class='txt-password form-control' name='password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' required/>
+          <i class="zmdi zmdi-eye-off icon-pass-loginfrm" id="password-eye1"></i>
           <label for='password' class='mandatory'>
             کلمه عبور
+          </label>
+        </div>
+
+        <div class='form-floating mb-3'>
+          <input type='password' class='txt-password form-control' name='confirm_password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را تکرار کنید.' required/>
+          <i class="zmdi zmdi-eye-off icon-pass-loginfrm" id="password-eye2"></i>
+          <label for='password' class='mandatory'>
+            تکرار کلمه عبور
           </label>
         </div>
 
@@ -66,3 +75,29 @@
   </div>
 </main>
 <script src='/static/assets/js/formValidation.js'></script>
+<script>
+  $(document).ready(function (){
+    $('#password-eye1').click(function(){
+      if($('.txt-password').attr('type')==='password'){
+        $('.txt-password').attr('type','text')
+        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
+        $('#password-eye2').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
+      }else{
+        $('.txt-password').attr('type','password')
+        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
+        $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off')
+      }
+    })
+    $('#password-eye2').click(function(){
+      if($('.txt-password').attr('type')==='password'){
+        $('.txt-password').attr('type','text')
+        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
+        $('#password-eye2').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
+      }else{
+        $('.txt-password').attr('type','password')
+        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
+        $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off')
+      }
+    })
+  })
+</script>
