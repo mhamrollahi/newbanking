@@ -3,6 +3,7 @@ const usersControllers = require('@controllers/admin/users')
 const router = express.Router()
 
 router.get('/api/getData',usersControllers.getData)
+router.post('/api/updateUserActive/:id',usersControllers.updateUserActive)
 
 router.get('/index',usersControllers.index)
 router.get('/create',usersControllers.create)

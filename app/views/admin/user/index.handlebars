@@ -1,3 +1,25 @@
+<style>
+  .active-toggle {
+  width: 18px;
+  height: 18px;
+  margin: auto;
+  text-align: center;
+  accent-color: #4caf50; /* تغییر رنگ چک‌باکس */
+  border-radius: 4px; /* گوشه‌های چک‌باکس گرد */
+  outline: none; /* حذف حالت پیش‌فرض تمرکز */
+}
+
+.active-toggle:hover {
+  transform: scale(1.1); /* افکت زوم هنگام هاور */
+  transition: transform 0.2s ease;
+}
+
+.active-toggle:checked {
+  accent-color: #025829; /* رنگ قرمز در صورت فعال بودن */
+}
+
+</style>
+
 <div class="box-codingdata"></div>
 
 <!-- Page Heading Start -->
@@ -50,7 +72,8 @@
           <tr class="table-header-custom">
             <th class="col-md-1">ردیف</th>
             <th class="col-md-2 text-center">نام کاربر</th>
-            <th class="col-md-4 text-center">نام و نام خانوادگی</th>
+            <th class="col-md-3 text-center">نام و نام خانوادگی</th>
+            <th class="col-md-1 text-center">فعال/غیرفعال</th>
             <th class="col-md-2 text-center">تاریخ ایجاد</th>
             <th class="col-md-2 text-center">نام درخواست کنند</th>
             <th class="col-md-1 text-center">عملیات</th>

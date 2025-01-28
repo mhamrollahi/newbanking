@@ -6,7 +6,7 @@ const Joi = require('joi');
 exports.getData = async (req, res, next) => {
   try {
     const result = await UserModel.findAll({});
-    console.log(result);
+    // console.log(result);
 
     res.json(result);
   } catch (error) {
@@ -14,12 +14,40 @@ exports.getData = async (req, res, next) => {
   }
 };
 
+exports.updateUserActive = async (req,res,next)=>{
+  try {
+    const id = await req.params.id
+    const {isActive} = req.body
+    if(!id || typeof isActive !== 'boolean'){
+      req.flash('errors','داده ها نامعتبر می باشد.')
+      return res.redirect('./admin/users/index')
+    }
+    
+    const rowsAffected = await UserModel.update({isActive},{where : {id}})
+    if(rowsAffected[0] > 0){
+      req.flash('success','وضعیت با موفقیت به‌روزرسانی شد.')
+      return res.redirect('../../index')
+    }
+
+    req.flash('success','اصلاح اطلاعات با مشکل مواجه شد.لطفا مجدد سعی کنید')
+    return res.redirect('./admin/users/index')
+
+  } catch (error) {
+    next(error)
+  }
+}
+
 exports.index = async (req, res, next) => {
   try {
+    const success = req.flash('success')
+    const removeSuccess = req.flash('removeSuccess')
+
     res.render('./admin/user/index', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست کاربران'
+      subTitle: 'فهرست کاربران',
+      success,
+      removeSuccess,
     });
   } catch (error) {
     next(error);
@@ -117,10 +145,12 @@ exports.store = async (req, res, next) => {
     //اعتبار سنجی فرم ورودی - End
 
     const { id } = await UserModel.create(userData);
+
     if (id) {
       req.flash('success', 'اطلاعات کاربر با موفقیت ثبت شد.');
       return res.redirect('./index');
     }
+
   } catch (error) {
     let errors = [];
 
