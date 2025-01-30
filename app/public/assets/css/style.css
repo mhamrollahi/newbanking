@@ -89,3 +89,13 @@ table tr th a.sort-down-cols::after{
   font-size:7px
  
 }
+
+.login-form{
+  width:45%;
+  margin:auto;
+  background-color:#fafafa;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; 
+  padding-top:10px ;
+  border:2px solid #ccc;
+  border-radius: 5px;
+}

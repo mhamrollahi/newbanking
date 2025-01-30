@@ -45,6 +45,13 @@ $(document).ready(function () {
         },
       }
     ],
+    columnDefs:[
+      {target:0,className:'text-center'},
+      {target:1,className:'text-center'},
+      {target:3,className:'text-center'},
+      {target:4,className:'text-center'},
+      {target:5,className:'text-center'},
+    ],
     order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
     language: {

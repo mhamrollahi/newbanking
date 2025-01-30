@@ -8,7 +8,8 @@ router.post('/api/updateUserActive/:id',usersControllers.updateUserActive)
 router.get('/index',usersControllers.index)
 router.get('/create',usersControllers.create)
 router.post('/store',usersControllers.store)
-
+router.get('/edit/:id',usersControllers.edit)
+router.post('/update/:id',usersControllers.update)
 
 // router.get('/block',accManagementControllers.block)
 // router.post('/cancel',accManagementControllers.canceling)

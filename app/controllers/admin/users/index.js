@@ -73,7 +73,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-const formValidation = (req) => {
+const formValidation = (req,updateMode) => {
   const userData = {
     userName: req.body.userName,
     password: req.body.password,
@@ -81,6 +81,10 @@ const formValidation = (req) => {
     fullName: req.body.fullName
   };
 
+  const userDataUpdated = {
+    password:req.body.password
+  }
+  
   const schema = Joi.object({
     userName: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)')
     .pattern(/^\d+$/)
@@ -116,7 +120,11 @@ const formValidation = (req) => {
     })
   });
 
-  return schema.validate(userData, { abortEarly: false });
+  if(updateMode == 0){
+    return schema.validate(userData, { abortEarly: false });
+  }
+
+  return schema.validate(userDataUpdated);
 
 };
 
@@ -133,7 +141,7 @@ exports.store = async (req, res, next) => {
 
     //اعتبار سنجی فرم ورودی - Start
 
-    const { error } = formValidation(req)
+    const { error } = formValidation(req,0)
     if (error) {
       req.flash(
         'errors',
@@ -170,3 +178,90 @@ exports.store = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.edit = async (req,res,next) => {
+  try {
+    const userId = req.params.id
+
+    const errors = req.flash('errors')
+    const hasError = errors.length > 0 
+    const success = req.flash('success')
+    const removeSuccess = req.flash('removeSuccess')
+    const userData = await UserModel.findOne({
+      where : {id:userId},
+      raw:true,
+      nest:true,
+    })
+
+    res.render('./admin/user/edit',{
+      layout:'main',
+      title: 'مدیریت کاربران سیستم',
+      subTitle: 'اصلاح کاربر',
+      userData,
+      fa_createdAt:dateService.toPersianDate(userData.createdAt),
+      fa_updatedAt:dateService.toPersianDate(userData.updatedAt),
+      errors,
+      hasError,
+      success,
+      removeSuccess,
+      helpers:{
+        isChecked: function(value,options){
+          return parseInt(value) === 1 ? options.fn(this) : options.inverse(this)
+        }
+      }
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+exports.update = async (req,res,next)=>{
+  try {
+    const userId = req.params.id
+
+    const { error } = formValidation(req,1)
+    if (error) {
+      req.flash(
+        'errors',
+        error.details.map((err) => err.message)
+      );
+      return res.redirect(`../edit/${userId}`);
+    }
+
+    const rowsAffected = await UserModel.update({
+      password:req.body.password,
+      isActive:req.body.isActive,
+      updater:'MHA_Updated',
+
+    })
+
+    if(rowsAffected[0]>0){
+      req.flash('success','اطلاعات با موفقیت اصلاح شد.')
+      return res.redirect(`../index/${userId}`)
+    }
+  
+    req.flash("errors","اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید...");
+
+    return res.redirect(`../edit/${userId}`);
+  
+  } catch (error) {
+    const id = await req.params.id;
+
+    let errors = [];
+
+    if (error.name === "SequelizeValidationError") {
+      errors = error.message.split("Validation error:");
+      req.flash("errors", errors);
+      return res.redirect(`../edit/${id}`);
+    }
+
+    if (error.name === "SequelizeUniqueConstraintError") {
+      errors = error.message.split("SequelizeUniqueConstraintError");
+      req.flash("errors", errors);
+      return res.redirect(`../edit/${id}`);
+    }
+    
+    next(error)
+  }
+}

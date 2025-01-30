@@ -90,7 +90,7 @@ exports.User = (sequelize) => {
 
       updatedAt: {
         type: DataTypes.DATE,
-        defaultValue: null
+        defaultValue: null,
       },
 
       updater: {

@@ -9,16 +9,15 @@
     <!-- Page Heading Start -->
     <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
       <div class='page-heading page-heading-custom'>
-        <h3 class='title'>اطلاعات پایه
-          <span>/ جدول کدینگ اصلی</span><span>/ اصلاح</span></h3>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
       </div>
     </div><!-- Page Heading End -->
 
   </div>
 
-  <div class='row'>
+  <div class='row login-form'>
     <div class='col-12 col-sm-12 col-md-12'>
-      <form method='POST' name='frmCodeTableList' action='../update/{{codeTableList.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
+      <form method='POST' name='frmUsers' action='../update/{{userData.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
         {{#if hasError}}
           <div class='alert alert-danger'>
             {{#each errors}}
@@ -28,34 +27,43 @@
         {{/if}}
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='en_TableName' name='en_TableName' minlength='3' maxlength='50' autocomplete='off' placeholder='نام انگلیسی جدول را وارد کنید.' value='{{codeTableList.en_TableName}}' required />
-          <label for='en_TableName' class='mandatory'>نام انگلیسی جدول</label>
+          <input type='text' class='form-control' readonly name='userName' value='{{userData.userName}}' readonly />
+          <label for='userName' class='mandatory'>نام کاربری</label>
 
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='fa_TableName' name='fa_TableName' minlength='3' maxlength='50' autocomplete='off' placeholder='نام فارسی جدول را وارد کنید.' value='{{codeTableList.fa_TableName}}' required />
-          <label for='fa_TableName' class='mandatory'>نام فارسی جدول</label>
+          <input type='text' class='form-control' name='password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' required />
+          <label for='password' class='mandatory'>کلمه عبور</label>
 
         </div>
 
+        <div class='form-check'>
+          <input class='form-check-input' type='checkbox' 
+            {{#isChecked userData.isActive}} checked {{/isChecked}}
+            id='isActive' name="isActive" style="font-size: 20px;margin-bottom:15px"/>
+          <label class='form-check-label' for='isActive' style="position: relative;top:10px;font-size:16px">
+            وضعیت کاربر(فعال / غیر فعال)
+          </label>
+        </div>
+
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' readonly id='creator' name='creator' value='{{codeTableList.creator}}' />
+          <input type='text' class='form-control' readonly name='creator' value='{{userData.creator}}' />
           <label for='creator' class='mandatory'>ایجاد کننده</label>
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' readonly id='created_at' name='created_at' value='{{fa_createdAt}}' />
+          <input type='text' class='form-control' readonly name='created_at' value='{{fa_createdAt}}' />
           <label for='created_at' class='mandatory'>تاریخ ایجاد</label>
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' readonly id='updater' name='creator' value='{{codeTableList.updater}}' />
-          <label for='creator' class='mandatory'>اصلاح کننده</label>
+          <input type='text' class='form-control' readonly name='updater' value='{{userData.updater}}' />
+          <label for='updater' class='mandatory'>اصلاح کننده</label>
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' readonly id='updated_at' name='updated_at' value='{{fa_updatedAt}}' />
+          <input type='text' class='form-control' readonly name='updated_at' value='{{fa_updatedAt}}' />
           <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
         </div>
 
