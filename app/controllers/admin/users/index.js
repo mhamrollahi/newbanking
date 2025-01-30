@@ -84,8 +84,10 @@ const formValidation = (req,updateMode) => {
   const userDataUpdated = {
     password:req.body.password
   }
-  
-  const schema = Joi.object({
+
+   if(updateMode == 0){ 
+    
+    const schema = Joi.object({
     userName: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)')
     .pattern(/^\d+$/)
     .messages({
@@ -118,12 +120,21 @@ const formValidation = (req,updateMode) => {
       'string.max': errMessages['string.max'],
       'string.required': errMessages['any.required']
     })
-  });
+    });
 
-  if(updateMode == 0){
     return schema.validate(userData, { abortEarly: false });
   }
 
+  const schema = Joi.object({
+    password: Joi.string().min(6).label('کلمه عبور').required()
+    .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
+    .messages({
+      'string.empty': errMessages['string.empty'],
+      'string.min': errMessages['string.min'],
+      'string.required': errMessages['any.required'],
+      'string.pattern.base' : 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.',
+    }),
+    });
   return schema.validate(userDataUpdated);
 
 };
@@ -231,14 +242,15 @@ exports.update = async (req,res,next)=>{
 
     const rowsAffected = await UserModel.update({
       password:req.body.password,
-      isActive:req.body.isActive,
+      isActive:req.body.isActive=='on'?1:0,
       updater:'MHA_Updated',
-
-    })
+    },
+    {where:{id:userId}}
+  )
 
     if(rowsAffected[0]>0){
       req.flash('success','اطلاعات با موفقیت اصلاح شد.')
-      return res.redirect(`../index/${userId}`)
+      return res.redirect(`../index`)
     }
   
     req.flash("errors","اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید...");
