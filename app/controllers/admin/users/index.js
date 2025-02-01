@@ -277,3 +277,27 @@ exports.update = async (req,res,next)=>{
     next(error)
   }
 }
+
+exports.delete = async (req,res,next)=>{
+  try {
+    const userId = req.params.id
+    const rowsAffected = await UserModel.destroy({
+      where : {id:userId}
+    })
+    
+    if(rowsAffected>0){
+
+      req.flash('success','اطلاعات با موفقیت حذف شد.')
+      return res.redirect('../index')
+    }
+    
+  } catch (error) {
+
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      req.flash("removeSuccess",'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
+      return res.redirect(`../index`);
+    }
+
+    next(error)
+  }
+}

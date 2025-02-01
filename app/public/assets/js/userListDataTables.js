@@ -52,7 +52,7 @@ $(document).ready(function () {
       {target:4,className:'text-center'},
       {target:5,className:'text-center'},
     ],
-    order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی
+    order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس ردیف به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
     language: {
       search: "هر کدام از موارد را می توانید اینجا جستجو کنید ...:",
@@ -87,8 +87,5 @@ $('#userListDataTable').on('change','.active-toggle',function(){
     success:function (response){
       alert(`کاربر ${msg} شد.`)
     }
-
-
-    
   })
 })
