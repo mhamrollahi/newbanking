@@ -1,0 +1,55 @@
+<div class="d-flex align-self-center justify-content-center order-2 order-lg-1 col-lg-5 col-12">
+                        <div class="login-register-form-wrap">
+
+                            <div class="content">
+                                <h1>ورود</h1>
+                                <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. .</p>
+                            </div>
+
+                            <div class="login-register-form">
+                                  {{#if hasErrors}}
+                                      <div class="row mb-5">
+                                          <div class="col-12">
+                                             <div class="alert alert-outline-secondary" role="alert">
+                                                {{#each errors}}
+                             
+                                                   <p>{{ this }}</p>
+
+                                                {{/each}}
+                                              </div>
+                                         </div>
+                                      </div>
+                                  {{/if}}
+                                <form action="/auth/login" method="POST">
+                                    <div class="row">
+                                        <div class="col-12 mb-20">
+                                            <input type="email" name="email" placeholder="نام کاربری / ایمیل" class="form-control" />
+                                            </div>
+                                        <div class="col-12 mb-20">
+                                            <input type="password" name="password" placeholder="رمز عبور" class="form-control"/>
+                                        </div>
+                                        <div class="col-12 mb-20">
+                                            <label for="remember" class="adomx-checkbox-2">
+                                                <input id="remember" name="remember_me" type="checkbox">
+                                                <i class="icon"></i>
+                                                مرا به خاطر داشته باش.
+                                            </label>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="row justify-content-between">
+                                                <div class="col-auto mb-15">
+                                                    <a href="#">فراموشی رمز عبور؟</a>
+                                                </div>
+                                                <div class="col-auto mb-15">آیا حساب کاربری ندارید؟ 
+                                                    <a href="/auth/register">هم اکنون ایجاد کنید.</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-10">
+                                            <button class="button button-primary button-outline">ورود</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
