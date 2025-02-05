@@ -3,6 +3,7 @@ const codeTableListRouter = require('./baseInformation/codeTableList')
 const codingDataRouter = require('./baseInformation/codingData')
 const importFilesRouter = require('./importFiles/importCodingData')
 const usersRouter = require('./admin/users')
+const authRouter = require('./auth/index')
 
 module.exports = (app) => {
   app.use('/accManagement',accManagementRouter)
@@ -10,4 +11,5 @@ module.exports = (app) => {
   app.use('/baseInformation',codingDataRouter)
   app.use('/importFiles',importFilesRouter)
   app.use('/admin/users',usersRouter)
+  app.use('/auth',authRouter)
 }

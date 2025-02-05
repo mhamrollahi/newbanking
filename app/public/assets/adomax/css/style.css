@@ -11903,7 +11903,8 @@ body.side-header-green .side-header .side-header-close {
 
 /*Login & Resister BG*/
 .login-register-bg {
-  background-image: url(../images/bg/login-register-bg.jpg);
+  /* background-image: url(../images/bg/login-register-bg.jpg); */
+  background-image: url(../images/bg/mefa-bg.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
