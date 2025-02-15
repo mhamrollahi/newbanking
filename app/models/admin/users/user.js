@@ -44,10 +44,10 @@ exports.User = (sequelize) => {
           notEmpty: {
             msg: 'لطفا کلمه عبور را وارد کنید.'
           },
-          len: {
-            args: [6, 20],
-            msg: 'کلمه عبور باید بین 6 تا 20 کاراکتر باشد.'
-          }
+          // len: {
+          //   args: [6, 20],
+          //   msg: 'کلمه عبور باید بین 6 تا 20 کاراکتر باشد.'
+          // }
         }
       },
 
@@ -75,7 +75,11 @@ exports.User = (sequelize) => {
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 1
+        defaultValue: 1,
+      },
+
+      Description: {
+        type: DataTypes.STRING(255),
       },
 
       creator: {
@@ -120,15 +124,19 @@ exports.User = (sequelize) => {
     }
   );
 
-  User.beforeCreate((user) => {
-    user.password = hashService.hashPassword(user.password);
+  User.beforeCreate(async (user) => {
+    user.password = await hashService.hashPassword(user.password);
     user.updatedAt = null
   }),
     // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-  User.beforeUpdate((user) => {
-    user.password = hashService.hashPassword(user.password);
+ User.beforeUpdate(async (user) => {
     user.updatedAt = new Date();
-  });
+
+    if(user.changed('password')){
+      user.password = await hashService.hashPassword(user.password);
+    }
+  })
+
 
   return User;
 };

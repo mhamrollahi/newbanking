@@ -146,6 +146,7 @@ exports.store = async (req, res, next) => {
       password: req.body.password,
       confirm_password: req.body.confirm_password,
       fullName: req.body.fullName,
+      Description: req.body.description,
       creator:'First_Admin',
     };
     console.log(userData);
@@ -201,7 +202,7 @@ exports.edit = async (req,res,next) => {
     const userData = await UserModel.findOne({
       where : {id:userId},
       raw:true,
-      nest:true,
+      nest:false,
     })
 
     res.render('./admin/user/edit',{
@@ -243,9 +244,10 @@ exports.update = async (req,res,next)=>{
     const rowsAffected = await UserModel.update({
       password:req.body.password,
       isActive:req.body.isActive=='on'?1:0,
+      Description:req.body.description,
       updater:'MHA_Updated',
     },
-    {where:{id:userId}}
+    { where:{id:userId}, individualHooks: true }
   )
 
     if(rowsAffected[0]>0){
