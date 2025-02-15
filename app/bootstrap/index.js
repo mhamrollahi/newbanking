@@ -25,12 +25,15 @@ module.exports = (app) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieparser())
+  
   app.use(session({
     secret: 'JaiShriGanesha',
     resave:true,
     saveUninitialized:true,
-    cookie:{maxAge:60000}
+    cookie:{maxAge:60000},
+    unset:'destroy',
   }))
+
   app.use(flash())
   app.use(cors());
 

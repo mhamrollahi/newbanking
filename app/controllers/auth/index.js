@@ -39,7 +39,8 @@ exports.doLogin = async (req, res, next) => {
     req.flash('errors', 'نام کاربری یا کلمه عبور معتبر نیست');
     return res.redirect('/auth/login');
   }
-
+  req.session.user = user 
+  
   return res.redirect('../accManagement/index');
 };
 

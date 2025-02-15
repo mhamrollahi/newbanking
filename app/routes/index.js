@@ -5,11 +5,13 @@ const importFilesRouter = require('./importFiles/importCodingData')
 const usersRouter = require('./admin/users')
 const authRouter = require('./auth/index')
 
+const authMiddleware = require('../middlewares/authMiddleware')
+
 module.exports = (app) => {
-  app.use('/accManagement',accManagementRouter)
-  app.use('/baseInformation',codeTableListRouter)
-  app.use('/baseInformation',codingDataRouter)
-  app.use('/importFiles',importFilesRouter)
-  app.use('/admin/users',usersRouter)
+  app.use('/accManagement',[authMiddleware],accManagementRouter)
+  app.use('/baseInformation',[authMiddleware],codeTableListRouter)
+  app.use('/baseInformation',[authMiddleware],codingDataRouter)
+  app.use('/importFiles',[authMiddleware],importFilesRouter)
+  app.use('/admin/users',[authMiddleware],usersRouter)
   app.use('/auth',authRouter)
 }
