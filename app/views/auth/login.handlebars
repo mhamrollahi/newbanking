@@ -10,27 +10,25 @@
     </div>
 
     <div class='login-register-form'>
-      {{#if hasErrors}}
-        <div class='row mb-5'>
-          <div class='col-12'>
-            <div class='alert alert-outline-secondary' role='alert'>
-              {{#each errors}}
-
-                <p>{{this}}</p>
-
-              {{/each}}
-            </div>
+    
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>
+                {{this}}
+              </small>
+            {{/each}}
           </div>
-        </div>
-      {{/if}}
+        {{/if}}
       <form action='/auth/login' method='POST' data-frmValidation novalidate>
         <div class='row'>
           <div class='col-12 mb-20'>
-            <input type='text' name='userName' placeholder='نام کاربری / کدملی' class='form-control' required />
+            <input type='text' class='form-control' id='userName' name='userName' maxlength='10' minlength='10' placeholder='لطفا نام کاربری (کد ملی) خود را وارد کنید.' title='کد ملی را بعنوان نام کاربری وارد کنید.'
+               autocomplete='userName' autofocus='true' required />
           </div>
           <div class='col-12 mb-20'>
-            <input type='password' name='password' placeholder='رمز عبور' class='form-control' required />
-            <i class='zmdi zmdi-eye-off icon-pass-loginfrm' id='password-eye1'></i>
+            <input type='password' class='txt-password form-control' id="password" name='password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' autocomplete="current-password" required/>
+            <i class='zmdi zmdi-eye-off icon-pass-login-form ' id='password-eye1'></i>
           </div>
           <div class='col-12 mb-20'>
             <label for='remember' class='adomx-checkbox-2'>
@@ -44,9 +42,6 @@
               <div class='col-auto mb-15'>
                 <a href='#'>فراموشی رمز عبور؟</a>
               </div>
-              {{! <div class='col-auto mb-15'>آیا حساب کاربری ندارید؟
-                <a href='/auth/register'>هم اکنون ایجاد کنید.</a>
-              </div> }}
             </div>
           </div>
           <div class='col-12 mt-10'>
@@ -57,3 +52,18 @@
     </div>
   </div>
 </div>
+<script src='/static/assets/js/formValidation.js'></script>
+
+<script>
+  $(document).ready(function (){
+    $('#password-eye1').click(function(){
+      if($('.txt-password').attr('type')==='password'){
+        $('.txt-password').attr('type','text')
+        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
+      }else{
+        $('.txt-password').attr('type','password')
+        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
+      }
+    })
+  })
+</script>

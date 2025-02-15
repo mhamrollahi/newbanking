@@ -68,17 +68,35 @@ table tr th a.sort-down-cols::after{
   z-index: 1050; /* بیشتر از z-index سایر المان‌ها */
 }
 
-.icon-pass-loginfrm{
-  position: absolute; top:18px;left:40px;font-size:20px;
+.icon-pass-user-create{
+  position: absolute;
+  top:18px;
+  left:40px;
+  font-size:20px;
   cursor: pointer;
   transition: all 1s ease;
 
 }
 
-.icon-pass-loginfrm:hover{
+.icon-pass-user-create:hover{
   color: #030370;
   font-size:22px;
 }
+
+.icon-pass-login-form{
+  position: relative; 
+  top:-32px;
+  right:330px;
+  font-size:18px;
+  cursor: pointer;
+  transition: all 1s ease;
+}
+
+.icon-pass-login-form:hover{
+  color: #030370;
+  font-size:20;
+}
+
 
 .mandatory::after{
   content: "\f005";
