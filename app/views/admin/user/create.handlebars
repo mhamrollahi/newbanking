@@ -33,23 +33,23 @@
         {{/if}}
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='userName' name='userName' maxlength='10' minlength='10' placeholder=' نام کاربری (کد ملی)را وارد کنید.' title='کد ملی را بعنوان نام کاربری وارد کنید.' autocomplete='off' autofocus='true' required />
-          <label for='userName' class='mandatory'>
+          <input type='text' class='form-control' id='username' name='username' maxlength='10' minlength='10' placeholder=' نام کاربری (کد ملی)را وارد کنید.' title='کد ملی را بعنوان نام کاربری وارد کنید.' autocomplete='off' autofocus='true' required />
+          <label for='username' class='mandatory'>
             نام کاربری (کد ملی)
           </label>
         </div>
 
-         <div class='form-floating mb-3'>
-          <input type='password' class='txt-password form-control' name='password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' required/>
-          <i class="zmdi zmdi-eye-off icon-pass-user-create" id="password-eye1"></i>
+        <div class='form-floating mb-3'>
+          <input type='password' class='txt-password form-control' name='password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' required />
+          <i class='zmdi zmdi-eye-off icon-pass-user-create' id='password-eye1'></i>
           <label for='password' class='mandatory'>
             کلمه عبور
           </label>
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='password' class='txt-password form-control' name='confirm_password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را تکرار کنید.' required/>
-          <i class="zmdi zmdi-eye-off icon-pass-user-create" id="password-eye2"></i>
+          <input type='password' class='txt-password form-control' name='confirm_password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را تکرار کنید.' required />
+          <i class='zmdi zmdi-eye-off icon-pass-user-create' id='password-eye2'></i>
           <label for='password' class='mandatory'>
             تکرار کلمه عبور
           </label>
@@ -63,7 +63,7 @@
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.'/>
+          <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.' />
           <label for='description'>
             توضیحات
           </label>
@@ -83,28 +83,24 @@
 </main>
 <script src='/static/assets/js/formValidation.js'></script>
 <script>
-  $(document).ready(function (){
-    $('#password-eye1').click(function(){
-      if($('.txt-password').attr('type')==='password'){
-        $('.txt-password').attr('type','text')
-        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
-        $('#password-eye2').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
-      }else{
-        $('.txt-password').attr('type','password')
-        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
-        $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off')
-      }
-    })
-    $('#password-eye2').click(function(){
-      if($('.txt-password').attr('type')==='password'){
-        $('.txt-password').attr('type','text')
-        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
-        $('#password-eye2').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
-      }else{
-        $('.txt-password').attr('type','password')
-        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
-        $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off')
-      }
-    })
-  })
+  $(document).ready(function (){ $('#password-eye1').click(function(){ 
+    if($('.txt-password').attr('type')==='password'){ 
+      $('.txt-password').attr('type','text') 
+      $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') 
+      $('#password-eye2').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') }
+    else{
+      $('.txt-password').attr('type','password') 
+      $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off') 
+      $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off') } })
+      $('#password-eye2').click(function(){ 
+        if($('.txt-password').attr('type')==='password'){ 
+          $('.txt-password').attr('type','text')
+          $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') 
+          $('#password-eye2').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') }
+          else{ 
+            $('.txt-password').attr('type','password') 
+            $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off') 
+            $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off') 
+          }
+  }) })
 </script>

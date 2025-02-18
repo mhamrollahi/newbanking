@@ -20,7 +20,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.doLogin = async (req, res, next) => {
-  const { userName, password } = req.body;
+  const { username, password } = req.body;
 
   //اعتبار سنجی فرم ورودی - Start
   const { error } = formValidation(req, 0);
@@ -33,25 +33,25 @@ exports.doLogin = async (req, res, next) => {
   }
   //اعتبار سنجی فرم ورودی - End
 
-  const user = await authService.login(userName, password);
+  const user = await authService.login(username, password);
 
   if (!user) {
     req.flash('errors', 'نام کاربری یا کلمه عبور معتبر نیست');
     return res.redirect('/auth/login');
   }
-  req.session.user = user 
-  
+  req.session.user = user;
+
   return res.redirect('../accManagement/index');
 };
 
 const formValidation = (req) => {
   const userData = {
-    userName: req.body.userName,
+    username: req.body.username,
     password: req.body.password
   };
 
   const schema = Joi.object({
-    userName: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)').pattern(/^\d+$/).messages({
+    username: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)').pattern(/^\d+$/).messages({
       'string.empty': errMessages['string.empty'],
       'string.min': errMessages['string.min'],
       'string.max': errMessages['string.max'],

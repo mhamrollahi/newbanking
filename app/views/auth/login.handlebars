@@ -10,25 +10,26 @@
     </div>
 
     <div class='login-register-form'>
-    
-        {{#if hasError}}
-          <div class='alert alert-danger'>
-            {{#each errors}}
-              <small class='errMessage'>
-                {{this}}
-              </small>
-            {{/each}}
-          </div>
-        {{/if}}
+
+      {{#if hasError}}
+        <div class='alert alert-danger'>
+          {{#each errors}}
+            <small class='errMessage'>
+              {{this}}
+            </small>
+          {{/each}}
+        </div>
+      {{/if}}
       <form action='/auth/login' method='POST' data-frmValidation novalidate>
         <div class='row'>
           <div class='col-12 mb-20'>
-            <input type='text' class='form-control' id='userName' name='userName' maxlength='10' minlength='10' placeholder='لطفا نام کاربری (کد ملی) خود را وارد کنید.' title='کد ملی را بعنوان نام کاربری وارد کنید.'
-               autocomplete='userName' autofocus='true' required />
+            <input type='text' class='form-control' id='username' name='username' autocomplete='username' maxlength='10' minlength='10' 
+              placeholder='لطفا نام کاربری (کد ملی) خود را وارد کنید.' title='کد ملی را بعنوان نام کاربری وارد کنید.' autofocus='true' required />
           </div>
           <div class='col-12 mb-20'>
-            <input type='password' class='txt-password form-control' id="password" name='password' minlength='6' autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.' autocomplete="current-password" required/>
-            <i class='zmdi zmdi-eye-off icon-pass-login-form ' id='password-eye1'></i>
+            <input type='password' class='txt-password form-control' id='password' name='password' autocomplete='current-password' minlength='6' 
+              autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.'  required />
+            <i class='zmdi zmdi-eye-off icon-pass-login-form' id='password-eye1'></i>
           </div>
           <div class='col-12 mb-20'>
             <label for='remember' class='adomx-checkbox-2'>
@@ -55,15 +56,15 @@
 <script src='/static/assets/js/formValidation.js'></script>
 
 <script>
-  $(document).ready(function (){
-    $('#password-eye1').click(function(){
-      if($('.txt-password').attr('type')==='password'){
-        $('.txt-password').attr('type','text')
-        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
-      }else{
+  $(document).ready(function (){ 
+    $('#password-eye1').click(function(){ 
+      console.log('click eye ...')
+    if($('.txt-password').attr('type')==='password'){ 
+       $('.txt-password').attr('type','text') 
+       $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') }
+      else{ 
         $('.txt-password').attr('type','password')
-        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
-      }
+        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off') } 
+      }) 
     })
-  })
 </script>

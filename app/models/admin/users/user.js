@@ -6,7 +6,7 @@ exports.User = (sequelize) => {
   const User = sequelize.define(
     'User',
     {
-      userName: {
+      username: {
         type: DataTypes.STRING(11),
         allowNull: false,
         unique: {
@@ -43,7 +43,7 @@ exports.User = (sequelize) => {
           },
           notEmpty: {
             msg: 'لطفا کلمه عبور را وارد کنید.'
-          },
+          }
           // len: {
           //   args: [6, 20],
           //   msg: 'کلمه عبور باید بین 6 تا 20 کاراکتر باشد.'
@@ -75,11 +75,11 @@ exports.User = (sequelize) => {
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: 1,
+        defaultValue: 1
       },
 
       Description: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(255)
       },
 
       creator: {
@@ -94,7 +94,7 @@ exports.User = (sequelize) => {
 
       updatedAt: {
         type: DataTypes.DATE,
-        defaultValue: null,
+        defaultValue: null
       },
 
       updater: {
@@ -126,17 +126,16 @@ exports.User = (sequelize) => {
 
   User.beforeCreate(async (user) => {
     user.password = await hashService.hashPassword(user.password);
-    user.updatedAt = null
+    user.updatedAt = null;
   }),
     // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
- User.beforeUpdate(async (user) => {
-    user.updatedAt = new Date();
+    User.beforeUpdate(async (user) => {
+      user.updatedAt = new Date();
 
-    if(user.changed('password')){
-      user.password = await hashService.hashPassword(user.password);
-    }
-  })
-
+      if (user.changed('password')) {
+        user.password = await hashService.hashPassword(user.password);
+      }
+    });
 
   return User;
 };
