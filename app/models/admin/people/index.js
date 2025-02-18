@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const dateService = require('@services/dateService');
-const hashService = require('@services/hashService');
 
 exports.Person = (sequelize) => {
   const Person = sequelize.define(
@@ -125,7 +124,6 @@ exports.Person = (sequelize) => {
     // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
   Person.beforeUpdate(async (person) => {
     person.updatedAt = new Date();
-
   });
 
   return Person;
