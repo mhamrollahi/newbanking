@@ -4,5 +4,21 @@
   "editor.fontLigatures": true,
   "editor.tabSize": 2,
   "editor.fontSize": 15,
-  "reactSnippets.settings.prettierEnabled": true
+  "reactSnippets.settings.prettierEnabled": true,
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "MyDatabase",
+      "username": "root",
+      "password": "904957",
+      "database": "NewBanking"
+    }
+  ]
 }

@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const codeTableListModel = require('./baseInformation/codeTableList')
 const codingDataModel = require('./baseInformation/codingData')
 const userModel = require('./admin/users/user')
-const personModel = require('./admin/people')
+const personModel = require('./admin/person')
 
 // const contactModel = require('./auth/contact')
 // const contactCategoryModel = require('./auth/contactCategory')

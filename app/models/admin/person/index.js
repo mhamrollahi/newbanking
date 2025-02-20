@@ -10,15 +10,15 @@ exports.Person = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
+            msg: 'لطفا نام خود را وارد کنید.'
           },
           notEmpty: {
-            msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
+            msg: 'لطفا نام خود را وارد کنید.'
           },
           len: {
             args: [2, 50],
-            msg: 'نام کاربری همان کدملی هست.لطفا کد ملی خود را وارد کنید.'
-          },
+            msg: 'نام باید بین ۲ تا ۵۰ حرف باشد.'
+          }
         }
       },
 
@@ -27,15 +27,15 @@ exports.Person = (sequelize) => {
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
+            msg: 'لطفا نام خانوادگی را وارد کنید.'
           },
           notEmpty: {
-            msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
+            msg: 'لطفا نام خانوادگی را وارد کنید.'
           },
           len: {
             args: [2, 50],
-            msg: 'نام کاربری همان کدملی هست.لطفا کد ملی خود را وارد کنید.'
-          },
+            msg: 'نام خانوادگی باید بین ۲ تا ۵۰ حرف باشد.'
+          }
         }
       },
 
@@ -44,36 +44,51 @@ exports.Person = (sequelize) => {
         allowNull: false,
         unique: {
           args: true,
-          msg: 'نام کاربری (کد ملی) نمی تواند تکراری باشد.'
+          msg: 'کدملی نمی تواند تکراری باشد.'
         },
         validate: {
           notNull: {
-            msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
+            msg: 'کدملی را وارد کنید.'
           },
           notEmpty: {
-            msg: 'لطفا نام کاربری (کد ملی) را وارد کنید.'
+            msg: 'کدملی را وارد کنید.'
           },
           len: {
             args: [10, 10],
-            msg: 'نام کاربری همان کدملی هست.لطفا کد ملی خود را وارد کنید.'
+            msg: 'کد ملی معتبر نمی‌باشد.'
           },
           isNumeric: {
-            msg: 'کد ملی فقط شامل اعداد می باشد.'
+            msg: 'کد ملی فقط شامل عدد می باشد.'
           }
         }
       },
-
+      
       mobile: {
         type: DataTypes.STRING(11),
         validate: {
+          is:{
+            args:/^09[0-9]{9}$/,
+            msg:'شماره موبایل معتبر نمی باشد.',
+          },
           isNumeric: {
-            msg: 'کد ملی فقط شامل اعداد می باشد.'
-          }
+            msg: 'شماره موبایل فقط شامل اعداد می باشد.'
+          },
+          len: {
+            args: [11, 11],
+            msg: 'شماره موبایل معتبر نمی‌باشد.'
+          },
+          
         }
       },
 
       Description: {
-        type: DataTypes.STRING(255)
+        type: DataTypes.STRING(255),
+        validate:{
+          len:{
+            args:[0,255],
+            msg:'توضیحات باید کمتر از ۲۵۵ کاراکتر باشد.'
+          }
+        }
       },
 
       creator: {
@@ -122,9 +137,9 @@ exports.Person = (sequelize) => {
     person.updatedAt = null;
   }),
     // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-  Person.beforeUpdate(async (person) => {
-    person.updatedAt = new Date();
-  });
+    Person.beforeUpdate(async (person) => {
+      person.updatedAt = new Date();
+    });
 
   return Person;
 };
