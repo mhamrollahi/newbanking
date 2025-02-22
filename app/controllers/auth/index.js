@@ -62,12 +62,12 @@ const formValidation = (req) => {
       .min(6)
       .label('کلمه عبور')
       .required()
-      .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
+      // .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
       .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
         'string.required': errMessages['any.required'],
-        'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
+        // 'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
       })
   });
 
