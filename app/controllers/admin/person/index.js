@@ -5,32 +5,10 @@ const Joi = require('joi');
 
 exports.getData = async (req, res, next) => {
   try {
-    const result = await UserModel.findAll({});
-    // console.log(result);
+    const result = await PersonModel.findAll({});
+    console.log(result);
 
     res.json(result);
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.updateUserActive = async (req, res, next) => {
-  try {
-    const id = await req.params.id;
-    const { isActive } = req.body;
-    if (!id || typeof isActive !== 'boolean') {
-      req.flash('errors', 'داده ها نامعتبر می باشد.');
-      return res.redirect('./admin/users/index');
-    }
-
-    const rowsAffected = await UserModel.update({ isActive }, { where: { id } });
-    if (rowsAffected[0] > 0) {
-      req.flash('success', 'وضعیت با موفقیت به‌روزرسانی شد.');
-      return res.redirect('../../index');
-    }
-
-    req.flash('success', 'اصلاح اطلاعات با مشکل مواجه شد.لطفا مجدد سعی کنید');
-    return res.redirect('./admin/users/index');
   } catch (error) {
     next(error);
   }
@@ -41,7 +19,7 @@ exports.index = async (req, res, next) => {
     const success = req.flash('success');
     const removeSuccess = req.flash('removeSuccess');
 
-    res.render('./admin/user/index', {
+    res.render('./admin/person/index', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
       subTitle: 'فهرست کاربران',
@@ -72,89 +50,80 @@ exports.create = async (req, res, next) => {
   }
 };
 
-const formValidation = (req, updateMode) => {
+const formValidation = (req) => {
   const userData = {
-    username: req.body.username,
-    password: req.body.password,
-    confirm_password: req.body.confirm_password,
-    fullName: req.body.fullName
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    nationalCode: req.body.nationalCode,
+    mobile: req.body.mobile
   };
 
-  const userDataUpdated = {
-    password: req.body.password
-  };
-
-  if (updateMode == 0) {
-    const schema = Joi.object({
-      username: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)').pattern(/^\d+$/).messages({
+  const schema = Joi.object({
+    firstName: Joi.string()
+      .min(2)
+      .max(50)
+      .required()
+      .label('نام')
+      .pattern(/^[\p{L}\s]+$/u) // فقط حروف فارسی و انگلیسی (و فاصله مجاز)
+      .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
         'string.max': errMessages['string.max'],
         'string.required': errMessages['any.required'],
-        'string.pattern.base': 'نام کاربری (کد ملی) می بایست فقط عدد باشد.'
+        'string.pattern.base': '{#label} باید فقط شامل حروف فارسی یا انگلیسی باشد'
       }),
-      password: Joi.string()
-        .min(6)
-        .label('کلمه عبور')
-        .required()
-        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
-        .messages({
-          'string.empty': errMessages['string.empty'],
-          'string.min': errMessages['string.min'],
-          'string.required': errMessages['any.required'],
-          'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
-        }),
-      confirm_password: Joi.string()
-        .min(6)
-        .label('تاییدیه کلمه عبور')
-        .required()
-        .valid(Joi.ref('password'))
-        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
-        .messages({
-          'any.only': 'کلمه عبور و تاییدیه آن با هم مطابقت ندارد.',
-          'string.empty': errMessages['string.empty'],
-          'string.min': errMessages['string.min'],
-          'string.required': errMessages['any.required'],
-          'string.pattern.base': 'تاییدیه رمز عبور  باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
-        }),
-      fullName: Joi.string().min(5).label('نام و نام خانوادگی').required().messages({
+
+    lastName: Joi.string()
+      .min(2)
+      .max(50)
+      .required()
+      .label('نام خانوادگی')
+      .pattern(/^[a-zA-Zآ-یءچ‌گ‌پ‌]+$/u) // فقط حروف فارسی و انگلیسی
+      .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
         'string.max': errMessages['string.max'],
-        'string.required': errMessages['any.required']
-      })
-    });
+        'string.required': errMessages['any.required'],
+        'string.pattern.base': '{#label} باید فقط شامل حروف فارسی یا انگلیسی باشد'
+      }),
 
-    return schema.validate(userData, { abortEarly: false });
-  }
+    nationalCode: Joi.string().min(10).max(10).required().label('کد ملی').pattern(/^\d+$/).messages({
+      'string.empty': errMessages['string.empty'],
+      'string.min': errMessages['string.min'],
+      'string.max': errMessages['string.max'],
+      'string.required': errMessages['any.required'],
+      'string.pattern.base': '{#label} می بایست فقط عدد باشد.'
+    }),
 
-  const schema = Joi.object({
-    password: Joi.string()
-      .min(6)
-      .label('کلمه عبور')
+    mobile: Joi.string()
+      .min(11)
+      .max(11)
+      .label('شماره موبایل')
       .required()
-      .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
+      .pattern(/^09[0-9]{9}$/)
       .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
         'string.required': errMessages['any.required'],
-        'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
+        'string.pattern.base': '{#label} باید فقط عدد باشد.'
       })
   });
-  return schema.validate(userDataUpdated);
+
+  return schema.validate(userData, { abortEarly: false });
+
 };
 
 exports.store = async (req, res, next) => {
   try {
-    const userData = {
-      username: req.body.username,
-      password: req.body.password,
-      confirm_password: req.body.confirm_password,
-      fullName: req.body.fullName,
+    const personData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      nationalCode: req.body.nationalCode,
+      mobile: req.body.mobile,
       Description: req.body.description,
-      creator: 'First_Admin'
+      creator:req.session.user.id
     };
-    console.log(userData);
+    console.log(personData);
 
     //اعتبار سنجی فرم ورودی - Start
 
@@ -169,7 +138,7 @@ exports.store = async (req, res, next) => {
 
     //اعتبار سنجی فرم ورودی - End
 
-    const { id } = await UserModel.create(userData);
+    const { id } = await PersonModel.create(personData);
 
     if (id) {
       req.flash('success', 'اطلاعات کاربر با موفقیت ثبت شد.');
@@ -197,19 +166,19 @@ exports.store = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const personId = req.params.id;
 
     const errors = req.flash('errors');
     const hasError = errors.length > 0;
     const success = req.flash('success');
     const removeSuccess = req.flash('removeSuccess');
-    const userData = await UserModel.findOne({
-      where: { id: userId },
+    const userData = await PersonModel.findOne({
+      where: { id: personId },
       raw: true,
       nest: false
     });
 
-    res.render('./admin/user/edit', {
+    res.render('./admin/person/edit', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
@@ -244,7 +213,7 @@ exports.update = async (req, res, next) => {
       return res.redirect(`../edit/${userId}`);
     }
 
-    const rowsAffected = await UserModel.update(
+    const rowsAffected = await PersonModel.update(
       {
         password: req.body.password,
         isActive: req.body.isActive == 'on' ? 1 : 0,
@@ -285,9 +254,9 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const rowsAffected = await UserModel.destroy({
-      where: { id: userId }
+    const personId = req.params.id;
+    const rowsAffected = await PersonModel.destroy({
+      where: { id: personId }
     });
 
     if (rowsAffected > 0) {

@@ -1,9 +1,6 @@
 const express = require('express')
-const authController = require('@controllers/auth')
+const authController = require('@controllers/auth/login.js')
 const router = express.Router()
-
-// router.get('/api/getData',usersControllers.getData)
-// router.post('/api/updateUserActive/:id',usersControllers.updateUserActive)
 
 router.get('/login',authController.login)
 router.post('/login',authController.doLogin)
