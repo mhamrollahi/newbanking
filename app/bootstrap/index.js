@@ -30,7 +30,7 @@ module.exports = (app) => {
     secret: 'JaiShriGanesha',
     resave:true,
     saveUninitialized:true,
-    cookie:{maxAge:60000},
+    cookie:{maxAge:900000 }, //15 دقیقه 
     unset:'destroy',
   }))
 
