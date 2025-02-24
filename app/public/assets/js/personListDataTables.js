@@ -11,20 +11,10 @@ $(document).ready(function () {
           return meta.row + 1;
         }
       },
-      { data: 'username' },
-      { data: 'fullName' },
-      {
-        data: 'isActive',
-        orderable: false,
-        render: function (data, type, row) {
-          if (type === 'display') {
-            return `<input type="checkbox" class="active-toggle"
-              ${data ? 'checked' : ''}
-              data-id="${row.id}" />`;
-          }
-          return data; // در حالت داده‌ی خام، مقدار اصلی را برمی‌گرداند
-        }
-      },
+      { data: 'firstName' },
+      { data: 'lastName' },
+      { data: 'nationalCode' },
+      { data: 'mobile' },
       { data: 'fa_createdAt' },
       { data: 'creator' },
       {
@@ -34,10 +24,10 @@ $(document).ready(function () {
           return `
           <div class="row-table text-center">
             <div class= "11table-action-buttons"> 
-            <a class="edit button button-box button-xs button-info" href="/admin/users/edit/${row.id}">
+            <a class="edit button button-box button-xs button-info" href="/admin/person/edit/${row.id}">
               <i class="zmdi zmdi-edit"></i>
             </a>
-            <a class="delete button button-box button-xs button-danger" href="/admin/users/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
+            <a class="delete button button-box button-xs button-danger" href="/admin/person/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
               <i class="zmdi zmdi-delete"></i>
             </a>
             </div>
@@ -49,9 +39,11 @@ $(document).ready(function () {
     columnDefs: [
       { target: 0, className: 'text-center' },
       { target: 1, className: 'text-center' },
+      { target: 2, className: 'text-center' },
       { target: 3, className: 'text-center' },
       { target: 4, className: 'text-center' },
-      { target: 5, className: 'text-center' }
+      { target: 5, className: 'text-center' },
+      { target: 6, className: 'text-center' },
     ],
     order: [[0, 'desc']], // مرتب‌سازی پیش‌فرض بر اساس ردیف به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
@@ -69,25 +61,6 @@ $(document).ready(function () {
         previous: 'قبلی'
       },
       zeroRecords: 'هیچ داده‌ای پیدا نشد!'
-    }
-  });
-});
-
-$('#userListDataTable').on('change', '.active-toggle', function () {
-  const isChecked = $(this).is(':checked');
-  let msg = 'فعال';
-  if (!isChecked) {
-    msg = 'غیر فعال';
-  }
-
-  const id = $(this).data('id');
-  $.ajax({
-    url: `/admin/users/api/updateUserActive/${id}`,
-    method: 'POST',
-    data: JSON.stringify({ isActive: isChecked }),
-    contentType: 'application/json',
-    success: function (response) {
-      alert(`کاربر ${msg} شد.`);
     }
   });
 });

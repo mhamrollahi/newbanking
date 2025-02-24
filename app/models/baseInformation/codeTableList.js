@@ -4,37 +4,9 @@ const dateService = require('@services/dateService')
 
 exports.CodeTableList = (sequelize) => {
   const CodeTableList = sequelize.define('CodeTableList',{
-    // code: {
-    //     type: DataTypes.STRING(3),
-    //     allowNull: false,
-    //     unique: {
-    //       args:true,
-    //       msg: 'کد نمی تواند تکراری باشد.'
-    //     },
-    //     validate: {
-    //       notNull:{
-    //       msg: 'لطفا یک کد سه رقمی وارد کنید.'
-    //       },
-    //       isNumeric: {
-    //       msg: "کد فقط باید عدد باشد.",
-    //       },
-    //       notEmpty:{
-    //       msg: 'لطفا یک کد سه رقمی وارد کنید.',
-    //       },
-    //       len:{
-    //       args:[1,3],
-    //       msg: 'کد یک عدد بین یک تا سه رقم باشد.'
-    //       },
-    //     }
-    // },
-
     en_TableName: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        // get(){
-        //   const rawValue = this.getDataValue('en_TableName') + ' -- '
-        //   return rawValue.toUpperCase()
-        // },
         unique: {
           args:true,
           msg: 'نام انگلیسی جدول نمی تواند تکراری باشد.'
