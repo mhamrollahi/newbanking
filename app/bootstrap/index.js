@@ -14,7 +14,7 @@ const {sequelize} = require('@models/index.js')
 const loggerMiddleware = require("../middlewares/loggerMiddleware");
 
 try{
-  sequelize.sync({alter:true})
+  sequelize.sync({alter:false})
   console.log('All models were synchronized successfully')
 }catch(error){
   console.log('Error in syncing models ... ',error)
@@ -30,7 +30,7 @@ module.exports = (app) => {
     secret: 'JaiShriGanesha',
     resave:true,
     saveUninitialized:true,
-    cookie:{maxAge:900000 }, //15 دقیقه 
+    cookie:{maxAge:900000 }, // دقیقه 15*60*1000
     unset:'destroy',
   }))
 

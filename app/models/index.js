@@ -33,8 +33,39 @@ const CodingDataModel = codingDataModel.CodingData(sequelize)
 const UserModel = userModel.User(sequelize)
 const PersonModel = personModel.Person(sequelize)
 
-CodeTableListModel.hasMany(CodingDataModel, {foreignKey:'CodeTableListId'} )
-CodingDataModel.belongsTo(CodeTableListModel, {foreignKey:'CodeTableListId'})
+CodeTableListModel.hasMany(CodingDataModel, {
+  foreignKey:{
+    name:'CodeTableListId',
+    allowNull:false,
+    onDelete:'RESTRICT',
+    onUpdate:'RESTRICT'
+  }
+})
+CodingDataModel.belongsTo(CodeTableListModel, {
+  foreignKey:{
+    name:'CodeTableListId',
+    allowNull:false,
+    onDelete:'RESTRICT',
+    onUpdate:'RESTRICT'
+  }
+})
+
+PersonModel.hasMany(UserModel, {
+  foreignKey:{
+    name:'PersonId',
+    allowNull:false,
+    onDelete:'RESTRICT',
+    onUpdate:'RESTRICT'
+  }
+})
+UserModel.belongsTo(PersonModel, {
+  foreignKey:{
+    name:'PersonId',
+    allowNull:false,
+    onDelete:'RESTRICT',
+    onUpdate:'RESTRICT'
+  }
+})
 
 
 // const ContactModel = contactModel.Contact(sequelize)

@@ -131,6 +131,7 @@ exports.CodingData = (sequelize) => {
       },
     },
     {
+      freezeTableName: true, // جلوگیری از تغییرات غیرمنتظره روی جدول
       sequelize,
       indexes: [
         {

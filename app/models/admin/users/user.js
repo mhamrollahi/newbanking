@@ -47,6 +47,11 @@ exports.User = (sequelize) => {
         }
       },
 
+      PersonId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+      },
+
       fullName: {
         type: DataTypes.STRING(50),
         allowNull: false,

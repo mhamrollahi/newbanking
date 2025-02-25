@@ -82,7 +82,8 @@ exports.CodeTableList = (sequelize) => {
       },
     },
 
-    }, {
+    }, 
+    {
       sequelize,
       validate:{},
   })
