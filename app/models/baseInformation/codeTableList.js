@@ -90,10 +90,10 @@ module.exports = (sequelize) => {
       validate:{},
   })
 
-  CodeTableList.associate(models){
+  CodeTableList.associate = (models)=>{
     CodeTableList.hasMany(models.CodingDataModel,{foreignKey:'codeTableListId'})
   }
-  
+
   return CodeTableList
 
 }

@@ -1,19 +1,23 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 const dateService = require("@services/dateService");
 
-exports.CodingData = (sequelize) => {
-  const CodingData = sequelize.define(
-    "CodingData",
-    {
+class CodingData extends Model {}
+
+module.exports = (sequelize) => {
+  CodingData.init({
       id:{
         type:DataTypes.INTEGER,
         primaryKey:true,
         allowNull:false,
       },      
       
-      CodeTableListId:{
+      codeTableListId:{
         type:DataTypes.INTEGER,
         allowNull:false,
+        references:{
+          model:'CodeTableLists',
+          key:'id'
+        }
       },
 
       title: {
@@ -159,5 +163,8 @@ exports.CodingData = (sequelize) => {
     }
   );
 
+  CodingData.associate = (models)=>{
+    CodingData.belongsTo(models.CodeTableListModel,{foreignKey:'codeTableListId'})
+  }
   return CodingData;
 };
