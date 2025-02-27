@@ -90,8 +90,8 @@ module.exports = (sequelize) => {
       validate:{},
   })
 
-  static associate(models){
-    this.hasMany(models.CodingDataModel,{foreignKey:'codeTableListId'})
+  CodeTableList.associate(models){
+    CodeTableList.hasMany(models.CodingDataModel,{foreignKey:'codeTableListId'})
   }
   
   return CodeTableList
