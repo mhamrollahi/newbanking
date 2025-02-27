@@ -1,10 +1,14 @@
-const { CodingDataModel, CodeTableListModel } = require("../../models");
+// const { CodingDataModel, CodeTableListModel } = require("../../models");
+const {models}  = require('../../models')
+
+const { CodingDataModel, CodeTableListModel } = models;
 const dateService = require("@services/dateService");
 
 exports.getData = async (req, res, next) => {
   try {
     
     const codeTableListId = req.params.id;
+    
     const result = await CodingDataModel.findAll({
       where: { CodeTableListId: codeTableListId },
       include: {

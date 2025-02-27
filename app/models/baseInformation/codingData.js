@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
         references:{
           model:'CodeTableLists',
           key:'id'
-        }
+        },
       },
 
       title: {
@@ -164,7 +164,15 @@ module.exports = (sequelize) => {
   );
 
   CodingData.associate = (models)=>{
-    CodingData.belongsTo(models.CodeTableListModel,{foreignKey:'codeTableListId'})
+    CodingData.belongsTo(models.CodeTableListModel,{
+      foreignKey:{
+        name:'codeTableListId',
+        allowNull:false,
+        onDelete:'RESTRICT',
+        onUpdate:'RESTRICT'
+      }}
+    )
+
   }
   return CodingData;
 };

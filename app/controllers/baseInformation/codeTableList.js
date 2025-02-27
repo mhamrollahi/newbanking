@@ -1,5 +1,8 @@
 const dateService = require("@services/dateService");
-const { CodeTableListModel } = require("../../models");
+const {models}  = require('../../models')
+
+const { CodeTableListModel } = models;
+
 
 exports.getData = async (req, res, next) => {
   try {

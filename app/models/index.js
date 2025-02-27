@@ -28,27 +28,37 @@ async function getConnection(){
 }
 getConnection()
 
-const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
-const CodingDataModel = codingDataModel.CodingData(sequelize)
+// const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
+// const CodingDataModel = codingDataModel.CodingData(sequelize)
+const models = {
+  CodeTableListModel:codeTableListModel(sequelize),
+  CodingDataModel : codingDataModel(sequelize)
+}
 const UserModel = userModel.User(sequelize)
 const PersonModel = personModel.Person(sequelize)
 
-CodeTableListModel.hasMany(CodingDataModel, {
-  foreignKey:{
-    name:'CodeTableListId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
+Object.values(models).forEach((model)=>{
+  if(model.associate){
+    model.associate(models)
   }
 })
-CodingDataModel.belongsTo(CodeTableListModel, {
-  foreignKey:{
-    name:'CodeTableListId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
-  }
-})
+
+// CodeTableListModel.hasMany(CodingDataModel, {
+//   foreignKey:{
+//     name:'CodeTableListId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
+// CodingDataModel.belongsTo(CodeTableListModel, {
+//   foreignKey:{
+//     name:'CodeTableListId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
 
 PersonModel.hasMany(UserModel, {
   foreignKey:{
@@ -76,8 +86,9 @@ UserModel.belongsTo(PersonModel, {
 
 module.exports = {
   sequelize,
-  CodeTableListModel,
-  CodingDataModel,
+  models,
+  // CodeTableListModel,
+  // CodingDataModel,
   UserModel,
   PersonModel,
 }
