@@ -1,9 +1,11 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 const dateService = require('@services/dateService')
 
+class CodeTableList extends Model {}
 
-exports.CodeTableList = (sequelize) => {
-  const CodeTableList = sequelize.define('CodeTableList',{
+module.exports = (sequelize) => {
+
+  CodeTableList.init({
     en_TableName: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -88,6 +90,10 @@ exports.CodeTableList = (sequelize) => {
       validate:{},
   })
 
+  static associate(models){
+    this.hasMany(models.CodingDataModel,{foreignKey:'codeTableListId'})
+  }
+  
   return CodeTableList
 
 }
