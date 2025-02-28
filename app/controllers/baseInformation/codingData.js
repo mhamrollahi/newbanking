@@ -10,7 +10,7 @@ exports.getData = async (req, res, next) => {
     const codeTableListId = req.params.id;
     
     const result = await CodingDataModel.findAll({
-      where: { CodeTableListId: codeTableListId },
+      where: { codeTableListId: codeTableListId },
       include: {
         model: CodeTableListModel,
         attributes: ["fa_TableName", "en_TableName"],
@@ -31,7 +31,7 @@ exports.index = async (req, res, next) => {
     const codeTableListId = req.params.id;
 
     const codingDataList = await CodingDataModel.findAll({
-      where: { CodeTableListId: codeTableListId },
+      where: { codeTableListId: codeTableListId },
       include: {
         model: CodeTableListModel,
         attributes: ["fa_TableName", "en_TableName"],
@@ -108,7 +108,7 @@ exports.store = async (req, res, next) => {
   try {
     // res.send(req.body)
     const codingData = {
-      CodeTableListId: req.params.id,
+      codeTableListId: req.params.id,
       title: req.body.title,
       description: req.body.description === "" ? null : req.body.description,
       sortId: req.body.sortId,
@@ -194,9 +194,9 @@ exports.update = async (req, res, next) => {
       updater: "MHA_Updated",
     };
 
-    const { CodeTableListId } = await CodingDataModel.findByPk(codingDataId);
+    const { codeTableListId } = await CodingDataModel.findByPk(codingDataId);
 
-    console.log(CodeTableListId);
+    console.log(codeTableListId);
 
     const rowsAffected = await CodingDataModel.update(
       {
@@ -205,17 +205,17 @@ exports.update = async (req, res, next) => {
         sortId: codingData.sortId,
         refId: codingData.refId,
         updater: codingData.updater,
-        CodeTableListId:CodeTableListId,
+        codeTableListId:codeTableListId,
         updatedAt: new Date().toLocaleDateString("en-US"),
       },
       { where: { id: codingDataId } }
     );
 
-    console.log(rowsAffected, "CodeTableListId = ", req.body.CodeTableListId);
+    console.log(rowsAffected, "codeTableListId = ", req.body.codeTableListId);
 
     if (rowsAffected[0] > 0) {
       req.flash("success", "اطلاعات با موفقیت اصلاح شد.");
-      return res.redirect(`../index/${CodeTableListId}`);
+      return res.redirect(`../index/${codeTableListId}`);
     }
 
     req.flash(
@@ -223,7 +223,7 @@ exports.update = async (req, res, next) => {
       "اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید..."
     );
 
-    return res.redirect(`../edit/${CodeTableListId}`);
+    return res.redirect(`../edit/${codeTableListId}`);
   } catch (error) {
     const id = await req.params.id;
 
@@ -249,27 +249,27 @@ exports.delete = async (req, res, next) => {
   try {
     const codingDataId = req.params.id;
 
-    const { CodeTableListId } = await CodingDataModel.findByPk(codingDataId);
+    const { codeTableListId } = await CodingDataModel.findByPk(codingDataId);
 
     const rowsAffected = await CodingDataModel.destroy({
       where: { id: codingDataId },
     });
 
-    console.log(CodeTableListId);
+    console.log(codeTableListId);
 
     req.flash("success", "اطلاعات با موفقیت حذف شد.");
     if (rowsAffected > 0) {
-      return res.redirect(`../index/${CodeTableListId}`);
+      return res.redirect(`../index/${codeTableListId}`);
     }
   } catch (error) {
-    const { CodeTableListId } = await CodingDataModel.findByPk(req.param.id);
+    const { codeTableListId } = await CodingDataModel.findByPk(req.param.id);
 
     if (error.name === "SequelizeForeignKeyConstraintError") {
       req.flash(
         "removeSuccess",
         "این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!"
       );
-      return res.redirect(`../index/${CodeTableListId}`);
+      return res.redirect(`../index/${codeTableListId}`);
     }
 
     next(error);

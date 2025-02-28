@@ -150,11 +150,11 @@ module.exports = (sequelize) => {
         async beforeValidate(record,options){
           if(!record.id){
             const lastRecord = await CodingData.findOne({
-              where : {CodeTableListId:record.CodeTableListId},
+              where : {codeTableListId:record.codeTableListId},
               order : [['id','desc']]
             })
          
-            const lastId = lastRecord ? lastRecord.id : record.CodeTableListId * 1000
+            const lastId = lastRecord ? lastRecord.id : record.codeTableListId * 1000
             record.id = lastId + 1 
           }
         }
