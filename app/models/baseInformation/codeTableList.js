@@ -52,8 +52,11 @@ module.exports = (sequelize) => {
       sequelize,
       validate:{},
   })
+  
+  CodeTableList.associate = (models)=>{
+    CodeTableList.hasMany(models.CodingDataModel,{foreignKey:'codeTableListId'})
+  }
 
   return CodeTableList
 
 }
-
