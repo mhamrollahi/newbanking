@@ -125,5 +125,17 @@ module.exports = (sequelize) => {
     }
   );
 
+  CodingData.associate = (models)=>{
+    CodingData.belongsTo(models.CodeTableListModel,{
+      foreignKey:{
+        name:'codeTableListId',
+        allowNull:false,
+        onDelete:'RESTRICT',
+        onUpdate:'RESTRICT'
+      }}
+    )
+  }
+
+  
   return CodingData;
 };
