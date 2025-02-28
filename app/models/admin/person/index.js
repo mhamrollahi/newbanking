@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize');
 const BaseModel = require('../../baseModel');
 
 class Person extends BaseModel {}
+
 module.exports = (sequelize) => {
   Person.init({
       firstName: {

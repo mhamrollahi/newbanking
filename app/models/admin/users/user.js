@@ -1,5 +1,5 @@
 const { DataTypes} = require('sequelize');
-const dateService = require('@services/dateService');
+// const dateService = require('@services/dateService');
 const hashService = require('@services/hashService');
 const BaseModel = require('../../baseModel');
 
@@ -150,5 +150,7 @@ module.exports = (sequelize) => {
     User.hasMany(models.PersonModel,{foreignKey:'updaterId'})
 
   }
+
   return User;
+
 };
