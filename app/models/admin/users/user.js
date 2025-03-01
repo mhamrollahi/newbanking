@@ -1,11 +1,12 @@
-const { DataTypes } = require('sequelize');
-const dateService = require('@services/dateService');
+const { DataTypes} = require('sequelize');
+// const dateService = require('@services/dateService');
 const hashService = require('@services/hashService');
+const BaseModel = require('../../baseModel');
 
-exports.User = (sequelize) => {
-  const User = sequelize.define(
-    'User',
-    {
+class User extends BaseModel {}
+
+module.exports = (sequelize) => {
+  User.init({
       username: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -47,7 +48,7 @@ exports.User = (sequelize) => {
         }
       },
 
-      PersonId:{
+      personId:{
         type:DataTypes.INTEGER,
         allowNull:false,
       },
@@ -83,40 +84,40 @@ exports.User = (sequelize) => {
         type: DataTypes.STRING(255)
       },
 
-      creator: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'لطفا نام ایجاد کننده را وارد کنید.'
-          }
-        }
-      },
+      // creator: {
+      //   type: DataTypes.STRING(50),
+      //   allowNull: false,
+      //   validate: {
+      //     notNull: {
+      //       msg: 'لطفا نام ایجاد کننده را وارد کنید.'
+      //     }
+      //   }
+      // },
 
-      updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: null
-      },
+      // updatedAt: {
+      //   type: DataTypes.DATE,
+      //   defaultValue: null
+      // },
 
-      updater: {
-        type: DataTypes.STRING(50)
-      },
+      // updater: {
+      //   type: DataTypes.STRING(50)
+      // },
+ 
+      // fa_createdAt: {
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     const rawValue = this.getDataValue('createdAt');
+      //     return dateService.toPersianDate(rawValue);
+      //   }
+      // },
 
-      fa_createdAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue('createdAt');
-          return dateService.toPersianDate(rawValue);
-        }
-      },
-
-      fa_updatedAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue('updatedAt');
-          return dateService.toPersianDate(rawValue);
-        }
-      }
+      // fa_updatedAt: {
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     const rawValue = this.getDataValue('updatedAt');
+      //     return dateService.toPersianDate(rawValue);
+      //   }
+      // }
     },
     {
       timestamps: true,
@@ -129,14 +130,27 @@ exports.User = (sequelize) => {
     user.password = await hashService.hashPassword(user.password);
     user.updatedAt = null;
   }),
-    // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-    User.beforeUpdate(async (user) => {
-      user.updatedAt = new Date();
+  
+  User.beforeUpdate(async (user) => {
+    user.updatedAt = new Date();
 
-      if (user.changed('password')) {
+    if (user.changed('password')) {
         user.password = await hashService.hashPassword(user.password);
-      }
-    });
+    }
+  });
+
+  User.associate = (models) => {
+    User.hasMany(models.CodeTableListModel,{foreignKey: 'creatorId'})
+    User.hasMany(models.CodeTableListModel,{foreignKey:'updaterId'})
+
+    User.hasMany(models.CodingDataModel,{foreignKey: 'creatorId'})
+    User.hasMany(models.CodingDataModel,{foreignKey:'updaterId'})
+
+    User.hasMany(models.PersonModel,{foreignKey: 'creatorId'})
+    User.hasMany(models.PersonModel,{foreignKey:'updaterId'})
+
+  }
 
   return User;
+
 };

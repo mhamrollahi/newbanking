@@ -26,46 +26,57 @@ async function getConnection(){
     return err
   }
 }
+
 getConnection()
 
-const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
-const CodingDataModel = codingDataModel.CodingData(sequelize)
-const UserModel = userModel.User(sequelize)
-const PersonModel = personModel.Person(sequelize)
+const models = {
+   CodeTableListModel : codeTableListModel(sequelize),
+   CodingDataModel : codingDataModel(sequelize),
+  //  PersonModel : personModel(sequelize),
+}
 
-CodeTableListModel.hasMany(CodingDataModel, {
-  foreignKey:{
-    name:'CodeTableListId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
-  }
-})
-CodingDataModel.belongsTo(CodeTableListModel, {
-  foreignKey:{
-    name:'CodeTableListId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
+const UserModel = userModel(sequelize)
+
+Object.keys(models).forEach((modelName)=>{
+  if(models[modelName].associate){
+    models[modelName].associate(models)
   }
 })
 
-PersonModel.hasMany(UserModel, {
-  foreignKey:{
-    name:'PersonId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
-  }
-})
-UserModel.belongsTo(PersonModel, {
-  foreignKey:{
-    name:'PersonId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
-  }
-})
+
+// models.CodeTableListModel.hasMany(models.CodingDataModel, {
+//   foreignKey:{
+//     name:'CodeTableListId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
+// models.CodingDataModel.belongsTo(models.CodeTableListModel, {
+//   foreignKey:{
+//     name:'CodeTableListId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
+
+// models.PersonModel.hasMany(UserModel, {
+//   foreignKey:{
+//     name:'PersonId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
+// UserModel.belongsTo(models.PersonModel, {
+//   foreignKey:{
+//     name:'PersonId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
 
 
 // const ContactModel = contactModel.Contact(sequelize)
@@ -76,8 +87,9 @@ UserModel.belongsTo(PersonModel, {
 
 module.exports = {
   sequelize,
-  CodeTableListModel,
-  CodingDataModel,
+  models,
+  // CodeTableListModel,
+  // CodingDataModel,
   UserModel,
-  PersonModel,
+  // PersonModel,
 }

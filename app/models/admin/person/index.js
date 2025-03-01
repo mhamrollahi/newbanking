@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
-const dateService = require('@services/dateService');
+const BaseModel = require('../../baseModel');
 
-exports.Person = (sequelize) => {
-  const Person = sequelize.define(
-    'Person',
-    {
+class Person extends BaseModel {}
+
+module.exports = (sequelize) => {
+  Person.init({
       firstName: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -62,13 +62,13 @@ exports.Person = (sequelize) => {
           }
         }
       },
-      
+
       mobile: {
         type: DataTypes.STRING(11),
         validate: {
-          is:{
-            args:/^09[0-9]{9}$/,
-            msg:'شماره موبایل معتبر نمی باشد.',
+          is: {
+            args: /^09[0-9]{9}$/,
+            msg: 'شماره موبایل معتبر نمی باشد.'
           },
           isNumeric: {
             msg: 'شماره موبایل فقط شامل اعداد می باشد.'
@@ -76,53 +76,17 @@ exports.Person = (sequelize) => {
           len: {
             args: [11, 11],
             msg: 'شماره موبایل معتبر نمی‌باشد.'
-          },
-          
+          }
         }
       },
 
       Description: {
         type: DataTypes.STRING(255),
-        validate:{
-          len:{
-            args:[0,255],
-            msg:'توضیحات باید کمتر از ۲۵۵ کاراکتر باشد.'
-          }
-        }
-      },
-
-      creator: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
         validate: {
-          notNull: {
-            msg: 'لطفا نام ایجاد کننده را وارد کنید.'
+          len: {
+            args: [0, 255],
+            msg: 'توضیحات باید کمتر از ۲۵۵ کاراکتر باشد.'
           }
-        }
-      },
-
-      updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: null
-      },
-
-      updater: {
-        type: DataTypes.STRING(50)
-      },
-
-      fa_createdAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue('createdAt');
-          return dateService.toPersianDate(rawValue);
-        }
-      },
-
-      fa_updatedAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue('updatedAt');
-          return dateService.toPersianDate(rawValue);
         }
       }
     },
@@ -132,14 +96,6 @@ exports.Person = (sequelize) => {
       validate: {}
     }
   );
-
-  Person.beforeCreate(async (person) => {
-    person.updatedAt = null;
-  }),
-    // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-    Person.beforeUpdate(async (person) => {
-      person.updatedAt = new Date();
-    });
 
   return Person;
 };

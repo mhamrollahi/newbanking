@@ -1,4 +1,8 @@
-const { CodingDataModel, CodeTableListModel } = require("../../models");
+const {models} = require('@models/')
+
+const { CodingDataModel, CodeTableListModel } = models
+
+// const { CodingDataModel, CodeTableListModel } = require("../../models");
 const dateService = require("@services/dateService");
 
 exports.getData = async (req, res, next) => {

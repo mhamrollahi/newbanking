@@ -55,7 +55,7 @@ $(document).ready(function () {
       { data: "sortId" },
       { data: "refId" },
       { data: "fa_createdAt" },
-      { data: "creator" },
+      { data: "creatorId" },
     ],
     fixedHeader: true,
     order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی

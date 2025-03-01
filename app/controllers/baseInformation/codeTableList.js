@@ -1,5 +1,7 @@
 const dateService = require("@services/dateService");
-const { CodeTableListModel } = require("../../models");
+const { models } = require("../../models");
+const { CodeTableListModel, UserModel } = models
+
 
 exports.getData = async (req, res, next) => {
   try {
@@ -10,7 +12,6 @@ exports.getData = async (req, res, next) => {
   }
 };
 
-
 exports.test = async(req,res,next)=>{
   try {
     res.render('./baseInformation/codeTableList/test',{layout:''})
@@ -18,7 +19,6 @@ exports.test = async(req,res,next)=>{
     next(error)
   }
 }
-
 
 exports.index = async (req, res, next) => {
   try {
@@ -57,13 +57,17 @@ exports.create = async (req, res, next) => {
 exports.store = async (req, res, next) => {
   try {
     // res.send(req.body)
+    const userId = {
+      userId : req.session.user.id
+    }
+    
     const codeTableListData = {
       fa_TableName: req.body.fa_TableName,
       en_TableName: req.body.en_TableName,
-      creator: "MHA",
+      creatorId:req.session.user.id,
     };
 
-    const { id } = await CodeTableListModel.create(codeTableListData);
+    const { id } = await CodeTableListModel.create(codeTableListData,userId);
     console.log("id", id);
 
     if (id) {
@@ -101,6 +105,10 @@ exports.edit = async (req, res, next) => {
     const codeTableListId = await req.params.id;
     const codeTableList = await CodeTableListModel.findOne({
       where: { id: codeTableListId },
+      include:{
+        model:UserModel,
+        attributes:['username']
+      },
       raw: true,
       nest: true,
     });
@@ -122,13 +130,17 @@ exports.edit = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
+    const userId = {
+      userId : req.session.user.id
+    }
+
     const codeTableListId = await req.params.id;
 
     const codeTableListData = {
       en_TableName: req.body.en_TableName,
       fa_TableName: req.body.fa_TableName,
       updated_at: new Date().toLocaleDateString("en-US"),
-      updater: "MHA_Updated",
+      updaterId: req.session.user.id,
     };
 
     const rowsAffected = await CodeTableListModel.update(
@@ -136,9 +148,9 @@ exports.update = async (req, res, next) => {
         en_TableName: codeTableListData.en_TableName,
         fa_TableName: codeTableListData.fa_TableName,
         updatedAt: codeTableListData.updated_at,
-        updater: codeTableListData.updater,
       },
-      { where: { id: codeTableListId } }
+     
+      { where: { id: codeTableListId } }, {userId},
     );
 
     console.log(req.params);
