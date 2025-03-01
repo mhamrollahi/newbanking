@@ -32,7 +32,7 @@ getConnection()
 const models = {
    CodeTableListModel : codeTableListModel(sequelize),
    CodingDataModel : codingDataModel(sequelize),
-   PersonModel : personModel(sequelize),
+  //  PersonModel : personModel(sequelize),
    UserModel : userModel(sequelize)
 }
 
