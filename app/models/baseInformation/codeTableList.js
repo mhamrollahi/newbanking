@@ -49,42 +49,6 @@ module.exports = (sequelize) => {
           }
     },
         
-    // creator:{
-    //       type:DataTypes.STRING(50),
-    //       allowNull: false,
-    //       validate: {
-    //         notNull:{
-    //           msg: 'لطفا نام ایجاد کننده را وارد کنید.'
-    //         },
-    //       }
-    // },
-
-    // updatedAt:{
-    //     type:DataTypes.DATE,
-    //     default:null
-    // },
-
-    // updater:{
-    //       type:DataTypes.STRING(50),
-    // },
-
-    // fa_createdAt:{
-    //     type:DataTypes.VIRTUAL,
-    //     get(){
-    //       const rawValue = this.getDataValue('createdAt')
-    //       return dateService.toPersianDate(rawValue)
-    //     },
-       
-    // },
-
-    // fa_updatedAt:{
-    //     type:DataTypes.VIRTUAL,
-    //     get(){
-    //       const rawValue = this.getDataValue('updatedAt')
-    //       return dateService.toPersianDate(rawValue)
-    //   },
-    // },
-
     }, 
     {
       sequelize,

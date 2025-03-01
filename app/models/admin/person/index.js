@@ -91,40 +91,6 @@ module.exports = (sequelize) => {
         }
       },
 
-      // creator: {
-      //   type: DataTypes.STRING(50),
-      //   allowNull: false,
-      //   validate: {
-      //     notNull: {
-      //       msg: 'لطفا نام ایجاد کننده را وارد کنید.'
-      //     }
-      //   }
-      // },
-
-      // updatedAt: {
-      //   type: DataTypes.DATE,
-      //   defaultValue: null
-      // },
-
-      // updater: {
-      //   type: DataTypes.STRING(50)
-      // },
-
-      // fa_createdAt: {
-      //   type: DataTypes.VIRTUAL,
-      //   get() {
-      //     const rawValue = this.getDataValue('createdAt');
-      //     return dateService.toPersianDate(rawValue);
-      //   }
-      // },
-
-      // fa_updatedAt: {
-      //   type: DataTypes.VIRTUAL,
-      //   get() {
-      //     const rawValue = this.getDataValue('updatedAt');
-      //     return dateService.toPersianDate(rawValue);
-      //   }
-      // }
     },
     {
       timestamps: true,
@@ -132,14 +98,6 @@ module.exports = (sequelize) => {
       validate: {}
     }
   );
-
-  // Person.beforeCreate(async (person) => {
-  //   person.updatedAt = null;
-  // });
-  // // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-  // Person.beforeUpdate(async (person) => {
-  //   person.updatedAt = new Date();
-  // });
 
   Person.associate = (models)=>{
     Person.hasMany(models.UserModel,{foreignKey:'PersonId'})
