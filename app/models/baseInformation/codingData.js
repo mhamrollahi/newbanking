@@ -1,7 +1,9 @@
-const { DataTypes, Model } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const dateService = require("@services/dateService");
+const BaseModel = require("../baseModel");
 
-class CodingData extends Model {}
+class CodingData extends BaseModel {}
+
 
 module.exports = (sequelize) => {
   CodingData.init({
