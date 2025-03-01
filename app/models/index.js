@@ -33,9 +33,9 @@ const models = {
    CodeTableListModel : codeTableListModel(sequelize),
    CodingDataModel : codingDataModel(sequelize),
   //  PersonModel : personModel(sequelize),
-   UserModel : userModel(sequelize)
 }
 
+const UserModel = userModel(sequelize)
 
 Object.keys(models).forEach((modelName)=>{
   if(models[modelName].associate){
@@ -90,6 +90,6 @@ module.exports = {
   models,
   // CodeTableListModel,
   // CodingDataModel,
-  // UserModel,
+  UserModel,
   // PersonModel,
 }
