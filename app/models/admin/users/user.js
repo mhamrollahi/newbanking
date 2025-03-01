@@ -1,11 +1,10 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
 const dateService = require('@services/dateService');
 const hashService = require('@services/hashService');
 
-exports.User = (sequelize) => {
-  const User = sequelize.define(
-    'User',
-    {
+class User extends Model {}
+module.exports = (sequelize) => {
+  User.init({
       username: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -47,9 +46,13 @@ exports.User = (sequelize) => {
         }
       },
 
-      PersonId:{
-        type:DataTypes.INTEGER,
-        allowNull:false,
+      PersonId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references:{
+          model:'People',
+          key:'id'
+        },
       },
 
       fullName: {
@@ -128,15 +131,38 @@ exports.User = (sequelize) => {
   User.beforeCreate(async (user) => {
     user.password = await hashService.hashPassword(user.password);
     user.updatedAt = null;
-  }),
-    // استفاده از هوک برای تنظیم `updatedAt` هنگام بروزرسانی
-    User.beforeUpdate(async (user) => {
-      user.updatedAt = new Date();
+  });
+  
+  User.beforeUpdate(async (user) => {
+    user.updatedAt = new Date();
 
-      if (user.changed('password')) {
-        user.password = await hashService.hashPassword(user.password);
-      }
-    });
+    if (user.changed('password')) {
+      user.password = await hashService.hashPassword(user.password);
+    }
+  });
+
+  User.associate = (models)=>{
+    User.belongsTo(models.PersonModel,{
+      foreignKey:{
+        name:'people',
+        allowNull:false,
+        onDelete:'RESTRICT',
+        onUpdate:'RESTRICT'
+      }}
+    )
+  }
+
+
+  User.associate = (models) => {
+    User.hasMany(models.CodeTableListModel, { foreignKey: 'creatorId' });
+    User.hasMany(models.CodeTableListModel, { foreignKey: 'updaterId' });
+
+    User.hasMany(models.CodingDataModel, { foreignKey: 'creatorId' });
+    User.hasMany(models.CodingDataModel, { foreignKey: 'updaterId' });
+
+    User.hasMany(models.PersonModel, { foreignKey: 'creatorId' });
+    User.hasMany(models.PersonModel, { foreignKey: 'updaterId' });
+  };
 
   return User;
 };

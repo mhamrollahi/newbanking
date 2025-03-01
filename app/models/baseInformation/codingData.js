@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const dateService = require("@services/dateService");
+// const dateService = require("@services/dateService");
 const BaseModel = require("../baseModel");
 
 class CodingData extends BaseModel {}
@@ -101,43 +101,43 @@ module.exports = (sequelize) => {
         },
       },
 
-      creator: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: "لطفا نام ایجاد کننده را وارد کنید.",
-          },
-        },
-      },
+      // creator: {
+      //   type: DataTypes.STRING(50),
+      //   allowNull: false,
+      //   validate: {
+      //     notNull: {
+      //       msg: "لطفا نام ایجاد کننده را وارد کنید.",
+      //     },
+      //   },
+      // },
 
-      updater: {
-        type: DataTypes.STRING(50),
-      },
+      // updater: {
+      //   type: DataTypes.STRING(50),
+      // },
 
-      fa_createdAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue("createdAt");
-          return dateService.toPersianDate(rawValue);
-        },
-      },
+      // fa_createdAt: {
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     const rawValue = this.getDataValue("createdAt");
+      //     return dateService.toPersianDate(rawValue);
+      //   },
+      // },
 
-      fa_updatedAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue("updatedAt");
-          return dateService.toPersianDate(rawValue);
-        },
-      },
+      // fa_updatedAt: {
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     const rawValue = this.getDataValue("updatedAt");
+      //     return dateService.toPersianDate(rawValue);
+      //   },
+      // },
 
-      updatedAt: {
-        type: DataTypes.DATE,
-        default: null,
-      },
+      // updatedAt: {
+      //   type: DataTypes.DATE,
+      //   default: null,
+      // },
     },
     {
-      freezeTableName: true, // جلوگیری از تغییرات غیرمنتظره روی جدول
+      // freezeTableName: true, // جلوگیری از تغییرات غیرمنتظره روی جدول
       sequelize,
       indexes: [
         {
@@ -174,7 +174,7 @@ module.exports = (sequelize) => {
         onUpdate:'RESTRICT'
       }}
     )
-
   }
+
   return CodingData;
 };

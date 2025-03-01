@@ -30,12 +30,13 @@ getConnection()
 
 // const CodeTableListModel = codeTableListModel.CodeTableList(sequelize)
 // const CodingDataModel = codingDataModel.CodingData(sequelize)
+
 const models = {
   CodeTableListModel:codeTableListModel(sequelize),
-  CodingDataModel : codingDataModel(sequelize)
+  CodingDataModel : codingDataModel(sequelize),
+  PersonModel : personModel(sequelize),
+  UserModel : userModel(sequelize),
 }
-const UserModel = userModel.User(sequelize)
-const PersonModel = personModel.Person(sequelize)
 
 Object.values(models).forEach((model)=>{
   if(model.associate){
@@ -60,22 +61,22 @@ Object.values(models).forEach((model)=>{
 //   }
 // })
 
-PersonModel.hasMany(UserModel, {
-  foreignKey:{
-    name:'PersonId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
-  }
-})
-UserModel.belongsTo(PersonModel, {
-  foreignKey:{
-    name:'PersonId',
-    allowNull:false,
-    onDelete:'RESTRICT',
-    onUpdate:'RESTRICT'
-  }
-})
+// PersonModel.hasMany(UserModel, {
+//   foreignKey:{
+//     name:'PersonId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
+// UserModel.belongsTo(PersonModel, {
+//   foreignKey:{
+//     name:'PersonId',
+//     allowNull:false,
+//     onDelete:'RESTRICT',
+//     onUpdate:'RESTRICT'
+//   }
+// })
 
 
 // const ContactModel = contactModel.Contact(sequelize)
@@ -89,6 +90,6 @@ module.exports = {
   models,
   // CodeTableListModel,
   // CodingDataModel,
-  UserModel,
-  PersonModel,
+  // UserModel,
+  // PersonModel,
 }
