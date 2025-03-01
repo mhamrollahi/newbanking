@@ -1,7 +1,8 @@
-const { DataTypes, Model } = require("sequelize");
-const dateService = require('@services/dateService')
+const { DataTypes } = require("sequelize");
+const dateService = require('@services/dateService');
+const BaseModel = require("@models/baseModel");
 
-class CodeTableList extends Model {}
+class CodeTableList extends BaseModel {}
 
 module.exports = (sequelize) => {
 
@@ -48,41 +49,41 @@ module.exports = (sequelize) => {
           }
     },
         
-    creator:{
-          type:DataTypes.STRING(50),
-          allowNull: false,
-          validate: {
-            notNull:{
-              msg: 'لطفا نام ایجاد کننده را وارد کنید.'
-            },
-          }
-    },
+    // creator:{
+    //       type:DataTypes.STRING(50),
+    //       allowNull: false,
+    //       validate: {
+    //         notNull:{
+    //           msg: 'لطفا نام ایجاد کننده را وارد کنید.'
+    //         },
+    //       }
+    // },
 
-    updatedAt:{
-        type:DataTypes.DATE,
-        default:null
-    },
+    // updatedAt:{
+    //     type:DataTypes.DATE,
+    //     default:null
+    // },
 
-    updater:{
-          type:DataTypes.STRING(50),
-    },
+    // updater:{
+    //       type:DataTypes.STRING(50),
+    // },
 
-    fa_createdAt:{
-        type:DataTypes.VIRTUAL,
-        get(){
-          const rawValue = this.getDataValue('createdAt')
-          return dateService.toPersianDate(rawValue)
-        },
+    // fa_createdAt:{
+    //     type:DataTypes.VIRTUAL,
+    //     get(){
+    //       const rawValue = this.getDataValue('createdAt')
+    //       return dateService.toPersianDate(rawValue)
+    //     },
        
-    },
+    // },
 
-    fa_updatedAt:{
-        type:DataTypes.VIRTUAL,
-        get(){
-          const rawValue = this.getDataValue('updatedAt')
-          return dateService.toPersianDate(rawValue)
-      },
-    },
+    // fa_updatedAt:{
+    //     type:DataTypes.VIRTUAL,
+    //     get(){
+    //       const rawValue = this.getDataValue('updatedAt')
+    //       return dateService.toPersianDate(rawValue)
+    //   },
+    // },
 
     }, 
     {
