@@ -1,8 +1,9 @@
 const { DataTypes, Model } = require('sequelize');
 const dateService = require('@services/dateService');
 const hashService = require('@services/hashService');
+const BaseModel = require('@models/baseModel');
 
-class User extends Model {}
+class User extends BaseModel {}
 module.exports = (sequelize) => {
   User.init({
       username: {
@@ -86,40 +87,40 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(255)
       },
 
-      creator: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'لطفا نام ایجاد کننده را وارد کنید.'
-          }
-        }
-      },
+      // creator: {
+      //   type: DataTypes.STRING(50),
+      //   allowNull: false,
+      //   validate: {
+      //     notNull: {
+      //       msg: 'لطفا نام ایجاد کننده را وارد کنید.'
+      //     }
+      //   }
+      // },
 
-      updatedAt: {
-        type: DataTypes.DATE,
-        defaultValue: null
-      },
+      // updatedAt: {
+      //   type: DataTypes.DATE,
+      //   defaultValue: null
+      // },
 
-      updater: {
-        type: DataTypes.STRING(50)
-      },
+      // updater: {
+      //   type: DataTypes.STRING(50)
+      // },
 
-      fa_createdAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue('createdAt');
-          return dateService.toPersianDate(rawValue);
-        }
-      },
+      // fa_createdAt: {
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     const rawValue = this.getDataValue('createdAt');
+      //     return dateService.toPersianDate(rawValue);
+      //   }
+      // },
 
-      fa_updatedAt: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          const rawValue = this.getDataValue('updatedAt');
-          return dateService.toPersianDate(rawValue);
-        }
-      }
+      // fa_updatedAt: {
+      //   type: DataTypes.VIRTUAL,
+      //   get() {
+      //     const rawValue = this.getDataValue('updatedAt');
+      //     return dateService.toPersianDate(rawValue);
+      //   }
+      // }
     },
     {
       timestamps: true,
@@ -130,11 +131,11 @@ module.exports = (sequelize) => {
 
   User.beforeCreate(async (user) => {
     user.password = await hashService.hashPassword(user.password);
-    user.updatedAt = null;
+//    user.updatedAt = null;
   });
   
   User.beforeUpdate(async (user) => {
-    user.updatedAt = new Date();
+  //  user.updatedAt = new Date();
 
     if (user.changed('password')) {
       user.password = await hashService.hashPassword(user.password);
