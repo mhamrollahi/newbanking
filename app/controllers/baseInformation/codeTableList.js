@@ -1,6 +1,5 @@
 const dateService = require("@services/dateService");
-const {models}  = require('../../models')
-
+const {models}  = require('@models')
 const { CodeTableListModel } = models;
 
 
@@ -63,7 +62,7 @@ exports.store = async (req, res, next) => {
     const codeTableListData = {
       fa_TableName: req.body.fa_TableName,
       en_TableName: req.body.en_TableName,
-      creator: "MHA",
+      creatorId: req.session.user.id,
     };
 
     const { id } = await CodeTableListModel.create(codeTableListData);
@@ -131,7 +130,7 @@ exports.update = async (req, res, next) => {
       en_TableName: req.body.en_TableName,
       fa_TableName: req.body.fa_TableName,
       updated_at: new Date().toLocaleDateString("en-US"),
-      updater: "MHA_Updated",
+      updaterId: req.session.user.id,
     };
 
     const rowsAffected = await CodeTableListModel.update(
@@ -139,7 +138,7 @@ exports.update = async (req, res, next) => {
         en_TableName: codeTableListData.en_TableName,
         fa_TableName: codeTableListData.fa_TableName,
         updatedAt: codeTableListData.updated_at,
-        updater: codeTableListData.updater,
+        updaterId: codeTableListData.updaterId,
       },
       { where: { id: codeTableListId } }
     );

@@ -1,5 +1,6 @@
 const dateService = require('@services/dateService');
-const { UserModel } = require('@models/');
+const { models } = require('@models/');
+const { UserModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 

@@ -1,4 +1,5 @@
-const { UserModel } = require('@models/');
+const { models } = require('@models/');
+const { UserModel } = models
 const hashService = require('@services/hashService');
 
 exports.login = async (username, plainPassword) => {

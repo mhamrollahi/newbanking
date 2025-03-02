@@ -1,5 +1,6 @@
 const dateService = require('@services/dateService');
-const { PersonModel } = require('@models/');
+const { models } = require('@models/');
+const { PersonModel } =models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 
@@ -63,7 +64,7 @@ exports.store = async (req, res, next) => {
       nationalCode: req.body.nationalCode,
       mobile: req.body.mobile,
       Description: req.body.Description,
-      creator:userId
+      creatorId:userId
     };
     console.log(personData);
 

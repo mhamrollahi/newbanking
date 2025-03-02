@@ -1,6 +1,5 @@
 // const { CodingDataModel, CodeTableListModel } = require("../../models");
 const {models}  = require('../../models')
-
 const { CodingDataModel, CodeTableListModel } = models;
 const dateService = require("@services/dateService");
 
@@ -113,7 +112,7 @@ exports.store = async (req, res, next) => {
       description: req.body.description === "" ? null : req.body.description,
       sortId: req.body.sortId,
       refId: req.body.refId === "" ? null : req.body.refId,
-      creator: "MHA",
+      creatorId: req.session.user.id,
     };
 
     console.log(codingData);
@@ -191,7 +190,7 @@ exports.update = async (req, res, next) => {
       description: req.body.description === "" ? null : req.body.description,
       sortId: req.body.sortId,
       refId: req.body.refId === "" ? null : req.body.refId,
-      updater: "MHA_Updated",
+      updaterId: req.session.user.id,
     };
 
     const { codeTableListId } = await CodingDataModel.findByPk(codingDataId);
@@ -204,7 +203,7 @@ exports.update = async (req, res, next) => {
         description: codingData.description,
         sortId: codingData.sortId,
         refId: codingData.refId,
-        updater: codingData.updater,
+        updaterId: codingData.updaterId,
         codeTableListId:codeTableListId,
         updatedAt: new Date().toLocaleDateString("en-US"),
       },

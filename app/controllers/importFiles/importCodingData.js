@@ -1,5 +1,6 @@
 const xlsx = require("xlsx");
-const { CodingDataModel } = require("../../models");
+const { models } = require('@models/');
+const { CodingDataModel } = models;
 const path = require("path");
 const fs = require("fs");
 const moment = require('jalali-moment')

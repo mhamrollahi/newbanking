@@ -60,14 +60,14 @@ class BaseModel extends Model {
           beforeCreate: (instance, options) => {
             if (options.userId) {
               instance.creatorId = options.userId;
-              instance.updatedAt = null;
             }
+            instance.updatedAt = null;
           },
           beforeUpdate: (instance, options) => {
             if (options.userId) {
               instance.updaterId = options.userId;
-              instance.updatedAt = new Date();
             }
+            instance.updatedAt = new Date();
           }
         }
       }
