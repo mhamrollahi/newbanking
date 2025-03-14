@@ -75,19 +75,19 @@ exports.store = async (req, res, next) => {
 
   } catch (error) {
 
-    let errors = [];
+    // let errors = [];
 
-    if (error.name === "SequelizeValidationError") {
-      errors = error.message.split("Validation error:");
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
+    // if (error.name === "SequelizeValidationError") {
+    //   errors = error.message.split("Validation error:");
+    //   req.flash("errors", errors);
+    //   return res.redirect("./create");
+    // }
 
-    if (error.name === "SequelizeUniqueConstraintError") {
-      errors = error.message.split("SequelizeUniqueConstraintError");
-      req.flash("errors", errors);
-      return res.redirect("./create");
-    }
+    // if (error.name === "SequelizeUniqueConstraintError") {
+    //   errors = error.message.split("SequelizeUniqueConstraintError");
+    //   req.flash("errors", errors);
+    //   return res.redirect("./create");
+    // }
 
     next(error);
   }
@@ -155,21 +155,21 @@ exports.update = async (req, res, next) => {
 
   } catch (error) {
     
-    const codeTableListId = await req.params.id;
+    // const codeTableListId = await req.params.id;
 
-    let errors = [];
+    // let errors = [];
 
-    if (error.name === "SequelizeValidationError") {
-      errors = error.message.split("Validation error:");
-      req.flash("errors", errors);
-      return res.redirect(`../edit/${codeTableListId}`);
-    }
+    // if (error.name === "SequelizeValidationError") {
+    //   errors = error.message.split("Validation error:");
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../edit/${codeTableListId}`);
+    // }
 
-    if (error.name === "SequelizeUniqueConstraintError") {
-      errors = error.message.split("SequelizeUniqueConstraintError");
-      req.flash("errors", errors);
-      return res.redirect(`../edit/${codeTableListId}`);
-    }
+    // if (error.name === "SequelizeUniqueConstraintError") {
+    //   errors = error.message.split("SequelizeUniqueConstraintError");
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../edit/${codeTableListId}`);
+    // }
 
     next(error);
   }
@@ -188,10 +188,10 @@ exports.delete = async (req, res, next) => {
     }
   } catch (error) {
     
-    if (error.name === "SequelizeForeignKeyConstraintError") {
-      req.flash("removeSuccess",'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
-      return res.redirect(`../index`);
-    }
+    // if (error.name === "SequelizeForeignKeyConstraintError") {
+    //   req.flash("removeSuccess",'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
+    //   return res.redirect(`../index`);
+    // }
 
     next(error);
   }

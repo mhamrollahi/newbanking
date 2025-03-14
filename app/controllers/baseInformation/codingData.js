@@ -115,30 +115,34 @@ exports.store = async (req, res, next) => {
       creatorId: req.session.user.id,
     };
 
-    console.log(codingData);
+    console.log('before create codingData = ', codingData);
 
     const { id } = await CodingDataModel.create(codingData);
+    
+    console.log('after create codingData = ', id);
 
     if (id) {
       req.flash("success", "اطلاعات کدینگ جدید با موفقیت ثبت شد.");
       return res.redirect(`../index/${req.params.id}`);
     }
   } catch (error) {
-    let errors = [];
 
-    if (error.name === "SequelizeValidationError") {
-      errors = error.message.split("Validation error:");
-      req.flash("errors", errors);
-      return res.redirect(`../create/${req.params.id}`);
-    }
+    console.error('error = ', error);
+    // let errors = [];
 
-    if (error.name === "SequelizeUniqueConstraintError") {
-      console.log(error.message);
+    // if (error.name === "SequelizeValidationError") {
+    //   errors = error.message.split("Validation error:");
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../create/${req.params.id}`);
+    // }
 
-      errors = error.message.split("SequelizeUniqueConstraintError");
-      req.flash("errors", errors);
-      return res.redirect(`../create/${req.params.id}`);
-    }
+    // if (error.name === "SequelizeUniqueConstraintError") {
+    //   console.log(error.message);
+
+    //   errors = error.message.split("SequelizeUniqueConstraintError");
+    //   req.flash("errors", errors);
+    //   return res.redirect(`../create/${req.params.id}`);
+    // }
 
     next(error);
   }
