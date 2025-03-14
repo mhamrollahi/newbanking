@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-// const dateService = require("@services/dateService");
-const BaseModel = require('../baseModel');
+const { DataTypes, Model } = require('sequelize');
+const dateService = require('@services/dateService');
+// const BaseModel = require('@models/baseModel');
 
-class CodingData extends BaseModel {}
+class CodingData extends Model {}
 
 module.exports = (sequelize) => {
   CodingData.init(
@@ -12,7 +12,8 @@ module.exports = (sequelize) => {
         primaryKey: true,
         allowNull: false,
         autoIncrement: false,
-        validate: {  // validation رو برای id برداریم
+        validate: {
+          // validation رو برای id برداریم
           notNull: false
         }
       },
@@ -103,6 +104,49 @@ module.exports = (sequelize) => {
             msg: 'کد ثانویه کدی  بین 1 تا 4 حرف  می‌باشد.'
           }
         }
+      },
+
+      creatorId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
+      },
+
+      updaterId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
+      },
+
+      updatedAt: {
+        type: DataTypes.DATE,
+        default: null
+      },
+
+      fa_createdAt: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          const rawValue = this.getDataValue('createdAt');
+          return dateService.toPersianDate(rawValue);
+        }
+      },
+
+      fa_updatedAt: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          const rawValue = this.getDataValue('updatedAt');
+          return dateService.toPersianDate(rawValue);
+        }
       }
     },
     {
@@ -118,11 +162,9 @@ module.exports = (sequelize) => {
       ],
       validate: {},
       hooks: {
-        ...BaseModel.options?.hooks, //اضافه کردن هوکهای پایه
         beforeValidate: async function (record, options) {
-          console.log('starting beforeValidate hook = ', record, options);
+          console.log('Starting beforeValidate hook in CodingData', record, options);
           try {
-            //بعد منطق پایه ای از قبل اجرا شده است
             if (!record.id) {
               const lastRecord = await CodingData.findOne({
                 where: { codeTableListId: record.codeTableListId },
@@ -130,20 +172,27 @@ module.exports = (sequelize) => {
               });
               const lastId = lastRecord ? lastRecord.id : record.codeTableListId * 1000;
               record.id = lastId + 1;
-              console.log('generated id = ', record.id);
+              console.log('Generated ID:', record.id);
             }
-
-            //برای اینکه قبل از ایجاد رکورد، هوکهای پایه اجرا شود
-            if (BaseModel.options?.hooks?.beforeValidate) {
-              await BaseModel.options.hooks.beforeValidate.call(this, record, options);
-            }
-
           } catch (error) {
-            console.error('error in beforeValidate hook : ', error);
+            console.error('Error in beforeValidate hook:', error);
+            throw error; // مهمه که error رو throw کنیم
           }
-
+        },
+        // هوک‌های BaseModel رو هم اضافه می‌کنیم
+        beforeCreate: (instance, options) => {
+          if (options.userId) {
+            instance.creatorId = options.userId;
+          }
+          instance.updatedAt = null;
+        },
+        beforeUpdate: (instance, options) => {
+          if (options.userId) {
+            instance.updaterId = options.userId;
+          }
+          instance.updatedAt = new Date();
         }
-      }
+    }
     }
   );
 

@@ -1,5 +1,4 @@
-const { DataTypes, Model } = require('sequelize');
-const dateService = require('@services/dateService');
+const { DataTypes } = require('sequelize');
 const hashService = require('@services/hashService');
 const BaseModel = require('@models/baseModel');
 
@@ -158,8 +157,8 @@ module.exports = (sequelize) => {
     User.hasMany(models.CodeTableListModel, { foreignKey: 'creatorId' });
     User.hasMany(models.CodeTableListModel, { foreignKey: 'updaterId' });
 
-    User.hasMany(models.CodingDataModel, { foreignKey: 'creatorId' });
-    User.hasMany(models.CodingDataModel, { foreignKey: 'updaterId' });
+    // User.hasMany(models.CodingDataModel, { foreignKey: 'creatorId' });
+    // User.hasMany(models.CodingDataModel, { foreignKey: 'updaterId' });
 
     User.hasMany(models.PersonModel, { foreignKey: 'creatorId' });
     User.hasMany(models.PersonModel, { foreignKey: 'updaterId' });
