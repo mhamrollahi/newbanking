@@ -12,7 +12,7 @@ $(document).ready(function () {
         }
       },
       { data: 'username' },
-      { data: 'fullName' },
+      { data: 'person.fullName' },
       {
         data: 'isActive',
         orderable: false,
@@ -26,7 +26,7 @@ $(document).ready(function () {
         }
       },
       { data: 'fa_createdAt' },
-      { data: 'creator' },
+      { data: 'username' },
       {
         data: null,
         orderable: false,

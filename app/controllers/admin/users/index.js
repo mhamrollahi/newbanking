@@ -1,13 +1,21 @@
 const dateService = require('@services/dateService');
 const { models } = require('@models/');
-const { UserModel } = models;
+const { UserModel, PersonModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 
 exports.getData = async (req, res, next) => {
   try {
-    const result = await UserModel.findAll({});
-    // console.log(result);
+    const result = await UserModel.findAll({
+      include: [
+        {
+          model: PersonModel,
+          // as: 'person',
+          attributes: ['id', 'firstName', 'lastName','fullName']
+        }
+      ]
+    });
+    console.log(result[0].person);
 
     res.json(result);
   } catch (error) {
@@ -60,13 +68,18 @@ exports.create = async (req, res, next) => {
     const success = req.flash('success');
     const hasError = errors.length > 0;
 
+    const personListData = await PersonModel.findAll({
+      attributes: ['id', 'firstName', 'lastName']
+    });
+
     res.render('./admin/user/create', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
-      subTitle: 'جدید',
+      subTitle: 'کاربر جدید',
       errors,
       hasError,
-      success
+      success,
+      personListData
     });
   } catch (error) {
     next(error);
@@ -177,21 +190,6 @@ exports.store = async (req, res, next) => {
       return res.redirect('./index');
     }
   } catch (error) {
-    let errors = [];
-
-    if (error.name === 'SequelizeValidationError') {
-      errors = error.message.split('Validation error:');
-      req.flash('errors', errors);
-      return res.redirect(`./create`);
-    }
-
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      console.log(error.message);
-
-      errors = error.message.split('SequelizeUniqueConstraintError');
-      req.flash('errors', errors);
-      return res.redirect(`./create`);
-    }
     next(error);
   }
 };
@@ -264,22 +262,6 @@ exports.update = async (req, res, next) => {
 
     return res.redirect(`../edit/${userId}`);
   } catch (error) {
-    const id = await req.params.id;
-
-    let errors = [];
-
-    if (error.name === 'SequelizeValidationError') {
-      errors = error.message.split('Validation error:');
-      req.flash('errors', errors);
-      return res.redirect(`../edit/${id}`);
-    }
-
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      errors = error.message.split('SequelizeUniqueConstraintError');
-      req.flash('errors', errors);
-      return res.redirect(`../edit/${id}`);
-    }
-
     next(error);
   }
 };
@@ -296,11 +278,6 @@ exports.delete = async (req, res, next) => {
       return res.redirect('../index');
     }
   } catch (error) {
-    if (error.name === 'SequelizeForeignKeyConstraintError') {
-      req.flash('removeSuccess', 'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
-      return res.redirect(`../index`);
-    }
-
     next(error);
   }
 };

@@ -16,7 +16,7 @@ $(document).ready(function () {
       { data: 'nationalCode' },
       { data: 'mobile' },
       { data: 'fa_createdAt' },
-      { data: 'creator' },
+      { data: 'creator.username' },
       {
         data: null,
         orderable: false,

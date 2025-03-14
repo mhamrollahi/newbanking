@@ -55,8 +55,16 @@ $(document).ready(function () {
       { data: "sortId" },
       { data: "refId" },
       { data: "fa_createdAt" },
-      { data: "creator" },
+      { data: "creator.username" },
     ],
+    columnDefs: [
+      { target: 0, className: 'text-center' },
+      { target: 3, className: 'text-center' },
+      { target: 4, className: 'text-center' },
+      { target: 5, className: 'text-center' },
+      { target: 6, className: 'text-center' },
+    ],
+
     fixedHeader: true,
     order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی

@@ -205,6 +205,9 @@ module.exports = (sequelize) => {
         onUpdate: 'RESTRICT'
       }
     });
+    CodingData.belongsTo(models.UserModel, { foreignKey: 'creatorId', as: 'creator' });
+    CodingData.belongsTo(models.UserModel, { foreignKey: 'updaterId', as: 'updater' });
+
   };
 
   return CodingData;

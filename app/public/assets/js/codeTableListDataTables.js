@@ -63,8 +63,13 @@ $(document).ready(function () {
         },
       },
       { data: "fa_createdAt" },
-      { data: "creator" },
+      { data: "creator.username" },
     ],
+    columnDefs: [
+      { target: 3, className: 'text-center' },
+      { target: 4, className: 'text-center' },
+    ],
+
     order: [[0, "desc"]], // مرتب‌سازی پیش‌فرض بر اساس حقوق به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
     language: {

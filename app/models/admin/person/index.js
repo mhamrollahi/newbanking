@@ -40,6 +40,14 @@ module.exports = (sequelize) => {
         }
       },
 
+      fullName: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          const rawValue = this.getDataValue('firstName') + ' ' + this.getDataValue('lastName');
+          return rawValue;
+        }
+      },
+      
       nationalCode: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -101,6 +109,9 @@ module.exports = (sequelize) => {
 
   Person.associate = (models)=>{
     Person.hasMany(models.UserModel,{foreignKey:'PersonId'})
+    Person.belongsTo(models.UserModel, { foreignKey: 'creatorId', as: 'creator' });
+    Person.belongsTo(models.UserModel, { foreignKey: 'updaterId', as: 'updater' });
+
   }
   return Person;
 };

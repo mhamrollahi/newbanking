@@ -4,7 +4,8 @@ const BaseModel = require('@models/baseModel');
 
 class User extends BaseModel {}
 module.exports = (sequelize) => {
-  User.init({
+  User.init(
+    {
       username: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -49,32 +50,32 @@ module.exports = (sequelize) => {
       PersonId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references:{
-          model:'People',
-          key:'id'
-        },
-      },
-
-      fullName: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        unique: {
-          args: true,
-          msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
-        },
-        validate: {
-          notNull: {
-            msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-          },
-          notEmpty: {
-            msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-          },
-          len: {
-            args: [5, 50],
-            msg: 'نام و نام‌خانوادگی  باید  بین 5 تا 50 کاراکتر باشد.'
-          }
+        references: {
+          model: 'Person',
+          key: 'id'
         }
       },
+
+      // fullName: {
+      //   type: DataTypes.STRING(50),
+      //   allowNull: false,
+      //   unique: {
+      //     args: true,
+      //     msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
+      //   },
+      //   validate: {
+      //     notNull: {
+      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
+      //     },
+      //     notEmpty: {
+      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
+      //     },
+      //     len: {
+      //       args: [5, 50],
+      //       msg: 'نام و نام‌خانوادگی  باید  بین 5 تا 50 کاراکتر باشد.'
+      //     }
+      //   }
+      // },
 
       isActive: {
         type: DataTypes.BOOLEAN,
@@ -84,42 +85,7 @@ module.exports = (sequelize) => {
 
       Description: {
         type: DataTypes.STRING(255)
-      },
-
-      // creator: {
-      //   type: DataTypes.STRING(50),
-      //   allowNull: false,
-      //   validate: {
-      //     notNull: {
-      //       msg: 'لطفا نام ایجاد کننده را وارد کنید.'
-      //     }
-      //   }
-      // },
-
-      // updatedAt: {
-      //   type: DataTypes.DATE,
-      //   defaultValue: null
-      // },
-
-      // updater: {
-      //   type: DataTypes.STRING(50)
-      // },
-
-      // fa_createdAt: {
-      //   type: DataTypes.VIRTUAL,
-      //   get() {
-      //     const rawValue = this.getDataValue('createdAt');
-      //     return dateService.toPersianDate(rawValue);
-      //   }
-      // },
-
-      // fa_updatedAt: {
-      //   type: DataTypes.VIRTUAL,
-      //   get() {
-      //     const rawValue = this.getDataValue('updatedAt');
-      //     return dateService.toPersianDate(rawValue);
-      //   }
-      // }
+      }
     },
     {
       timestamps: true,
@@ -130,35 +96,35 @@ module.exports = (sequelize) => {
 
   User.beforeCreate(async (user) => {
     user.password = await hashService.hashPassword(user.password);
-//    user.updatedAt = null;
+    //    user.updatedAt = null;
   });
-  
+
   User.beforeUpdate(async (user) => {
-  //  user.updatedAt = new Date();
+    //  user.updatedAt = new Date();
 
     if (user.changed('password')) {
       user.password = await hashService.hashPassword(user.password);
     }
   });
 
-  User.associate = (models)=>{
-    User.belongsTo(models.PersonModel,{
-      foreignKey:{
-        name:'people',
-        allowNull:false,
-        onDelete:'RESTRICT',
-        onUpdate:'RESTRICT'
-      }}
-    )
-  }
-
+  User.associate = (models) => {
+    User.belongsTo(models.PersonModel, {
+      foreignKey: {
+        name: 'PersonId',
+        allowNull: false,
+        onDelete: 'RESTRICT',
+        onUpdate: 'RESTRICT',
+        as: 'person'
+      }
+    });
+  };
 
   User.associate = (models) => {
     User.hasMany(models.CodeTableListModel, { foreignKey: 'creatorId' });
     User.hasMany(models.CodeTableListModel, { foreignKey: 'updaterId' });
 
-    // User.hasMany(models.CodingDataModel, { foreignKey: 'creatorId' });
-    // User.hasMany(models.CodingDataModel, { foreignKey: 'updaterId' });
+    User.hasMany(models.CodingDataModel, { foreignKey: 'creatorId' });
+    User.hasMany(models.CodingDataModel, { foreignKey: 'updaterId' });
 
     User.hasMany(models.PersonModel, { foreignKey: 'creatorId' });
     User.hasMany(models.PersonModel, { foreignKey: 'updaterId' });

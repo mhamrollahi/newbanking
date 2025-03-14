@@ -239,7 +239,6 @@ const validationRow = (row, index) => {
   return null;
 };
 
-
 const validateDate = (date)=>{
   const allowedFormats = [
     'YYYY-MM-DD',

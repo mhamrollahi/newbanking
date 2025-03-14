@@ -55,8 +55,19 @@
           </label>
         </div>
 
+        <div style="margin:1px; width:40%;">
+          <label for="cmbCodeTableList">نام و نام‌خانوادگی</label>
+          <form action="" method="get">
+            <select id="cmbfullName" name="cmbfullName" style="position: relative;" onchange="doAction(this.value);" required>
+              {{#each personListData}}
+                <option value="{{this.id}}"> {{this.firstName}}  -  {{this.lastName}}</option>
+              {{/each}}
+            </select>
+          </form>
+      </div>
+
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='fullName' name='fullName' autocomplete='off' placeholder='نام و نام‌خانوادگی.' required />
+          <input type='text' class='form-control' id='fullName' name='fullName' autocomplete='off' placeholder='نام و نام‌خانوادگی.'/>
           <label for='fullName' class='mandatory'>
             نام و ناخانوادگی
           </label>
@@ -103,4 +114,11 @@
             $('#password-eye2').removeClass('zmdi-eye').addClass('zmdi-eye-off') 
           }
   }) })
+</script>
+
+<script>
+  function doAction(val){
+    //Forward browser to new url
+    window.location='' + val;
+  }
 </script>
