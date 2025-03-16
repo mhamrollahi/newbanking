@@ -110,6 +110,9 @@ module.exports = (sequelize) => {
   User.associate = (models) => {
     User.belongsTo(models.PersonModel, {
       foreignKey: 'PersonId',
+      allowNull: false,
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
       as: 'person'
     });
 

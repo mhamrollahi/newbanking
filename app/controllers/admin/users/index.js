@@ -11,7 +11,7 @@ exports.getData = async (req, res, next) => {
         {
           model: PersonModel,
           as: 'person',
-          attributes: ['id', 'firstName', 'lastName', 'fullName']
+          attributes: ['fullName']
         }
       ]
     });

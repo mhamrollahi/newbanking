@@ -9,21 +9,17 @@ exports.getData = async (req, res, next) => {
 
     const result = await CodingDataModel.findAll({
       where: { codeTableListId: codeTableListId },
-      include:[ {
-        model: CodeTableListModel,
-        attributes: ['fa_TableName', 'en_TableName']
-      },
-      {
-        model: UserModel,
-        as: 'creator',
-        attributes: ['fullName', 'username']
-      },
-      {
-        model: UserModel,
-        as: 'updater',
-        attributes: ['fullName', 'username']
-      }
-    ]
+      include: [
+        {
+          model: CodeTableListModel,
+          attributes: ['fa_TableName', 'en_TableName']
+        },
+        {
+          model: UserModel,
+          as: 'creator',
+          attributes: ['username']
+        },
+      ]
     });
 
     res.json(result);
@@ -143,12 +139,26 @@ exports.edit = async (req, res, next) => {
     const codingDataId = await req.params.id;
     const codingData = await CodingDataModel.findOne({
       where: { id: codingDataId },
+      include: [
+        {
+          model: UserModel,
+          as: 'creator',
+          attributes: ['username']
+        },
+        {
+          model: UserModel,
+          as: 'updater',
+          attributes: ['username']
+        },
+        { 
+          model: CodeTableListModel, 
+          attributes: ['id', 'fa_TableName', 'en_TableName'] 
+        }
+      ],
+
       raw: true,
       nest: true,
-      include: {
-        model: CodeTableListModel,
-        attributes: ['id', 'fa_TableName', 'en_TableName']
-      }
+     
     });
 
     console.log('codingData = ', codingData, codingData.codeTableListId);

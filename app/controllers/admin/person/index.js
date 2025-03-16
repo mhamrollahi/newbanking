@@ -11,13 +11,8 @@ exports.getData = async (req, res, next) => {
         {
           model: UserModel,
           as: 'creator',
-          attributes: ['fullName', 'username']
+          attributes: ['username']
         },
-        {
-          model: UserModel,
-          as: 'updater',
-          attributes: ['fullName', 'username']
-        }
       ]
     });
     console.log(result);
@@ -130,6 +125,18 @@ exports.edit = async (req, res, next) => {
     const removeSuccess = req.flash('removeSuccess');
     const personData = await PersonModel.findOne({
       where: { id: personId },
+      include: [
+        {
+          model: UserModel,
+          as: 'creator',
+          attributes: ['username']
+        },
+        {
+          model: UserModel,
+          as: 'updater',
+          attributes: ['username']
+        }
+      ],
       raw: true,
       nest: false
     });

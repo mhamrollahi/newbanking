@@ -9,17 +9,17 @@ exports.getData = async (req, res, next) => {
         {
           model: UserModel,
           as: 'creator',
-          attributes: ['fullName', 'username']
+          attributes: ['username']
         },
-        {
-          model: UserModel,
-          as: 'updater',
-          attributes: ['fullName', 'username']
-        }
+        // {
+        //   model: UserModel,
+        //   as: 'updater',
+        //   attributes: ['username']
+        // }
       ]
     });
 
-    // console.log('result: ', result.map((item) => item.creator.username));
+    console.log('result: ', result.map((item) => item.creator.username));
     
     res.json(result);
   } catch (error) {
@@ -112,9 +112,22 @@ exports.edit = async (req, res, next) => {
     const codeTableListId = await req.params.id;
     const codeTableList = await CodeTableListModel.findOne({
       where: { id: codeTableListId },
+      include: [
+        {
+          model: UserModel,
+          as: 'creator',
+          attributes: ['username']
+        },
+        {
+          model: UserModel,
+          as: 'updater',
+          attributes: ['username']
+        }
+      ],
       raw: true,
       nest: true
     });
+
 
     res.render('./baseInformation/codeTableList/edit', {
       layout: 'main',
