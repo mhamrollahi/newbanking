@@ -51,7 +51,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'Person',
+          model: 'People',
           key: 'id'
         }
       },
@@ -109,17 +109,10 @@ module.exports = (sequelize) => {
 
   User.associate = (models) => {
     User.belongsTo(models.PersonModel, {
-      foreignKey: {
-        name: 'PersonId',
-        allowNull: false,
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT',
-        as: 'person'
-      }
+      foreignKey: 'PersonId',
+      as: 'person'
     });
-  };
 
-  User.associate = (models) => {
     User.hasMany(models.CodeTableListModel, { foreignKey: 'creatorId' });
     User.hasMany(models.CodeTableListModel, { foreignKey: 'updaterId' });
 

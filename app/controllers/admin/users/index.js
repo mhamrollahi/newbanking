@@ -10,12 +10,12 @@ exports.getData = async (req, res, next) => {
       include: [
         {
           model: PersonModel,
-          // as: 'person',
-          attributes: ['id', 'firstName', 'lastName','fullName']
+          as: 'person',
+          attributes: ['id', 'firstName', 'lastName', 'fullName']
         }
       ]
     });
-    console.log(result[0].person);
+    console.log(result[0].person.fullName);
 
     res.json(result);
   } catch (error) {

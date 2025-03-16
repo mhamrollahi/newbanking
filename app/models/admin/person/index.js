@@ -43,8 +43,7 @@ module.exports = (sequelize) => {
       fullName: {
         type: DataTypes.VIRTUAL,
         get() {
-          const rawValue = this.getDataValue('firstName') + ' ' + this.getDataValue('lastName');
-          return rawValue;
+          return `${this.firstName} ${this.lastName}`;
         }
       },
       
