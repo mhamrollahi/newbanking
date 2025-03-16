@@ -204,6 +204,18 @@ exports.edit = async (req, res, next) => {
     const removeSuccess = req.flash('removeSuccess');
     const userData = await UserModel.findOne({
       where: { id: userId },
+      include: [
+        {
+          model: UserModel,
+          as: 'creator',
+          attributes: ['username']
+        },  
+        {
+          model: UserModel,
+          as: 'updater',
+          attributes: ['username']
+        }
+      ],
       raw: true,
       nest: false
     });
