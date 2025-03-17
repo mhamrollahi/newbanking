@@ -1,6 +1,6 @@
 const dateService = require('@services/dateService');
 const { models } = require('@models/');
-const { UserModel, PersonModel ,CodeTableListModel} = models;
+const { UserModel, PersonModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 
@@ -11,7 +11,7 @@ exports.getData = async (req, res, next) => {
         {
           model: PersonModel,
           as: 'person',
-          attributes: ['id','firstName', 'lastName', 'fullName']
+          attributes: ['id', 'firstName', 'lastName', 'fullName']
         }
       ]
     });
@@ -68,21 +68,17 @@ exports.create = async (req, res, next) => {
     const success = req.flash('success');
     const hasError = errors.length > 0;
 
-
-    const codeTableListData = await CodeTableListModel.findAll({
-      attributes: ['id', 'fa_TableName', 'en_TableName'],
-      raw: true,
-      nest: true
-    });
-
     const personListData = await PersonModel.findAll({
-      attributes: ['id', 'firstName', 'lastName', ],
+      attributes: ['id', 'firstName', 'lastName', 'fullName'],
       raw: true,
       nest: true
     });
 
+    console.log(
+      'personListData = ',
+      personListData.map((item) => item.firstName + ' ' + item.lastName)
+    );
 
-    console.log('personListData = ',personListData.map(item => item.firstName + ' ' + item.lastName));
     res.render('./admin/user/create', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
@@ -103,27 +99,21 @@ exports.store = async (req, res, next) => {
       username: req.body.username,
       password: req.body.password,
       confirm_password: req.body.confirm_password,
-      fullName: req.body.fullName,
+      PersonId: req.body.fullName,
       Description: req.body.description,
-      creator: req.session?.user?.username,
+      creatorId: req.session?.user?.id ?? 0
     };
-    console.log(userData);
+    console.log('userData = ', userData);
 
     //اعتبار سنجی فرم ورودی - Start
-
     const { error } = formValidation(req, 0);
     if (error) {
-      req.flash(
-        'errors',
-        error.details.map((err) => err.message)
-      );
+      req.flash('errors',error.details.map((err) => err.message));
       return res.redirect('./create');
     }
-
     //اعتبار سنجی فرم ورودی - End
-
+    
     const { id } = await UserModel.create(userData);
-
     if (id) {
       req.flash('success', 'اطلاعات کاربر با موفقیت ثبت شد.');
       return res.redirect('./index');
@@ -148,7 +138,7 @@ exports.edit = async (req, res, next) => {
           model: UserModel,
           as: 'creator',
           attributes: ['username']
-        },  
+        },
         {
           model: UserModel,
           as: 'updater',
@@ -238,7 +228,7 @@ const formValidation = (req, updateMode) => {
     username: req.body.username,
     password: req.body.password,
     confirm_password: req.body.confirm_password,
-    fullName: req.body.fullName
+    PersonId: parseInt(req.body.fullName)
   };
 
   const userDataUpdated = {
@@ -278,11 +268,11 @@ const formValidation = (req, updateMode) => {
           'string.required': errMessages['any.required'],
           'string.pattern.base': 'تاییدیه رمز عبور  باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
         }),
-      fullName: Joi.string().min(5).label('نام و نام خانوادگی').required().messages({
-        'string.empty': errMessages['string.empty'],
-        'string.min': errMessages['string.min'],
-        'string.max': errMessages['string.max'],
-        'string.required': errMessages['any.required']
+      PersonId: Joi.number().required().min(1).label('نام و نام خانوادگی').messages({
+        'number.base': 'لطفا یک نام و نام خانوادگی معتبر انتخاب کنید',
+        'number.empty': 'لطفا نام و نام خانوادگی را انتخاب کنید',
+        'number.min': 'لطفا یک نام و نام خانوادگی معتبر انتخاب کنید',
+        'any.required': 'لطفا نام و نام خانوادگی را انتخاب کنید'
       })
     });
 

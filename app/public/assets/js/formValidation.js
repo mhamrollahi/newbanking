@@ -57,7 +57,7 @@ frm.addEventListener("submit", function (event) {
   event.preventDefault(); // جلوگیری از ارسال فرم
 
   const form = event.target;
-  const inputs = form.querySelectorAll("input");
+  const inputs = form.querySelectorAll("input, select");
   let isValid = true;
 
   // پاک کردن پیام‌های خطای قبلی
@@ -108,5 +108,17 @@ frm.addEventListener("submit", function (event) {
   if (isValid) {
     // alert("فرم با موفقیت ارسال شد!");
     form.submit();
+  }
+});
+
+// اضافه کردن validation برای تغییرات select
+frm.addEventListener('change', (e) => {
+  if (e.target.tagName.toLowerCase() === 'select') {
+    const errorsEL = e.target.parentElement.querySelectorAll('.errMessage');
+    errorsEL.forEach(el => el.remove());
+    
+    if (!e.target.value) {
+      appendError2(e.target, "لطفاً یک گزینه را انتخاب کنید");
+    }
   }
 });

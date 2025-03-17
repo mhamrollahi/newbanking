@@ -50,44 +50,23 @@ module.exports = (sequelize) => {
       PersonId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-              //   unique: {
-      //     args: true,
-      //     msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
-      //   },
-      //   validate: {
-      //     notNull: {
-      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-      //     },
-      //     notEmpty: {
-      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-      //     },
+        unique: {
+          args: true,
+          msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
+        },
+        //   validate: {
+        //     notNull: {
+        //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
+        //     },
+        //     notEmpty: {
+        //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
+        //     },
 
         references: {
           model: 'Person',
           key: 'id'
         }
       },
-
-      // fullName: {
-      //   type: DataTypes.STRING(50),
-      //   allowNull: false,
-      //   unique: {
-      //     args: true,
-      //     msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
-      //   },
-      //   validate: {
-      //     notNull: {
-      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-      //     },
-      //     notEmpty: {
-      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-      //     },
-      //     len: {
-      //       args: [5, 50],
-      //       msg: 'نام و نام‌خانوادگی  باید  بین 5 تا 50 کاراکتر باشد.'
-      //     }
-      //   }
-      // },
 
       isActive: {
         type: DataTypes.BOOLEAN,
@@ -102,7 +81,15 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
-      validate: {}
+      validate: {},
+      indexes: [
+        {
+          unique: true,
+          fields: ['PersonId'],
+          name: 'ix_Users_PersonId',
+          msg: 'برای این نام و نام‌خانوادگی نام کاربری قبلاً ثبت شده است'
+        }
+      ]
     }
   );
 

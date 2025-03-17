@@ -1,5 +1,8 @@
 // const AppError = require('../errors/AppError');
 
+// تعریف پیام‌های خطای unique برای هر فیلد
+const uniqueErrorMessages = require('../constants/uniqueErrorMessages.js');
+
 module.exports = (app) => {
   app.use((error, req, res, next) => {
     // خطای 404
@@ -22,11 +25,15 @@ module.exports = (app) => {
 
     // خطای تکراری بودن داده
     if (error.name === 'SequelizeUniqueConstraintError') {
-      req.flash('errors', ['این اطلاعات قبلاً ثبت شده است']);
+      const uniqueError = error.errors[0];
+      const errorKey = `${uniqueError.instance.constructor.name}.${uniqueError.path}`;
+      const errorMessage = uniqueErrorMessages[errorKey] || error.message;
+      //const errorMessage = error.message ;
+
+      req.flash('errors', [errorMessage]);
       return res.redirect('back');
     }
 
-    
     // خطای کلید خارجی
     if (error.name === 'SequelizeForeignKeyConstraintError') {
       req.flash('removeSuccess', 'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
