@@ -54,13 +54,15 @@
             تکرار کلمه عبور
           </label>
         </div>
-
+        <div>
+          <p>{{personListData}} </p>
+        </div>
         <div style="margin:1px; width:40%;">
-          <label for="cmbCodeTableList">نام و نام‌خانوادگی</label>
+          <label for="cmbUserfullName">نام و نام‌خانوادگی</label>
           <form action="" method="get">
             <select id="cmbUserfullName" name="cmbUserfullName" style="position: relative;" onchange="doAction(this.value);" required>
               {{#each personListData}}
-                <option value="{{this.id}}"> {{this.fullName}} </option>
+                <option value="{{this.id}}"> {{this.firstName}} {{this.lastName}} </option>
               {{/each}}
             </select>
           </form>
@@ -92,6 +94,16 @@
     </div>
   </div>
 </main>
+
+<script>
+  function doAction(val){
+    //Forward browser to new url
+    console.log('test 1 ')
+    console.log('val = ',val);
+    window.location='' + val;
+  }
+</script>
+
 <script src='/static/assets/js/formValidation.js'></script>
 <script>
   $(document).ready(function (){ $('#password-eye1').click(function(){ 
@@ -116,9 +128,3 @@
   }) })
 </script>
 
-<script>
-  function doAction(val){
-    //Forward browser to new url
-    window.location='' + val;
-  }
-</script>

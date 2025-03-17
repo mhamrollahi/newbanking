@@ -1,6 +1,6 @@
 const dateService = require('@services/dateService');
 const { models } = require('@models/');
-const { UserModel, PersonModel } = models;
+const { UserModel, PersonModel ,CodeTableListModel} = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 
@@ -68,10 +68,21 @@ exports.create = async (req, res, next) => {
     const success = req.flash('success');
     const hasError = errors.length > 0;
 
-    const personListData = await PersonModel.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'fullName']
+
+    const codeTableListData = await CodeTableListModel.findAll({
+      attributes: ['id', 'fa_TableName', 'en_TableName'],
+      raw: true,
+      nest: true
     });
 
+    const personListData = await PersonModel.findAll({
+      attributes: ['id', 'firstName', 'lastName', ],
+      raw: true,
+      nest: true
+    });
+
+
+    console.log('personListData = ',personListData.map(item => item.firstName + ' ' + item.lastName));
     res.render('./admin/user/create', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
