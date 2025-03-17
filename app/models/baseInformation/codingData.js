@@ -24,7 +24,9 @@ module.exports = (sequelize) => {
         references: {
           model: 'CodeTableLists',
           key: 'id'
-        }
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
       },
 
       title: {
