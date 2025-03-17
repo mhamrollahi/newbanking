@@ -50,6 +50,18 @@ module.exports = (sequelize) => {
       PersonId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+              //   unique: {
+      //     args: true,
+      //     msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
+      //   },
+      //   validate: {
+      //     notNull: {
+      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
+      //     },
+      //     notEmpty: {
+      //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
+      //     },
+
         references: {
           model: 'Person',
           key: 'id'

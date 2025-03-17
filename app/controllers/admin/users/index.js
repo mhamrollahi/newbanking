@@ -69,7 +69,7 @@ exports.create = async (req, res, next) => {
     const hasError = errors.length > 0;
 
     const personListData = await PersonModel.findAll({
-      attributes: ['id', 'firstName', 'lastName']
+      attributes: ['id', 'firstName', 'lastName', 'fullName']
     });
 
     res.render('./admin/user/create', {
@@ -86,78 +86,6 @@ exports.create = async (req, res, next) => {
   }
 };
 
-const formValidation = (req, updateMode) => {
-  const userData = {
-    username: req.body.username,
-    password: req.body.password,
-    confirm_password: req.body.confirm_password,
-    fullName: req.body.fullName
-  };
-
-  const userDataUpdated = {
-    password: req.body.password
-  };
-
-  if (updateMode == 0) {
-    const schema = Joi.object({
-      username: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)').pattern(/^\d+$/).messages({
-        'string.empty': errMessages['string.empty'],
-        'string.min': errMessages['string.min'],
-        'string.max': errMessages['string.max'],
-        'string.required': errMessages['any.required'],
-        'string.pattern.base': 'نام کاربری (کد ملی) می بایست فقط عدد باشد.'
-      }),
-      password: Joi.string()
-        .min(6)
-        .label('کلمه عبور')
-        .required()
-        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
-        .messages({
-          'string.empty': errMessages['string.empty'],
-          'string.min': errMessages['string.min'],
-          'string.required': errMessages['any.required'],
-          'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
-        }),
-      confirm_password: Joi.string()
-        .min(6)
-        .label('تاییدیه کلمه عبور')
-        .required()
-        .valid(Joi.ref('password'))
-        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
-        .messages({
-          'any.only': 'کلمه عبور و تاییدیه آن با هم مطابقت ندارد.',
-          'string.empty': errMessages['string.empty'],
-          'string.min': errMessages['string.min'],
-          'string.required': errMessages['any.required'],
-          'string.pattern.base': 'تاییدیه رمز عبور  باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
-        }),
-      fullName: Joi.string().min(5).label('نام و نام خانوادگی').required().messages({
-        'string.empty': errMessages['string.empty'],
-        'string.min': errMessages['string.min'],
-        'string.max': errMessages['string.max'],
-        'string.required': errMessages['any.required']
-      })
-    });
-
-    return schema.validate(userData, { abortEarly: false });
-  }
-
-  const schema = Joi.object({
-    password: Joi.string()
-      .min(6)
-      .label('کلمه عبور')
-      .required()
-      .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
-      .messages({
-        'string.empty': errMessages['string.empty'],
-        'string.min': errMessages['string.min'],
-        'string.required': errMessages['any.required'],
-        'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
-      })
-  });
-  return schema.validate(userDataUpdated);
-};
-
 exports.store = async (req, res, next) => {
   try {
     const userData = {
@@ -166,7 +94,7 @@ exports.store = async (req, res, next) => {
       confirm_password: req.body.confirm_password,
       fullName: req.body.fullName,
       Description: req.body.description,
-      creator: 'First_Admin'
+      creator: req.session?.user?.username,
     };
     console.log(userData);
 
@@ -260,7 +188,7 @@ exports.update = async (req, res, next) => {
         password: req.body.password,
         isActive: req.body.isActive == 'on' ? 1 : 0,
         Description: req.body.description,
-        updater: 'MHA_Updated'
+        updater: req.session?.user?.username
       },
       { where: { id: userId }, individualHooks: true }
     );
@@ -292,4 +220,76 @@ exports.delete = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+const formValidation = (req, updateMode) => {
+  const userData = {
+    username: req.body.username,
+    password: req.body.password,
+    confirm_password: req.body.confirm_password,
+    fullName: req.body.fullName
+  };
+
+  const userDataUpdated = {
+    password: req.body.password
+  };
+
+  if (updateMode == 0) {
+    const schema = Joi.object({
+      username: Joi.string().min(10).max(10).required().label('نام کاربری (کد ملی)').pattern(/^\d+$/).messages({
+        'string.empty': errMessages['string.empty'],
+        'string.min': errMessages['string.min'],
+        'string.max': errMessages['string.max'],
+        'string.required': errMessages['any.required'],
+        'string.pattern.base': 'نام کاربری (کد ملی) می بایست فقط عدد باشد.'
+      }),
+      password: Joi.string()
+        .min(6)
+        .label('کلمه عبور')
+        .required()
+        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
+        .messages({
+          'string.empty': errMessages['string.empty'],
+          'string.min': errMessages['string.min'],
+          'string.required': errMessages['any.required'],
+          'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
+        }),
+      confirm_password: Joi.string()
+        .min(6)
+        .label('تاییدیه کلمه عبور')
+        .required()
+        .valid(Joi.ref('password'))
+        .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
+        .messages({
+          'any.only': 'کلمه عبور و تاییدیه آن با هم مطابقت ندارد.',
+          'string.empty': errMessages['string.empty'],
+          'string.min': errMessages['string.min'],
+          'string.required': errMessages['any.required'],
+          'string.pattern.base': 'تاییدیه رمز عبور  باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
+        }),
+      fullName: Joi.string().min(5).label('نام و نام خانوادگی').required().messages({
+        'string.empty': errMessages['string.empty'],
+        'string.min': errMessages['string.min'],
+        'string.max': errMessages['string.max'],
+        'string.required': errMessages['any.required']
+      })
+    });
+
+    return schema.validate(userData, { abortEarly: false });
+  }
+
+  const schema = Joi.object({
+    password: Joi.string()
+      .min(6)
+      .label('کلمه عبور')
+      .required()
+      .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
+      .messages({
+        'string.empty': errMessages['string.empty'],
+        'string.min': errMessages['string.min'],
+        'string.required': errMessages['any.required'],
+        'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
+      })
+  });
+  return schema.validate(userDataUpdated);
 };
