@@ -55,7 +55,7 @@ $(document).ready(function () {
       { data: "sortId" },
       { data: "refId" },
       { data: "fa_createdAt" },
-      { data: "creator.username" },
+      { data: "creator.fullName" },
     ],
     columnDefs: [
       { target: 0, className: 'text-center' },

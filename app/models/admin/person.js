@@ -108,8 +108,8 @@ module.exports = (sequelize) => {
 
   Person.associate = (models)=>{
     Person.hasMany(models.UserModel,{foreignKey:'PersonId'})
-    Person.belongsTo(models.UserModel, { foreignKey: 'creatorId', as: 'creator' });
-    Person.belongsTo(models.UserModel, { foreignKey: 'updaterId', as: 'updater' });
+    Person.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
+    Person.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
 
   }
   return Person;

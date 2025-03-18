@@ -1,26 +1,24 @@
 const dateService = require('@services/dateService');
 const { models } = require('@models');
-const { CodeTableListModel, UserModel } = models;
+const { CodeTableListModel, UserViewModel } = models;
 
 exports.getData = async (req, res, next) => {
   try {
     const result = await CodeTableListModel.findAll({
       include: [
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'creator',
-          attributes: ['username']
-        },
-        // {
-        //   model: UserModel,
-        //   as: 'updater',
-        //   attributes: ['username']
-        // }
+          attributes: ['username', 'fullName']
+        }
       ]
     });
 
-    console.log('result: ', result.map((item) => item.creator.username));
-    
+    console.log(
+      'result: ',
+      result.map((item) => item.creator.fullName)
+    );
+
     res.json(result);
   } catch (error) {
     next(error);
@@ -114,20 +112,19 @@ exports.edit = async (req, res, next) => {
       where: { id: codeTableListId },
       include: [
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'creator',
-          attributes: ['username']
+          attributes: ['fullName']
         },
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'updater',
-          attributes: ['username']
+          attributes: ['fullName']
         }
       ],
       raw: true,
       nest: true
     });
-
 
     res.render('./baseInformation/codeTableList/edit', {
       layout: 'main',

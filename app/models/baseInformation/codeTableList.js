@@ -57,8 +57,8 @@ module.exports = (sequelize) => {
 
   CodeTableList.associate = (models) => {
     CodeTableList.hasMany(models.CodingDataModel, { foreignKey: 'codeTableListId' });
-    CodeTableList.belongsTo(models.UserModel, { foreignKey: 'creatorId', as: 'creator' });
-    CodeTableList.belongsTo(models.UserModel, { foreignKey: 'updaterId', as: 'updater' });
+    CodeTableList.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
+    CodeTableList.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
   };
 
   return CodeTableList;

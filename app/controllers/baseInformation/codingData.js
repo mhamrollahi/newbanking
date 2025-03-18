@@ -1,6 +1,6 @@
 // const { CodingDataModel, CodeTableListModel } = require("../../models");
 const { models } = require('../../models');
-const { CodingDataModel, CodeTableListModel, UserModel } = models;
+const { CodingDataModel, CodeTableListModel, UserViewModel } = models;
 const dateService = require('@services/dateService');
 
 exports.getData = async (req, res, next) => {
@@ -15,9 +15,9 @@ exports.getData = async (req, res, next) => {
           attributes: ['fa_TableName', 'en_TableName']
         },
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'creator',
-          attributes: ['username']
+          attributes: ['username', 'fullName']
         },
       ]
     });
@@ -141,14 +141,14 @@ exports.edit = async (req, res, next) => {
       where: { id: codingDataId },
       include: [
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'creator',
-          attributes: ['username']
+          attributes: ['fullName']
         },
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'updater',
-          attributes: ['username']
+          attributes: ['fullName']
         },
         { 
           model: CodeTableListModel, 

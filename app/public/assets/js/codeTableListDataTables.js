@@ -63,7 +63,7 @@ $(document).ready(function () {
         },
       },
       { data: "fa_createdAt" },
-      { data: "creator.username" },
+      { data: "creator.fullName" },
     ],
     columnDefs: [
       { target: 3, className: 'text-center' },

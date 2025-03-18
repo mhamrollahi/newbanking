@@ -4,7 +4,6 @@ const dateService = require('@services/dateService');
 class BaseModel extends Model {
   static init(attributes, options) {
     const commonFields = {
-      
       creatorId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -27,9 +26,9 @@ class BaseModel extends Model {
         onDelete: 'RESTRICT'
       },
 
-      updatedAt:{
-        type:DataTypes.DATE,
-        default:null
+      updatedAt: {
+        type: DataTypes.DATE,
+        default: null
       },
 
       fa_createdAt: {
@@ -73,10 +72,10 @@ class BaseModel extends Model {
       }
     );
   }
-  
-  static associate(models){
-    this.belongsTo(models.User,{foreignKey:'creatorId',as:'creator'})
-    this.belongsTo(models.User,{foreignKey: 'updaterId',as: 'updater'})
+
+  static associate(models) {
+    this.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
+    this.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
   }
 }
 

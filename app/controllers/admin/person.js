@@ -1,6 +1,6 @@
 const dateService = require('@services/dateService');
 const { models } = require('@models/');
-const { PersonModel, UserModel } = models;
+const { PersonModel, UserViewModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 
@@ -9,9 +9,9 @@ exports.getData = async (req, res, next) => {
     const result = await PersonModel.findAll({
       include: [
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'creator',
-          attributes: ['username']
+          attributes: ['username', 'fullName']
         },
       ]
     });
@@ -127,25 +127,26 @@ exports.edit = async (req, res, next) => {
       where: { id: personId },
       include: [
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'creator',
-          attributes: ['username']
+          attributes: ['fullName']
         },
         {
-          model: UserModel,
+          model: UserViewModel,
           as: 'updater',
-          attributes: ['username']
+          attributes: ['fullName']
         }
       ],
       raw: true,
-      nest: false
+      nest: true,
     });
+    console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
 
     res.render('./admin/person/edit', {
       layout: 'main',
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
-      personData: personData,
+      personData,
       fa_createdAt: dateService.toPersianDate(personData.createdAt),
       fa_updatedAt: dateService.toPersianDate(personData.updatedAt),
       errors,
@@ -161,10 +162,6 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const personId = req.params.id;
-    let userId = 'null';
-    if (req.session && req.session.user) {
-      userId = req.session?.user?.id ?? 0;
-    }
 
     const { error } = formValidation(req, 1);
     if (error) {
@@ -182,7 +179,7 @@ exports.update = async (req, res, next) => {
         nationalCode: req.body.nationalCode,
         mobile: req.body.mobile,
         Description: req.body.Description,
-        updater: userId
+        updaterId: req.session?.user?.id ?? 0,
       },
       { where: { id: personId }, individualHooks: true }
     );

@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "904957",
+    "database": "newbanking",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "",
+    "database": "newbanking_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "",
+    "database": "newbanking_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+} 
