@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize')
 const codeTableListModel = require('./baseInformation/codeTableList')
 const codingDataModel = require('./baseInformation/codingData')
-const userModel = require('./admin/users/user')
-const personModel = require('./admin/person')
+const userModel = require('./admin/user.js')
+const personModel = require('./admin/person.js')
 
 // const contactModel = require('./auth/contact')
 // const contactCategoryModel = require('./auth/contactCategory')

@@ -1,5 +1,5 @@
 const express = require('express')
-const usersControllers = require('@controllers/admin/users')
+const usersControllers = require('@controllers/admin/user')
 const router = express.Router()
 
 router.get('/api/getData',usersControllers.getData)

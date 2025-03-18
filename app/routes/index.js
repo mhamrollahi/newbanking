@@ -2,7 +2,7 @@ const accManagementRouter = require('./accountManagement/index')
 const codeTableListRouter = require('./baseInformation/codeTableList')
 const codingDataRouter = require('./baseInformation/codingData')
 const importFilesRouter = require('./importFiles/importCodingData')
-const usersRouter = require('./admin/users')
+const usersRouter = require('./admin/user')
 const personRouter = require('./admin/person')
 const authRouter = require('./auth/index')
 

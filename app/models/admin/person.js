@@ -1,6 +1,6 @@
 const { DataTypes, } = require('sequelize');
 // const dateService = require('@services/dateService');
-const BaseModel = require('../../baseModel');
+const BaseModel = require('../baseModel');
 
 class Person extends BaseModel {}
 
