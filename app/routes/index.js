@@ -13,7 +13,7 @@ module.exports = (app) => {
   app.use('/baseInformation',[authMiddleware],codeTableListRouter)
   app.use('/baseInformation',[authMiddleware],codingDataRouter)
   app.use('/importFiles',[authMiddleware],importFilesRouter)
-  app.use('/admin/users',usersRouter)
+  app.use('/admin/users',[authMiddleware],usersRouter)
   app.use('/admin/person',[authMiddleware],personRouter)
   app.use('/auth',authRouter)
 }

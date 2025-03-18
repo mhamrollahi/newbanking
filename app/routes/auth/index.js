@@ -4,6 +4,7 @@ const router = express.Router()
 
 router.get('/login',authController.login)
 router.post('/login',authController.doLogin)
+router.get('/logout',authController.logout)
 
 // router.get('/create',usersControllers.create)
 // router.post('/store',usersControllers.store)

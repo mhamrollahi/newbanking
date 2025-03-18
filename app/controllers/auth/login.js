@@ -44,6 +44,11 @@ exports.doLogin = async (req, res, next) => {
   return res.redirect('../accManagement/index');
 };
 
+exports.logout = async (req, res, next) => {
+  req.session.destroy();
+  return res.redirect('/auth/login');
+};
+
 const formValidation = (req) => {
   const userData = {
     username: req.body.username,
