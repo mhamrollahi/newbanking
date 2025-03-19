@@ -88,7 +88,7 @@
                       <li>
                         <a href="#">
                           <div class="image"><img
-                              src="assets/images/adomax/avatar/avatar-1.jpg"
+                              src="assets/adomax/images/avatar/avatar-1.jpg"
                               alt=""
                             /></div>
                           <div class="content">
@@ -104,7 +104,7 @@
                       <li>
                         <a href="#">
                           <div class="image"><img
-                              src="assets/images/adomax/avatar/avatar-2.jpg"
+                              src="assets/adomax/images/avatar/avatar-2.jpg"
                               alt=""
                             /></div>
                           <div class="content">
@@ -120,7 +120,7 @@
                       <li>
                         <a href="#">
                           <div class="image"><img
-                              src="assets/images/adomax/avatar/avatar-1.jpg"
+                              src="assets/adomax/images/avatar/avatar-1.jpg"
                               alt=""
                             /></div>
                           <div class="content">
@@ -196,10 +196,10 @@
                 <a class="toggle" href="#">
                   <span class="user">
                     <span class="avatar">
-                      <img src="{{user.avatar}}" alt="" />
+                      <img src="/static/assets/adomax/images/avatar/avatar-1.jpg" alt="" />
                       <span class="status"></span>
                     </span>
-                    <span class="name">{{user.fullName}}</span>
+                    <span class="name">{{user.fullName}} </span>
                   </span>
                 </a>
 
@@ -207,26 +207,17 @@
                 <div class="adomx-dropdown-menu dropdown-menu-user">
                   <div class="head">
                     <h5 class="name"><a href="#">{{user.fullName}}</a></h5>
-                    <a class="mail" href="#">{{user.email}}</a>
+                    <a class="mail" href="#"> {{user.username}} </a>
                   </div>
                   <div class="body">
                     <ul>
-                      <li><a href="#"><i
-                            class="zmdi zmdi-account"
-                          ></i>پروفایل</a></li>
-                      <li><a href="#"><i class="zmdi zmdi-email-open"></i>صندوق
-                          ورودی</a></li>
-                      <li><a href="#"><i
-                            class="zmdi zmdi-wallpaper"
-                          ></i>فعالیت</a></li>
+                      <li><a href="#"><i class="zmdi zmdi-account"></i>پروفایل</a></li>
+                      <li><a href="#"><i class="zmdi zmdi-email-open"></i>صندوق ورودی</a></li>
+                      <li><a href="#"><i class="zmdi zmdi-wallpaper"></i>فعالیت</a></li>
                     </ul>
                     <ul>
-                      <li><a href="#"><i
-                            class="zmdi zmdi-settings"
-                          ></i>تنظیمات</a></li>
-                      <li><a href="/auth/logout"><i
-                            class="zmdi zmdi-lock-open"
-                          ></i>خروج</a></li>
+                      <li><a href="#"><i class="zmdi zmdi-settings"></i>تنظیمات</a></li>
+                      <li><a href="/auth/logout"><i class="zmdi zmdi-lock-open"></i>خروج</a></li>
                     </ul>
                   </div>
                 </div>

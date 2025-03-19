@@ -1,9 +1,9 @@
 const { models } = require('@models/');
-const { UserModel } = models
+const { UserViewModel } = models
 const hashService = require('@services/hashService');
 
 exports.login = async (username, plainPassword) => {
-  const user = await UserModel.findOne({
+  const user = await UserViewModel.findOne({
     where: { username: username }
   });
 

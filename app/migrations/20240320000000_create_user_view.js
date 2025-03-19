@@ -12,7 +12,7 @@ module.exports = {
         u.createdAt,
         u.updatedAt
       FROM Users u
-      INNER JOIN Person p ON u.PersonId = p.id
+      INNER JOIN People p ON u.PersonId = p.id
     `);
   },
 

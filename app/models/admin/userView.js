@@ -13,6 +13,11 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(11),
         allowNull: false
       },
+      password: {
+        type: DataTypes.STRING(200),
+        allowNull: false,
+      },
+
       fullName: {
         type: DataTypes.STRING(100),
         allowNull: false
@@ -31,13 +36,6 @@ module.exports = (sequelize) => {
   );
 
   UserView.associate = (models) => {
-  //   UserView.belongsTo(models.PersonModel, {
-  //     foreignKey: 'PersonId',
-  //     allowNull: false,
-  //     onDelete: 'RESTRICT',
-  //     onUpdate: 'RESTRICT',
-  //     as: 'person'
-  //   });
 
     UserView.hasMany(models.CodeTableListModel, { foreignKey: 'creatorId' });
     UserView.hasMany(models.CodeTableListModel, { foreignKey: 'updaterId' });

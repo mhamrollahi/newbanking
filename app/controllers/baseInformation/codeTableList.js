@@ -41,7 +41,8 @@ exports.index = async (req, res, next) => {
     res.render('./baseInformation/codeTableList/index', {
       layout: 'main',
       success,
-      removeSuccess
+      removeSuccess,
+      user: req.session?.user
     });
   } catch (error) {
     next(error);
