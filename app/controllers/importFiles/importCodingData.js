@@ -7,16 +7,16 @@ const moment = require('jalali-moment')
 
 exports.importCodingData = (req, res, next) => {
   try {
-    const success = req.flash("success");
-    const errors = req.flash("errors");
+    // const success = req.flash("success");
+    // const errors = req.flash("errors");
     const errorFilePath = req.flash("errorFilePath");
 
     console.log("errorFilePath = ", errorFilePath);
 
-    res.render("./importFiles/importCodingData", {
-      layout: "main",
-      success,
-      errors,
+    res.adminRender("./importFiles/importCodingData", {
+      // layout: "main",
+      // success,
+      // errors,
       errorFilePath,
     });
   } catch (error) {

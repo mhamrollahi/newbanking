@@ -47,15 +47,14 @@ exports.updateUserActive = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
+    // const success = req.flash('success');
+    // const removeSuccess = req.flash('removeSuccess');
 
-    res.render('./admin/user/index', {
-      layout: 'main',
+    res.adminRender('./admin/user/index', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'فهرست کاربران',
-      success,
-      removeSuccess
+      // success,
+      // removeSuccess
     });
   } catch (error) {
     next(error);
@@ -79,13 +78,12 @@ exports.create = async (req, res, next) => {
       personListData.map((item) => item.firstName + ' ' + item.lastName)
     );
 
-    res.render('./admin/user/create', {
-      layout: 'main',
+    res.adminRender('./admin/user/create', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'کاربر جدید',
-      errors,
-      hasError,
-      success,
+      // errors,
+      // hasError,
+      // success,
       personListData
     });
   } catch (error) {
@@ -127,10 +125,10 @@ exports.edit = async (req, res, next) => {
   try {
     const userId = req.params.id;
 
-    const errors = req.flash('errors');
-    const hasError = errors.length > 0;
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
+    // const errors = req.flash('errors');
+    // const hasError = errors.length > 0;
+    // const success = req.flash('success');
+    // const removeSuccess = req.flash('removeSuccess');
     const userData = await UserModel.findOne({
       where: { id: userId },
       include: [
@@ -148,18 +146,21 @@ exports.edit = async (req, res, next) => {
       raw: true,
       nest: false
     });
+    if (userData) {
+      userData.fa_createdAt = dateService.toPersianDate(userData.createdAt);
+      userData.fa_updatedAt = dateService.toPersianDate(userData.updatedAt);
+    }
 
-    res.render('./admin/user/edit', {
-      layout: 'main',
+    res.adminRender('./admin/user/edit', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
       userData,
-      fa_createdAt: dateService.toPersianDate(userData.createdAt),
-      fa_updatedAt: dateService.toPersianDate(userData.updatedAt),
-      errors,
-      hasError,
-      success,
-      removeSuccess,
+      // fa_createdAt: dateService.toPersianDate(userData.createdAt),
+      // fa_updatedAt: dateService.toPersianDate(userData.updatedAt),
+      // errors,
+      // hasError,
+      // success,
+      // removeSuccess,
       helpers: {
         isChecked: function (value, options) {
           return parseInt(value) === 1 ? options.fn(this) : options.inverse(this);

@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-// const dateService = require('@services/dateService');
 const BaseModel = require('@models/baseModel');
 
 class CodeTableList extends BaseModel {}

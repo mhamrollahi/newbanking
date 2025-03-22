@@ -82,6 +82,7 @@ module.exports = (sequelize) => {
       timestamps: true,
       sequelize,
       validate: {},
+
       indexes: [
         {
           unique: true,

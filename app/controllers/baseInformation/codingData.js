@@ -58,15 +58,14 @@ exports.index = async (req, res, next) => {
       fa_TableName = result.fa_TableName;
     }
 
-    res.render('./baseInformation/codingData/index', {
-      layout: 'main',
+    res.adminRender('./baseInformation/codingData/index', {
       helpers: {
         isSelected: function (currentId, options) {
           return codeTableListId == currentId ? 'selected' : '';
         }
       },
-      success,
-      removeSuccess,
+      // success,
+      // removeSuccess,
       fa_TableName,
       codeTableListData,
       codeTableListId
@@ -82,18 +81,14 @@ exports.create = async (req, res, next) => {
 
     console.log('codeTableListId = ', codeTableListId);
 
-    const errors = req.flash('errors');
-    const success = req.flash('success');
-    const hasError = errors.length > 0;
+    // const errors = req.flash('errors');
+    // const success = req.flash('success');
+    // const hasError = errors.length > 0;
     const { fa_TableName } = await CodeTableListModel.findByPk(codeTableListId, { attributes: ['fa_TableName'] });
 
     console.log(fa_TableName);
 
-    res.render('./baseInformation/codingData/create', {
-      layout: 'main',
-      errors,
-      hasError,
-      success,
+    res.adminRender('./baseInformation/codingData/create', {
       codeTableListId,
       fa_TableName
     });
@@ -131,10 +126,10 @@ exports.store = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
-    const errors = req.flash('errors');
-    const hasError = errors.length > 0;
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
+    // const errors = req.flash('errors');
+    // const hasError = errors.length > 0;
+    // const success = req.flash('success');
+    // const removeSuccess = req.flash('removeSuccess');
 
     const codingDataId = await req.params.id;
     const codingData = await CodingDataModel.findOne({
@@ -161,21 +156,26 @@ exports.edit = async (req, res, next) => {
      
     });
 
+    if (codingData) {
+      codingData.fa_createdAt = dateService.toPersianDate(codingData.createdAt);
+      codingData.fa_updatedAt = dateService.toPersianDate(codingData.updatedAt);
+    }
+
     console.log('codingData = ', codingData, codingData.codeTableListId);
 
     // const { fa_TableName } = await CodeTableListModel.findByPk(codingData.id, {
     //   attributes: ["fa_TableName"],
     // });
 
-    res.render('./baseInformation/codingData/edit', {
-      layout: 'main',
+    res.adminRender('./baseInformation/codingData/edit', {
+      // layout: 'main',
       codingData,
-      fa_createdAt: dateService.toPersianDate(codingData.createdAt),
-      fa_updatedAt: dateService.toPersianDate(codingData.updatedAt),
-      errors,
-      hasError,
-      success,
-      removeSuccess
+      // fa_createdAt: dateService.toPersianDate(codingData.createdAt),
+      // fa_updatedAt: dateService.toPersianDate(codingData.updatedAt),
+      // // errors,
+      // // hasError,
+      // success,
+      // removeSuccess
     });
   } catch (error) {
     next(error);

@@ -47,9 +47,7 @@ class BaseModel extends Model {
         }
       }
     };
-
-    // return super.init({ ...attributes, ...commonFields }, options);
-
+    
     return super.init(
       { ...attributes, ...commonFields },
       {

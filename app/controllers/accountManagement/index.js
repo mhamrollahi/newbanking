@@ -2,8 +2,7 @@
 
 exports.index = async(req,res,next) => {
   try {
-    res.render('./accManagement/index',{
-      layout:'main',
+    res.adminRender('./accManagement/index',{
       title:'مدیریت حساب',
       subTitle:'فهرست حساب'
     })

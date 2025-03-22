@@ -25,15 +25,14 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
+    // const success = req.flash('success');
+    // const removeSuccess = req.flash('removeSuccess');
 
-    res.render('./admin/person/index', {
-      layout: 'main',
+    res.adminRender('./admin/person/index', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'فهرست پروفایل کاربران',
-      success,
-      removeSuccess
+      // success,
+      // removeSuccess
     });
   } catch (error) {
     next(error);
@@ -42,17 +41,16 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const errors = req.flash('errors');
-    const success = req.flash('success');
-    const hasError = errors.length > 0;
+    // const errors = req.flash('errors');
+    // const success = req.flash('success');
+    // const hasError = errors.length > 0;
 
-    res.render('./admin/person/create', {
-      layout: 'main',
+    res.adminRender('./admin/person/create', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'تعریف پرفایل جدید',
-      errors,
-      hasError,
-      success
+      // errors,
+      // hasError,
+      // success
     });
   } catch (error) {
     next(error);
@@ -119,10 +117,10 @@ exports.edit = async (req, res, next) => {
   try {
     const personId = req.params.id;
 
-    const errors = req.flash('errors');
-    const hasError = errors.length > 0;
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
+    // const errors = req.flash('errors');
+    // const hasError = errors.length > 0;
+    // const success = req.flash('success');
+    // const removeSuccess = req.flash('removeSuccess');
     const personData = await PersonModel.findOne({
       where: { id: personId },
       include: [
@@ -140,19 +138,24 @@ exports.edit = async (req, res, next) => {
       raw: true,
       nest: true,
     });
-    console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
 
-    res.render('./admin/person/edit', {
-      layout: 'main',
+    if (personData) {
+      personData.fa_createdAt = dateService.toPersianDate(personData.createdAt);
+      personData.fa_updatedAt = dateService.toPersianDate(personData.updatedAt);
+    }
+
+    // console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
+
+    res.adminRender('./admin/person/edit', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
       personData,
-      fa_createdAt: dateService.toPersianDate(personData.createdAt),
-      fa_updatedAt: dateService.toPersianDate(personData.updatedAt),
-      errors,
-      hasError,
-      success,
-      removeSuccess
+      // fa_createdAt: dateService.toPersianDate(personData.createdAt),
+      // fa_updatedAt: dateService.toPersianDate(personData.updatedAt),
+      // errors,
+      // hasError,
+      // success,
+      // removeSuccess
     });
   } catch (error) {
     next(error);

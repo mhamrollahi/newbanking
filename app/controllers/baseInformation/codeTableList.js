@@ -1,6 +1,6 @@
-const dateService = require('@services/dateService');
 const { models } = require('@models');
 const { CodeTableListModel, UserViewModel } = models;
+const dateService = require('@services/dateService');
 
 exports.getData = async (req, res, next) => {
   try {
@@ -25,25 +25,12 @@ exports.getData = async (req, res, next) => {
   }
 };
 
-exports.test = async (req, res, next) => {
-  try {
-    res.render('./baseInformation/codeTableList/test', { layout: '' });
-  } catch (error) {
-    next(error);
-  }
-};
 
 exports.index = async (req, res, next) => {
   try {
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
 
-    res.render('./baseInformation/codeTableList/index', {
-      layout: 'main',
-      success,
-      removeSuccess,
-      user: req.session?.user
-    });
+    res.adminRender('./baseInformation/codeTableList/index', {});
+
   } catch (error) {
     next(error);
   }
@@ -51,16 +38,9 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const errors = req.flash('errors');
-    const success = req.flash('success');
-    const hasError = errors.length > 0;
-
-    res.render('./baseInformation/codeTableList/create', {
-      layout: 'main',
-      errors,
-      hasError,
-      success
-    });
+  
+    res.adminRender('./baseInformation/codeTableList/create', {});
+  
   } catch (error) {
     next(error);
   }
@@ -68,7 +48,6 @@ exports.create = async (req, res, next) => {
 
 exports.store = async (req, res, next) => {
   try {
-    // res.send(req.body)
     const codeTableListData = {
       fa_TableName: req.body.fa_TableName,
       en_TableName: req.body.en_TableName,
@@ -83,19 +62,6 @@ exports.store = async (req, res, next) => {
       return res.redirect('./index');
     }
   } catch (error) {
-    // let errors = [];
-
-    // if (error.name === "SequelizeValidationError") {
-    //   errors = error.message.split("Validation error:");
-    //   req.flash("errors", errors);
-    //   return res.redirect("./create");
-    // }
-
-    // if (error.name === "SequelizeUniqueConstraintError") {
-    //   errors = error.message.split("SequelizeUniqueConstraintError");
-    //   req.flash("errors", errors);
-    //   return res.redirect("./create");
-    // }
 
     next(error);
   }
@@ -103,10 +69,6 @@ exports.store = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
-    const errors = req.flash('errors');
-    const hasError = errors.length > 0;
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
 
     const codeTableListId = await req.params.id;
     const codeTableList = await CodeTableListModel.findOne({
@@ -124,19 +86,18 @@ exports.edit = async (req, res, next) => {
         }
       ],
       raw: true,
-      nest: true
+      nest: true,
     });
 
-    res.render('./baseInformation/codeTableList/edit', {
-      layout: 'main',
+    if (codeTableList) {
+      codeTableList.fa_createdAt = dateService.toPersianDate(codeTableList.createdAt);
+      codeTableList.fa_updatedAt = dateService.toPersianDate(codeTableList.updatedAt);
+    }
+
+    res.adminRender('./baseInformation/codeTableList/edit', {
       codeTableList,
-      fa_createdAt: dateService.toPersianDate(codeTableList.createdAt),
-      fa_updatedAt: dateService.toPersianDate(codeTableList.updatedAt),
-      errors,
-      hasError,
-      success,
-      removeSuccess
     });
+    
   } catch (error) {
     next(error);
   }
