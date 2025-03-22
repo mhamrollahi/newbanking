@@ -9,6 +9,7 @@ module.exports = {
         u.username,
         u.isActive,
         CONCAT(p.firstName, ' ', p.lastName) as fullName,
+        u.password,
         u.createdAt,
         u.updatedAt
       FROM Users u
