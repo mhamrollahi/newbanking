@@ -130,6 +130,13 @@ module.exports = (sequelize) => {
 
     User.hasMany(models.RoleModel, { foreignKey: 'creatorId' });
     User.hasMany(models.RoleModel, { foreignKey: 'updaterId' });
+
+    User.hasMany(models.UserRoleModel, { foreignKey: 'creatorId' });
+    User.hasMany(models.UserRoleModel, { foreignKey: 'updaterId' });
+
+    User.hasMany(models.RolePermissionModel, { foreignKey: 'creatorId' });
+    User.hasMany(models.RolePermissionModel, { foreignKey: 'updaterId' });
+
   };
 
   return User;

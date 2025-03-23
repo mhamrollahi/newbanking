@@ -4,6 +4,10 @@ const codingDataModel = require('./baseInformation/codingData');
 const userModel = require('./admin/user');
 const personModel = require('./admin/person');
 const userViewModel = require('./admin/userView');
+const permissionModel = require('./admin/permission');
+const roleModel = require('./admin/role');
+const userRoleModel = require('./admin/userRole');
+const rolePermissionModel = require('./admin/rolePermission');
 
 // const contactModel = require('./auth/contact')
 // const contactCategoryModel = require('./auth/contactCategory')
@@ -34,7 +38,12 @@ const models = {
   CodingDataModel: codingDataModel(sequelize),
   PersonModel: personModel(sequelize),
   UserModel: userModel(sequelize),
-  UserViewModel: userViewModel(sequelize)
+  UserViewModel: userViewModel(sequelize),
+  PermissionModel: permissionModel(sequelize),
+  RoleModel: roleModel(sequelize),
+  UserRoleModel: userRoleModel(sequelize),
+  RolePermissionModel: rolePermissionModel(sequelize),
+  
 };
 
 Object.values(models).forEach((model) => {

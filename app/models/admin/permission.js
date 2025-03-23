@@ -63,6 +63,9 @@ module.exports = (sequelize) => {
   );
 
   Permission.associate = (models)=>{
+    
+    Permission.hasMany(models.RolePermissionModel, { foreignKey: 'permissionId', as: 'rolePermissions' });
+
     Permission.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     Permission.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
 
