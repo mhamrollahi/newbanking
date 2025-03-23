@@ -25,7 +25,7 @@ exports.Contact = (sequelize) =>{
         {
             sequelize,
             validate:{}
-        }
+        },
     )
     
     return Contact

@@ -152,7 +152,6 @@ module.exports = (sequelize) => {
       }
     },
     {
-      // freezeTableName: true, // جلوگیری از تغییرات غیرمنتظره روی جدول
       sequelize,
       indexes: [
         {
@@ -163,20 +162,6 @@ module.exports = (sequelize) => {
         }
       ],
       validate: {},
-      virtualFields: {
-        fa_createdAt: {
-          type: DataTypes.STRING,
-          get() {
-            return this.createdAt ? dateService.toPersianDate(this.createdAt) : null;
-          }
-        },
-        fa_updatedAt: {
-          type: DataTypes.STRING,
-          get() {
-            return this.updatedAt ? dateService.toPersianDate(this.updatedAt) : null;
-          }
-        }
-      },
 
       hooks: {
         beforeValidate: async function (record, options) {

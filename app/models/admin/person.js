@@ -1,5 +1,4 @@
 const { DataTypes, } = require('sequelize');
-const dateService = require('@services/dateService');
 const BaseModel = require('../baseModel');
 
 class Person extends BaseModel {}
@@ -103,20 +102,20 @@ module.exports = (sequelize) => {
       timestamps: true,
       sequelize,
       validate: {},
-      virtualFields: {
-        fa_createdAt: {
-          type: DataTypes.STRING,
-          get() {
-            return this.createdAt ? dateService.toPersianDate(this.createdAt) : null;
-          }
-        },
-        fa_updatedAt: {
-          type: DataTypes.STRING,
-          get() {
-            return this.updatedAt ? dateService.toPersianDate(this.updatedAt) : null;
-          }
-        }
-      },
+      // virtualFields: {
+      //   fa_createdAt: {
+      //     type: DataTypes.STRING,
+      //     get() {
+      //       return this.createdAt ? dateService.toPersianDate(this.createdAt) : null;
+      //     }
+      //   },
+      //   fa_updatedAt: {
+      //     type: DataTypes.STRING,
+      //     get() {
+      //       return this.updatedAt ? dateService.toPersianDate(this.updatedAt) : null;
+      //     }
+      //   }
+      // },
 
     }
   );

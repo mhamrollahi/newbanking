@@ -26,6 +26,8 @@ async function getConnection(){
 }
 getConnection()
 
+
+
 // const User = sequelize.define('user',{
 //   username:{type:Sequelize.DataTypes.STRING(30),}
 // })
