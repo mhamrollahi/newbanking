@@ -63,9 +63,6 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const errors = req.flash('errors');
-    const success = req.flash('success');
-    const hasError = errors.length > 0;
 
     const personListData = await PersonModel.findAll({
       attributes: ['id', 'firstName', 'lastName', 'fullName'],
@@ -73,17 +70,14 @@ exports.create = async (req, res, next) => {
       nest: true
     });
 
-    console.log(
-      'personListData = ',
-      personListData.map((item) => item.firstName + ' ' + item.lastName)
-    );
+    // console.log(
+    //   'personListData = ',
+    //   personListData.map((item) => item.firstName + ' ' + item.lastName)
+    // );
 
     res.adminRender('./admin/user/create', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'کاربر جدید',
-      // errors,
-      // hasError,
-      // success,
       personListData
     });
   } catch (error) {
@@ -155,12 +149,6 @@ exports.edit = async (req, res, next) => {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
       userData,
-      // fa_createdAt: dateService.toPersianDate(userData.createdAt),
-      // fa_updatedAt: dateService.toPersianDate(userData.updatedAt),
-      // errors,
-      // hasError,
-      // success,
-      // removeSuccess,
       helpers: {
         isChecked: function (value, options) {
           return parseInt(value) === 1 ? options.fn(this) : options.inverse(this);

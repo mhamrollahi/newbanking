@@ -150,12 +150,6 @@ exports.edit = async (req, res, next) => {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
       personData,
-      // fa_createdAt: dateService.toPersianDate(personData.createdAt),
-      // fa_updatedAt: dateService.toPersianDate(personData.updatedAt),
-      // errors,
-      // hasError,
-      // success,
-      // removeSuccess
     });
   } catch (error) {
     next(error);

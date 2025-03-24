@@ -39,9 +39,20 @@ module.exports = (sequelize) => {
         }
       },
 
-      action: {
-        type: DataTypes.ENUM('read','create','update','delete'),
-        allowNull:false,
+      // action: {
+      //   type: DataTypes.ENUM('read','create','update','delete','edit'),
+      //   allowNull:false,
+      // },
+      
+      actionId: {
+        type: DataTypes.INTEGER,
+        allowNull:true,
+        references: {
+          model: 'codingdata',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
       },
       
       description: {
@@ -65,6 +76,8 @@ module.exports = (sequelize) => {
   Permission.associate = (models)=>{
     
     Permission.hasMany(models.RolePermissionModel, { foreignKey: 'permissionId', as: 'rolePermissions' });
+
+    Permission.belongsTo(models.CodingDataModel, { foreignKey: 'actionId', as: 'action' })
 
     Permission.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     Permission.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });

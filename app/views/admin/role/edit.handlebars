@@ -1,0 +1,81 @@
+<link rel='stylesheet' href='/static/assets/css/style.css' />
+
+<div class='box-codingdata'></div>
+
+<main class='container myform-section-wrapper my-4 mt-5'>
+
+  <div class='row justify-content-between align-items-center mb-10'>
+
+    <!-- Page Heading Start -->
+    <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
+      <div class='page-heading page-heading-custom'>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+      </div>
+    </div><!-- Page Heading End -->
+
+  </div>
+
+  <div class='row login-form'>
+    <div class='col-12 col-sm-12 col-md-12'>
+      <form method='POST' name='frmRoles' id="frmRoles" action='../update/{{roleData.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>{{this}}</small>
+            {{/each}}
+          </div>
+        {{/if}}
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control'  name='name' value='{{roleData.name}}' />
+          <label for='name' class='mandatory'>نام مجوز</label>
+        </div>
+
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' name='description' value='{{roleData.description}}' />
+          <label for='description'>توضیحات</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='creator' value='{{roleData.creator.fullName}}' />
+          <label for='creator' class='mandatory'>ایجاد کننده</label>
+        </div>
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='created_at' value='{{roleData.fa_createdAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ ایجاد</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updater' value='{{roleData.updater.fullName}}' />
+          <label for='updater' class='mandatory'>اصلاح کننده</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updated_at' value='{{roleData.fa_updatedAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
+        </div>
+
+        <div class='col-12 my-2 text-center'>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit'>اصلاح </button>
+          <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='../index'>انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script src='/static/assets/js/formValidation.js'></script>
+<script>
+  $(document).ready(function (){
+    $('#password-eye1').click(function(){
+      if($('.txt-password').attr('type')==='password'){
+        $('.txt-password').attr('type','text')
+        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
+      }else{
+        $('.txt-password').attr('type','password')
+        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
+      }
+    })
+  })
+</script>
