@@ -71,7 +71,7 @@ exports.store = async (req, res, next) => {
     }
 
     const permissionData = {
-      name: req.body.name,
+      name: req.body.name.toLowerCase(),
       entity_type: req.body.entity_type,
       actionId: req.body.actionId,
       description: req.body.description,

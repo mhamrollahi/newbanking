@@ -48,7 +48,6 @@ module.exports = (sequelize) => {
           fields: ['roleId', 'permissionId'],
           msg: 'این مجوز برای این نقش تکراری می‌باشد.... '
         }
-
       ],
       validate: {},
 

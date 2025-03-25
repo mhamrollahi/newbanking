@@ -7,14 +7,25 @@
     <!-- Page Heading Start -->
     <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
       <div class='page-heading page-heading-custom'>
-        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}}/ جدید </span></h3>
       </div>
     </div><!-- Page Heading End -->
   </div>
 
+  
+
+
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">به صورت تکی </button>
+    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">به صورت گروهی</button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent" style="margin-top: 40px;">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
   <div class='row login-form'>
     <div class='col-12 col-sm-12 col-md-12'>
-      <form method='POST' name='frmrolePermissions' id='frmPermissions' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
+      <form method='POST' name='frmrolePermissions' id='frmrolePermissions' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
         {{#if hasError}}
           <div class='alert alert-danger'>
             {{#each errors}}
@@ -31,7 +42,6 @@
             </p>
           </div>
         {{/if}}
-
 
         <div style='margin:20px 1px 1px 1px; '>
           <label for='cmbRoleList' class='mandatory'>نقش/ Role</label>
@@ -53,9 +63,6 @@
           </select>
         </div>
 
-
-
-
         <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.' />
           <label for='description'>
@@ -74,10 +81,108 @@
       </form>
     </div>
   </div>
+
+  </div>
+  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+  <div class='row login-form'>
+    <div class='col-12 col-sm-12 col-md-12'>
+      <form method='POST' name='frmrolePermissions' id='frmrolePermissions' action='./bulkStore' class='row g-3 needs-validation' data-frmValidation novalidate>
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>
+                {{this}}
+              </small>
+            {{/each}}
+          </div>
+        {{/if}}
+        {{#if removeSuccess}}
+          <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1'>
+            <p class='alert alert-danger w-50 text-center'>
+              {{removeSuccess}}
+            </p>
+          </div>
+        {{/if}}
+
+        <div style='margin:20px 1px 1px 1px; '>
+          <label for='cmbRoleList' class='mandatory'>نقش/ Role</label>
+          <select id='cmbRoleList' name='roleId' style='position: relative;' data-farsiname='نقش/ Role' required>
+            <option value=''>لطفا نقش/ Role را انتخاب کنید</option>
+            {{#each roleListData}}
+              <option value='{{this.id}}'>{{this.name}} </option>
+            {{/each}}
+          </select>
+        </div>
+        <div style='margin:20px 1px 1px 1px;border: 1px solid #f5cfcf;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 5px; padding: 10px'>
+        <label>انتخاب مجوزها:</label>
+        <input type="text" id="searchPermission" placeholder="جستجوی مجوز..." style="width: 90%; padding: 5px;height: 30px; margin-bottom: 20px;">
+       
+        <!-- چک‌باکس برای انتخاب همه -->
+        <div class="form-check" style="padding-right: 10px;">
+          <input  class="form-check-input" type="checkbox" id="selectAllPermissions" style="margin-left:10px;">
+          <label  class="form-check-label" for="selectAllPermissions" style="position: relative; top: 5px;"><b>انتخاب همه</b></label>
+        </div>
+
+        <div id="permissionsContainer" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+          {{#each permissionListData}}
+            <div class="permission-item form-check" style="padding-right: 10px;">
+              <input class="form-check-input" type="checkbox" name="permissionIds" value="{{this.id}}" id="perm_{{this.id}}" style="margin-left:10px;">
+              <label  class="form-check-label" for="perm_{{this.id}}" style="position: relative; top: 5px;">{{this.name}}</label>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+        <div class='form-floating mb-3'>
+          <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.' />
+          <label for='description'>
+            توضیحات
+          </label>
+        </div>
+
+        <div class='col-12 my-2 text-center'>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit'>
+            ثبت
+          </button>
+          <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='./index'>
+            انصراف
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+    
+  </div>
+</div>
+
 </main>
 
 
 <script src='/static/assets/js/formValidation.js'></script>
 
+<script>
+  document.getElementById("searchPermission").addEventListener("input", function () {
+    let filter = this.value.toLowerCase();
+    let items = document.querySelectorAll(".permission-item");
 
+    items.forEach(function (item) {
+      let text = item.textContent.toLowerCase();
+      if (text.includes(filter)) {
+        item.style.display = "block";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  });
+
+// انتخاب یا لغو انتخاب همه چک‌باکس‌ها
+  document.getElementById("selectAllPermissions").addEventListener("change", function () {
+    let isChecked = this.checked;
+    let checkboxes = document.querySelectorAll("#permissionsContainer input[type='checkbox']");
+    
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = isChecked;
+    });
+  });
+
+</script>
 

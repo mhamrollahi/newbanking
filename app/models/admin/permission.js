@@ -39,11 +39,6 @@ module.exports = (sequelize) => {
         }
       },
 
-      // action: {
-      //   type: DataTypes.ENUM('read','create','update','delete','edit'),
-      //   allowNull:false,
-      // },
-      
       actionId: {
         type: DataTypes.INTEGER,
         allowNull:true,
@@ -68,6 +63,22 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      indexes:[
+        {
+          name: 'ix_permissionName',
+          unique: true,
+          fields: ['name'],
+          msg: 'این مجوز  تکراری می‌باشد... '
+        },
+        {
+          name: 'ix_entity_type_actionId',
+          unique: true,
+          fields: ['entity_type', 'actionId'],
+          msg: 'این اکشن برای این جدول تکراری می‌باشد.... '
+        },
+
+      ],
+
       validate: {},
 
     }

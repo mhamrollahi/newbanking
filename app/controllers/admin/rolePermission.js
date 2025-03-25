@@ -111,6 +111,53 @@ exports.store = async (req, res, next) => {
   }
 };
 
+exports.bulkStore = async (req, res, next) => {
+  try {
+    let userId = 'null';
+    if (req.session && req.session.user) {
+      userId = req.session?.user?.id ?? 0;
+    }
+
+    const rolePermissionData = {
+      roleId: req.body.roleId,
+      permissionIds: req.body.permissionIds,
+      description: req.body.description,
+      creatorId: userId
+    };
+
+    //اعتبار سنجی فرم ورودی - Start
+
+    // const { error } = formValidation(req);
+    if(!rolePermissionData.roleId ||!rolePermissionData.permissionIds)
+   {
+      req.flash('errors','نقش و حداقل یک مجوز را انتخاب کنید!')
+      
+      return res.redirect('./create');
+    }
+
+    //اعتبار سنجی فرم ورودی - End
+
+    const permissionArray = Array.isArray(rolePermissionData.permissionIds) ? rolePermissionData.permissionIds : [rolePermissionData.permissionIds];
+
+    await RolePermissionModel.destroy({ where: { roleId: rolePermissionData.roleId } });
+    
+    const rolePermissions = permissionArray.map((permissionId) => ({ 
+      roleId: rolePermissionData.roleId, 
+      permissionId, 
+      creatorId: rolePermissionData.creatorId, 
+      description: rolePermissionData.description 
+    }));
+
+    await RolePermissionModel.bulkCreate(rolePermissions);    
+
+    req.flash('success', 'مجوزهای نقش با موفقیت ثبت شد.');
+    return res.redirect('./index');
+    
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.edit = async (req, res, next) => {
   try {
     const rolePermissionId = req.params.id;
