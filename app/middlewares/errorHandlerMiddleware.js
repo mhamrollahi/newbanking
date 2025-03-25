@@ -27,7 +27,10 @@ module.exports = (app) => {
     if (error.name === 'SequelizeUniqueConstraintError') {
       const uniqueError = error.errors[0];
       const errorKey = `${uniqueError.instance.constructor.name}.${uniqueError.path}`;
-      const errorMessage = uniqueErrorMessages[errorKey] || error.message;
+      
+      const myError= error.message==='Validation error'?'این اطلاعات قبلا ثبت شده است':error.message;
+
+      const errorMessage = uniqueErrorMessages[errorKey] || myError;
       //const errorMessage = error.message ;
 
       req.flash('errors', [errorMessage]);

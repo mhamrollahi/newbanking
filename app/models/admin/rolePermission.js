@@ -41,6 +41,15 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      indexes:[
+        {
+          name: 'ix_roleId_permissionId',
+          unique: true,
+          fields: ['roleId', 'permissionId'],
+          msg: 'این مجوز برای این نقش تکراری می‌باشد.... '
+        }
+
+      ],
       validate: {},
 
     }

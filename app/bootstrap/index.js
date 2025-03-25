@@ -21,7 +21,7 @@ try {
 }
 
 module.exports = (app) => {
-  app.use(limiter);
+  // app.use(limiter);
   
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
