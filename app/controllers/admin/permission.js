@@ -13,6 +13,11 @@ exports.getData = async (req, res, next) => {
           as: 'creator',
           attributes: ['username', 'fullName']
         },
+        {
+          model:CodingDataModel,
+         as:'action',
+         attributes:['title']
+        }
       ]
     });
     console.log(result);

@@ -13,7 +13,7 @@ $(document).ready(function () {
       },
       { data: 'name' },
       { data: 'entity_type' },
-      { data: 'actionId' },
+      { data: 'action.title' },
       { data: 'description' },
       { data: 'fa_createdAt' },
       { data: 'creator.fullName' },
