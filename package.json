@@ -23,7 +23,8 @@
     "@configs": "app/configs",
     "@validators": "app/validators",
     "@presenters": "app/presenters",
-    "@middlewares": "app/middlewares"
+    "@middlewares": "app/middlewares",
+    "@security": "app/security"
   },
   "dependencies": {
     "@sequelize/mssql": "^7.0.0-alpha.42",

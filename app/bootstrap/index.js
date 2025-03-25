@@ -7,6 +7,7 @@ const cookieparser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const { sequelize } = require('@models/index.js');
+const limiter = require('@security/rateLimiter.js');
 
 // const {connect} = require('../configs/dbConfig')
 
@@ -20,6 +21,8 @@ try {
 }
 
 module.exports = (app) => {
+  app.use(limiter);
+  
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieparser());
@@ -39,14 +42,6 @@ module.exports = (app) => {
 
   app.use(loggerMiddleware);
 
-  // connect()
-  //   .then((connection) => {
-  //     console.log('Connected to the database successfully...')
-  //   })
-  //   .catch((error)=>{
-  //     console.log('Database connection failed ...!!')
-  //     console.log(error)
-  //   })
 
   app.get('/test', (req, res) => {
     res.send('Salam Hassan jan ....! Damam gharm .. Bazam damamm gharm ... !!!');
