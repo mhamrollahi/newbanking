@@ -41,6 +41,15 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      indexes:[
+        {
+          name: 'ix_userId_roleId',
+          unique: true,
+          fields: ['userId', 'roleId'],
+          msg: 'این نقش برای این کاربر تکراری می‌باشد.... '
+        }
+      ],
+
       validate: {}
     }
   );
