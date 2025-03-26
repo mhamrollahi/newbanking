@@ -22,11 +22,11 @@
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent" style="margin-top: 40px;">
- 
+  
   <div class="tab-pane fade show active" id="insert-one" role="tabpanel" aria-labelledby="insert-one-tab">
   <div class='row login-form'>
     <div class='col-12 col-sm-12 col-md-12'>
-      <form method='POST' name='frmrolePermissions' id='frmrolePermissions' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
+      <form method='POST' name='frmuserRole' id='frmuserRole' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
         {{#if hasError}}
           <div class='alert alert-danger'>
             {{#each errors}}
@@ -45,20 +45,20 @@
         {{/if}}
 
         <div style='margin:20px 1px 1px 1px; '>
-          <label for='cmbRoleList' class='mandatory'>نقش/ Role</label>
-          <select id='cmbRoleList' name='roleId' style='position: relative;' data-farsiname='نقش/ Role' required>
-            <option value=''>لطفا نقش/ Role را انتخاب کنید</option>
-            {{#each roleListData}}
-              <option value='{{this.id}}'>{{this.name}} </option>
+          <label for='cmbUserList' class='mandatory'>کاربر</label>
+          <select id='cmbUserList' name='userId' style='position: relative;' data-farsiname='User' required>
+            <option value=''>لطفا کاربر را انتخاب کنید</option>
+            {{#each userListData}}
+              <option value='{{this.id}}'>{{this.fullName}} </option>
             {{/each}}
           </select>
         </div>
 
         <div style='margin:20px 1px 1px 1px;'>
-          <label for='cmbPermissionList' class='mandatory'>مجوز/ Permission</label>
-          <select id='cmbPermissionList' name='permissionId' style='position: relative;' data-farsiname='مجوز/ Permission' required>
-            <option value=''>لطفا مجوز/ Permission را انتخاب کنید</option>
-            {{#each permissionListData}}
+          <label for='cmbRoleList' class='mandatory'>نقش‌ها</label>
+          <select id='cmbRoleList' name='roleId' style='position: relative;' data-farsiname='نقش' required>
+            <option value=''>لطفا نقش/ Role را انتخاب کنید</option>
+            {{#each roleListData}}
               <option value='{{this.id}}'>{{this.name}} </option>
             {{/each}}
           </select>
@@ -88,7 +88,7 @@
   <div class="tab-pane fade" id="insert-group" role="tabpanel" aria-labelledby="insert-group-tab">
   <div class='row login-form'>
     <div class='col-12 col-sm-12 col-md-12'>
-      <form method='POST' name='frmrolePermissions' id='frmrolePermissions' action='./bulkStore' class='row g-3 needs-validation' data-frmValidation novalidate>
+      <form method='POST' name='frmuserRole' id='frmuserRole' action='./bulkStore' class='row g-3 needs-validation' data-frmValidation novalidate>
         {{#if hasError}}
           <div class='alert alert-danger'>
             {{#each errors}}
@@ -107,35 +107,34 @@
         {{/if}}
 
         <div style='margin:20px 1px 1px 1px; '>
-          <label for='cmbRoleList' class='mandatory'>نقش/ Role</label>
-          <select id='cmbRoleList' name='roleId' style='position: relative;' data-farsiname='نقش/ Role' required>
-            <option value=''>لطفا نقش/ Role را انتخاب کنید</option>
-            {{#each roleListData}}
-              <option value='{{this.id}}'>{{this.name}} </option>
+          <label for='cmbUserList' class='mandatory'>کاربر</label>
+          <select id='cmbUserList' name='userId' style='position: relative;' data-farsiname='کاربر' required>
+            <option value=''>لطفا کاربر را انتخاب کنید</option>
+            {{#each userListData}}
+              <option value='{{this.id}}'>{{this.fullName}} </option>
             {{/each}}
           </select>
         </div>
 
         <div style='margin:20px 1px 1px 1px;border: 1px solid #f5cfcf;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 5px; padding: 10px'>
-        <label>انتخاب مجوزها:</label>
-        <input type="text" id="searchPermission" placeholder="جستجوی مجوز..." style="width: 90%; padding: 5px;height: 30px; margin-bottom: 20px;">
+        <label>انتخاب نقش‌ها:</label>
+        <input type="text" id="searchPermission" placeholder="جستجوی نقش..." style="width: 90%; padding: 5px;height: 30px; margin-bottom: 20px;">
        
-        <!-- چک‌باکس برای انتخاب همه -->
+        {{!-- <!-- چک‌باکس برای انتخاب همه -->
         <div class="form-check" style="padding-right: 10px;">
           <input  class="form-check-input" type="checkbox" id="selectAllPermissions" style="margin-left:10px;">
           <label  class="form-check-label" for="selectAllPermissions" style="position: relative; top: 5px;"><b>انتخاب همه</b></label>
-        </div>
+        </div> --}}
 
         <div id="permissionsContainer" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
-          {{#each permissionListData}}
+          {{#each roleListData}}
             <div class="permission-item form-check" style="padding-right: 10px;">
-              <input class="form-check-input" type="checkbox" name="permissionIds" value="{{this.id}}" id="perm_{{this.id}}" style="margin-left:10px;">
+              <input class="form-check-input" type="checkbox" name="roleIds" value="{{this.id}}" id="perm_{{this.id}}" style="margin-left:10px;">
               <label  class="form-check-label" for="perm_{{this.id}}" style="position: relative; top: 5px;">{{this.name}}</label>
             </div>
           {{/each}}
         </div>
       </div>
-      
         <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.' />
           <label for='description'>
@@ -156,7 +155,7 @@
   </div>
     
   </div>
-  
+
 </div>
 
 </main>
@@ -179,15 +178,6 @@
     });
   });
 
-// انتخاب یا لغو انتخاب همه چک‌باکس‌ها
-  document.getElementById("selectAllPermissions").addEventListener("change", function () {
-    let isChecked = this.checked;
-    let checkboxes = document.querySelectorAll("#permissionsContainer input[type='checkbox']");
-    
-    checkboxes.forEach(function (checkbox) {
-      checkbox.checked = isChecked;
-    });
-  });
 
 </script>
 

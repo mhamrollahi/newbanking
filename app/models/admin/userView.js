@@ -52,8 +52,9 @@ module.exports = (sequelize) => {
     UserView.hasMany(models.RoleModel, { foreignKey: 'creatorId' });
     UserView.hasMany(models.RoleModel, { foreignKey: 'updaterId' });
 
-    UserView.hasMany(models.UserRoleModel, { foreignKey: 'creatorId' });
-    UserView.hasMany(models.UserRoleModel, { foreignKey: 'updaterId' });
+    UserView.hasMany(models.UserRoleModel, { foreignKey: 'creatorId' ,as:'creator'});
+    UserView.hasMany(models.UserRoleModel, { foreignKey: 'updaterId',as:'updater'});
+    UserView.hasMany(models.UserRoleModel, { foreignKey: 'userId',as: 'userRoles' });
 
     UserView.hasMany(models.RolePermissionModel, { foreignKey: 'creatorId' });
     UserView.hasMany(models.RolePermissionModel, { foreignKey: 'updaterId' });

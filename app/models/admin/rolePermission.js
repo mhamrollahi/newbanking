@@ -56,8 +56,8 @@ module.exports = (sequelize) => {
 
   RolePermission.associate = (models)=>{
 
-    RolePermission.belongsTo(models.RoleModel, { foreignKey: 'roleId', as: 'role' });
-    RolePermission.belongsTo(models.PermissionModel, { foreignKey: 'permissionId', as: 'permission' });
+    RolePermission.belongsTo(models.RoleModel, { foreignKey: 'roleId', as: 'roles' });
+    RolePermission.belongsTo(models.PermissionModel, { foreignKey: 'permissionId', as: 'permissions' });
 
     RolePermission.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     RolePermission.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
