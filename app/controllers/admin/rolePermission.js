@@ -18,12 +18,12 @@ exports.getData = async (req, res, next) => {
         },
         {
           model: RoleModel,
-          as: 'role',
+          as: 'roles',
           attributes: ['name']
         },
         {
           model: PermissionModel,
-          as: 'permission',
+          as: 'permissions',
           attributes: ['name']
         },
       ]

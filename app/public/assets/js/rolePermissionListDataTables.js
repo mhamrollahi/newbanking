@@ -11,8 +11,8 @@ $(document).ready(function () {
           return meta.row + 1;
         }
       },
-      { data: 'role.name' },
-      { data: 'permission.name' },
+      { data: 'roles.name' },
+      { data: 'permissions.name' },
       { data: 'description' },
       { data: 'fa_createdAt' },
       { data: 'creator.fullName' },

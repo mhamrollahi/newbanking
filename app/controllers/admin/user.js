@@ -15,7 +15,7 @@ exports.getData = async (req, res, next) => {
         }
       ]
     });
-    console.log(result[0].person.fullName);
+    // console.log(result[0].person.fullName);
 
     res.json(result);
   } catch (error) {

@@ -1,4 +1,14 @@
 <!-- Side Header Start -->
+<style>
+  .side-header-sub-menu {
+    display: none;
+}
+.has-sub-menu.open .side-header-sub-menu {
+    display: block;
+    background-color: #1b1e2c;
+}
+
+</style>
 
 <div class="side-header show">
   <button class="side-header-close"><i class="zmdi zmdi-close"></i></button>
@@ -10,9 +20,8 @@
         <li><a href="/accManagement/index"><i class="fa fa-pie-chart"></i>
             <span>داشبورد</span></a></li>
 
-        <li class="has-sub-menu account-management"><a href="#"><i class="ti-briefcase"></i>
+        <li class="has-sub-menu account-management" {{#if menuState.account-management}}open{{/if}}><a href="#"  data-menu="account-management"><i class="ti-briefcase"></i>
             <span>مدیریت حساب</span></a>
-
           <ul class="side-header-sub-menu">
             <li><a href="/accManagement/index"><i class="ti-pencil-alt"></i>
                 <span>افتتاح حساب</span></a></li>
@@ -23,7 +32,7 @@
           </ul>
         </li>
 
-        <li class="has-sub-menu base-information"><a href="#"><i class="fa fa-file-text"></i>
+        <li class="has-sub-menu base-information" {{#if menuState.base-information}}open{{/if}}><a href="#"  data-menu="base-information"><i class="fa fa-file-text"></i>
             <span>اطلاعات پایه</span></a>
           <ul class="side-header-sub-menu">
             <li><a href="/baseInformation/codeTableList/index"><i class="fa fa-pencil-square-o"></i>
@@ -35,7 +44,7 @@
           </ul>
         </li>
 
-        <li class="has-sub-menu users-management"><a href="#"><i class="fa fa-users"></i>
+        <li class="has-sub-menu file-upload" {{#if menuState.file-upload}}open{{/if}}><a href="#"  data-menu="file-upload"><i class="fa fa-users"></i>
             <span>بارگذاری فایل</span></a>
           <ul class="side-header-sub-menu">
             <li><a href="/importFiles/importCodingData"><i class="fa fa-user"></i>
@@ -43,7 +52,7 @@
             <li><a href="##"><i class="fa fa-thumbs-up"></i><span>اطلاعات حساب‌ها</span></a></li>
           </ul>
         </li>
-        <li class="has-sub-menu users-management"><a href="#"><i class="fa fa-users"></i>
+        <li class="has-sub-menu users-management" {{#if menuState.users-management}}open{{/if}}><a href="#"  data-menu="users-management"><i class="fa fa-users"></i>
             <span>مدیریت کاربران</span></a>
           <ul class="side-header-sub-menu">
             <li><a href="/admin/users/index"><i class="fa fa-user"></i><span>فهرست کاربران</span></a></li>
@@ -54,14 +63,14 @@
             <li><a href="/admin/userRole/index"><i class="fa fa-users"></i><span>فهرست نقش‌های کاربر</span></a></li> 
           </ul>
         </li>
-        <li class="has-sub-menu reports"><a href="#"><i class="fa fa-bar-chart"></i>
+        <li class="has-sub-menu reports"  {{#if menuState.reports}}open{{/if}}><a href="#" data-menu="reports"><i class="fa fa-bar-chart"></i>
             <span>گزارشات</span></a>
           <ul class="side-header-sub-menu">
             <li><a href="/static/user/list"><span>گزارش حساب‌ها</span></a></li>
             <li><a href="##"><span>گزارش کاربران</span></a></li>
           </ul>
         </li>
-        <li class="has-sub-menu settings"><a href="#"><i class="ti-panel"></i>
+        <li class="has-sub-menu settings" {{#if menuState.settings}}open{{/if}}><a href="#" data-menu="settings"><i class="ti-panel"></i>
             <span>تنظیمات</span></a>
           <ul class="side-header-sub-menu">
             <li><a href="#"><i class="ti-hummer"></i>
@@ -76,3 +85,4 @@
 
   </div><!-- Side Header Inner End -->
 </div>
+

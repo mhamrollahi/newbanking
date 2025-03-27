@@ -14,10 +14,10 @@ exports.getData = async (req, res, next) => {
       ]
     });
 
-    console.log(
-      'result: ',
-      result.map((item) => item.creator.fullName)
-    );
+    // console.log(
+    //   'result: ',
+    //   result.map((item) => item.creator.fullName)
+    // );
 
     res.json(result);
   } catch (error) {

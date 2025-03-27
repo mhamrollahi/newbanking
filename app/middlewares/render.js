@@ -10,6 +10,7 @@ module.exports = (app) => {
     if ('user' in req.session) {
       user = req.session?.user;
     }
+    // res.locals.menuState = req.session.menuState || {};
 
     res.adminRender = (template, options) => {
       options = {
@@ -19,7 +20,8 @@ module.exports = (app) => {
         success,
         hasError,
         removeSuccess,
-        user
+        user,
+        menuState: req.session.menuState || {},
       };
 
       res.render(template, options);

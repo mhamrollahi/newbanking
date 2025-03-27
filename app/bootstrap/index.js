@@ -8,6 +8,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const { sequelize } = require('@models/index.js');
 const limiter = require('@security/rateLimiter.js');
+const menuRoute = require('@routes/menu.js');
 
 // const {connect} = require('../configs/dbConfig')
 
@@ -36,18 +37,21 @@ module.exports = (app) => {
       unset: 'destroy'
     })
   );
+  
+  app.use((req,res,next)=>{
+    if(!req.session.menuState){
+      req.session.menuState = {}
+    }
+    next();
+  })
 
+  app.use(menuRoute)
+  
   app.use(flash());
   app.use(cors());
 
   app.use(loggerMiddleware);
 
-
-  app.get('/test', (req, res) => {
-    res.send('Salam Hassan jan ....! Damam gharm .. Bazam damamm gharm ... !!!');
-  });
-
-  // hbs.registerPartials(path.join(__dirname,'../views/partials'))
 
   app.set('view engine', 'handlebars');
   app.set('views', path.join(__dirname, '../views'));
