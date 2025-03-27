@@ -35,6 +35,15 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      indexes:[
+        {
+          name: 'ix_roleName',
+          unique: true,
+          fields: ['name'],
+          msg: 'این نقش  تکراری می‌باشد... '
+        },
+      ],
+
       validate: {},
 
     }
