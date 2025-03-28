@@ -1,19 +1,12 @@
 const Joi = require('joi');
 const authService = require('@services/authService');
 const errMessages = require('@services/errorMessages');
+const { models } = require('@models/');
+const { RoleModel, UserViewModel, PermissionModel, CodingDataModel, UserRoleModel, RolePermissionModel } = models;
 
 exports.login = async (req, res, next) => {
   try {
-    const errors = req.flash('errors');
-    const hasError = errors.length > 0;
-
-    res.render('./auth/login', {
-      layout: 'auth',
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست کاربران',
-      errors,
-      hasError
-    });
+    res.authRender('./auth/login', {});
   } catch (error) {
     next(error);
   }
@@ -39,9 +32,74 @@ exports.doLogin = async (req, res, next) => {
     req.flash('errors', 'نام کاربری یا کلمه عبور معتبر نیست');
     return res.redirect('/auth/login');
   }
-  req.session.user = user;
 
-  return res.redirect('../accManagement/index');
+  if (user.isActive === false) {
+    req.flash('errors', 'نام کاربری شما غیر فعال است؛ لطفا با مدیر سیستم تماس بگیرید.');
+    return res.redirect('/auth/login');
+  }
+
+  try {
+    const userRoles = await UserViewModel.findByPk(user.id, {
+      attributes: ['id', 'fullName', 'username'],
+
+      include: [
+        {
+          model: UserRoleModel,
+          as: 'userRoles',
+          include: [
+            {
+              model: RoleModel,
+              as: 'roles',
+              attributes: ['id', 'name'],
+              include: [
+                {
+                  model: RolePermissionModel,
+                  as: 'rolePermissions',
+                  include: [
+                    {
+                      model: PermissionModel,
+                      as: 'permissions',
+                      attributes: ['id', 'name', 'entity_type', 'actionId'],
+                      include: [
+                        {
+                          model: CodingDataModel,
+                          as: 'action',
+                          attributes: ['id', 'title']
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    });
+
+
+    const userPermissionLists = userRoles.userRoles.flatMap((userRole) =>
+      userRole.roles.rolePermissions.map((rolePerm) => ({
+        userFullname: userRoles.fullName, // نام کامل کاربر
+        username: userRoles.username, // نام کامل کاربر
+        permissionId: rolePerm.permissions.id, // آی‌دی مجوز
+        permissionName: rolePerm.permissions.name, // نام مجوز
+        permissionEntity_type: rolePerm.permissions.entity_type, // نام مجوزe, // نام مجوز
+        actionName: rolePerm.permissions.action.title, // نام اکشن
+        roleId: userRole.roles.id, // آی‌دی نقش
+        roleName: userRole.roles.name // نام نقش
+      }))
+    );
+
+    console.log(userPermissionLists);
+
+    req.session.user = user;
+    req.session.permissions = userPermissionLists;
+
+    return res.redirect('../accManagement/index');
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.logout = async (req, res, next) => {
@@ -71,7 +129,7 @@ const formValidation = (req) => {
       .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
-        'string.required': errMessages['any.required'],
+        'string.required': errMessages['any.required']
         // 'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
       })
   });

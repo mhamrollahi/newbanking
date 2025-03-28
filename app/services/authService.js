@@ -4,7 +4,7 @@ const hashService = require('@services/hashService');
 
 exports.login = async (username, plainPassword) => {
   const user = await UserViewModel.findOne({
-    where: { username: username }
+    where: { username }
   });
 
   if (!user) {

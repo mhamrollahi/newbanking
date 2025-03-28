@@ -26,6 +26,20 @@ module.exports = (app) => {
 
       res.render(template, options);
     };
+
+    res.authRender = (template, options) => { 
+      options = {
+        ...options,
+        layout: 'auth',
+        errors,
+        success,
+        hasError,
+        removeSuccess,
+      };
+
+      res.render(template, options);
+    }
+
     next();
   });
 };

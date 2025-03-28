@@ -20,18 +20,15 @@
 
     <nav class="side-header-menu" id="side-header-menu">
       <ul>
-        <li><a href="/accManagement/index"><i class="fa fa-pie-chart"></i>
-            <span>داشبورد</span></a></li>
+        
+        <li><a href="/accManagement/index"><i class="fa fa-pie-chart"></i><span>داشبورد</span></a></li>
 
         <li class="has-sub-menu account-management" {{#if menuState.account-management}}open{{/if}}><a href="#"  data-menu="account-management"><i class="ti-briefcase"></i>
             <span>مدیریت حساب</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="/accManagement/index"><i class="ti-pencil-alt"></i>
-                <span>افتتاح حساب</span></a></li>
-            <li><a href="/accManagement/block"><i class="ti-na"></i>
-                <span>انسداد حساب</span></a></li>
-            <li><a href="##"><i class="fa fa-window-close"></i><span>انسداد حساب
-                  دسته‌ای</span></a></li>
+            <li><a href="/accManagement/index"><i class="ti-pencil-alt"></i><span>افتتاح حساب</span></a></li>
+            <li><a href="/accManagement/block"><i class="ti-na"></i><span>انسداد حساب</span></a></li>
+            <li><a href="##"><i class="fa fa-window-close"></i><span>انسداد حساب دسته‌ای</span></a></li>
           </ul>
         </li>
 
@@ -55,6 +52,7 @@
             <li><a href="##"><i class="fa fa-thumbs-up"></i><span>اطلاعات حساب‌ها</span></a></li>
           </ul>
         </li>
+
         <li class="has-sub-menu users-management" {{#if menuState.users-management}}open{{/if}}><a href="#"  data-menu="users-management"><i class="fa fa-users"></i>
             <span>مدیریت کاربران</span></a>
           <ul class="side-header-sub-menu">
@@ -66,6 +64,7 @@
             <li><a href="/admin/userRole/index"><i class="fa fa-users"></i><span>فهرست نقش‌های کاربر</span></a></li> 
           </ul>
         </li>
+
         <li class="has-sub-menu reports"  {{#if menuState.reports}}open{{/if}}><a href="#" data-menu="reports"><i class="fa fa-bar-chart"></i>
             <span>گزارشات</span></a>
           <ul class="side-header-sub-menu">
@@ -73,6 +72,7 @@
             <li><a href="##"><span>گزارش کاربران</span></a></li>
           </ul>
         </li>
+
         <li class="has-sub-menu settings" {{#if menuState.settings}}open{{/if}}><a href="#" data-menu="settings"><i class="ti-panel"></i>
             <span>تنظیمات</span></a>
           <ul class="side-header-sub-menu">
