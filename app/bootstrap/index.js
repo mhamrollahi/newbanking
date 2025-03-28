@@ -23,7 +23,7 @@ try {
 
 module.exports = (app) => {
   // app.use(limiter);
-  
+
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieparser());
@@ -37,21 +37,20 @@ module.exports = (app) => {
       unset: 'destroy'
     })
   );
-  
-  app.use((req,res,next)=>{
-    if(!req.session.menuState){
-      req.session.menuState = {}
+
+  app.use((req, res, next) => {
+    if (!req.session.menuState) {
+      req.session.menuState = {};
     }
     next();
-  })
+  });
 
-  app.use(menuRoute)
-  
+  app.use(menuRoute);
+
   app.use(flash());
   app.use(cors());
 
   app.use(loggerMiddleware);
-
 
   app.set('view engine', 'handlebars');
   app.set('views', path.join(__dirname, '../views'));
@@ -60,8 +59,21 @@ module.exports = (app) => {
     'handlebars',
     hbs.engine({
       layoutsDir: path.join(__dirname, '../views/layouts'),
-      partialsDir: path.join(__dirname, '../views/partials')
+      partialsDir: path.join(__dirname, '../views/partials'),
+      helpers: {
+        hasPermissionName: function (array, value) {
+          return array.some(item => item.permissionName.toLowerCase() === value.toLowerCase())
+        },
+        hasPermissionAction: function (permissionList,entityType,action) {
+          // console.log("🔍 Checking permission for:", entityType, action);
+          // console.log("🔎 User Permissions:", permissionList);
+  
+          return permissionList.some(permission=>
+            permission.permissionEntity_type.toLowerCase() === entityType.toLowerCase() && permission.actionName.toLowerCase() === action.toLowerCase())
+        },
+      }
     })
   );
+
   app.use('/static', express.static(path.join(__dirname, '../public')));
 };

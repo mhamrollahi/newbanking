@@ -36,6 +36,17 @@
   </div>
 {{/if}}
 
+
+{{!-- {{#if (hasPermissionAction userPermissionLists 'users' 'READ')}}
+  <p>✅ این کاربر مجوز خواندن کاربران را دارد!</p>
+{{else}}
+  <p>❌ این کاربر مجوز خواندن کاربران را ندارد!</p>
+{{/if}}
+
+{{#each userPermissionLists}}
+  <p>PermissionName :  {{this.permissionName}} - TableName: {{this.permissionEntity_type}}, Action: {{this.actionName}} - RoleName: {{this.roleName}} </p>
+{{/each}} --}}
+
 <!-- Revenue Statistics Chart Start -->
 <div class="col-md-12 mb-30">
   <div class="box">

@@ -17,69 +17,102 @@
   <button class="side-header-close"><i class="zmdi zmdi-close"></i></button>
   <!-- Side Header Inner Start -->
   <div class="side-header-inner custom-scroll">
-
+    
+    {{!-- {{includes userPermissionLists.permissionName 'View_Menu_Dashboard'}} --}}
+    
     <nav class="side-header-menu" id="side-header-menu">
       <ul>
         
-        <li><a href="/accManagement/index"><i class="fa fa-pie-chart"></i><span>داشبورد</span></a></li>
+        {{#if (hasPermissionName userPermissionLists 'view_menu_dashboard')}}
+          <li><a href="/accManagement/index"><i class="fa fa-pie-chart"></i><span>داشبورد</span></a></li>
+        {{/if}}
+
 
         <li class="has-sub-menu account-management" {{#if menuState.account-management}}open{{/if}}><a href="#"  data-menu="account-management"><i class="ti-briefcase"></i>
             <span>مدیریت حساب</span></a>
           <ul class="side-header-sub-menu">
             <li><a href="/accManagement/index"><i class="ti-pencil-alt"></i><span>افتتاح حساب</span></a></li>
-            <li><a href="/accManagement/block"><i class="ti-na"></i><span>انسداد حساب</span></a></li>
-            <li><a href="##"><i class="fa fa-window-close"></i><span>انسداد حساب دسته‌ای</span></a></li>
+            <li><a href="/accManagement/block/index"><i class="ti-na"></i><span>انسداد حساب</span></a></li>
+            <li><a href="/accManagement/batchBlock/index"><i class="fa fa-window-close"></i><span>انسداد حساب دسته‌ای</span></a></li>
           </ul>
         </li>
 
         <li class="has-sub-menu base-information" {{#if menuState.base-information}}open{{/if}}><a href="#"  data-menu="base-information"><i class="fa fa-file-text"></i>
             <span>اطلاعات پایه</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="/baseInformation/codeTableList/index"><i class="fa fa-pencil-square-o"></i>
-                <span>جدول کدینگ اصلی</span></a>
-            </li>
-            <li><a href="/baseInformation/codingData/index/1"><i class="zmdi zmdi-collection-text"></i>
-                <span>جزییات کدینگ داده</span></a>
-            </li>
+            {{#if (hasPermissionAction userPermissionLists 'codetablelists' 'read')}}
+              <li><a href="/baseInformation/codeTableList/index"><i class="fa fa-pencil-square-o"></i><span>جدول کدینگ اصلی</span></a></li>
+            {{/if}}  
+            {{#if (hasPermissionAction userPermissionLists 'codingdata' 'read')}}
+              <li><a href="/baseInformation/codingData/index/1"><i class="zmdi zmdi-collection-text"></i><span>جزییات کدینگ داده</span></a></li>
+            {{/if}}  
           </ul>
         </li>
 
         <li class="has-sub-menu file-upload" {{#if menuState.file-upload}}open{{/if}}><a href="#"  data-menu="file-upload"><i class="fa fa-users"></i>
             <span>بارگذاری فایل</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="/importFiles/importCodingData"><i class="fa fa-user"></i>
-                <span>اطلاعات کدینگ</span></a></li>
-            <li><a href="##"><i class="fa fa-thumbs-up"></i><span>اطلاعات حساب‌ها</span></a></li>
+            {{#if (hasPermissionName userPermissionLists 'importcodingdata_read')}}
+              <li><a href="/importFiles/importCodingData"><i class="fa fa-user"></i><span>اطلاعات کدینگ</span></a></li>
+            {{/if}}  
+            {{#if (hasPermissionName userPermissionLists 'importaccountdata_read')}}
+              <li><a href="##"><i class="fa fa-thumbs-up"></i><span>اطلاعات حساب‌ها</span></a></li>
+            {{/if}}  
           </ul>
         </li>
 
         <li class="has-sub-menu users-management" {{#if menuState.users-management}}open{{/if}}><a href="#"  data-menu="users-management"><i class="fa fa-users"></i>
             <span>مدیریت کاربران</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="/admin/users/index"><i class="fa fa-user"></i><span>فهرست کاربران</span></a></li>
-            <li><a href="/admin/person/index"><i class="fa fa-thumbs-up"></i><span>فهرست پروفایل کاربران</span></a></li>
-            <li><a href="/admin/permission/index"><i class="fa fa-unlock"></i><span>فهرست دسترسی‌ها(مجوزها)</span></a></li>
-            <li><a href="/admin/role/index"><i class="fa fa-user"></i><span>فهرست نقش ها</span></a></li>                  
-            <li><a href="/admin/rolePermission/index"><i class="fa fa-list-alt"></i><span>فهرست مجوزهای نقش</span></a></li> 
-            <li><a href="/admin/userRole/index"><i class="fa fa-users"></i><span>فهرست نقش‌های کاربر</span></a></li> 
+            {{#if (hasPermissionAction userPermissionLists 'users' 'read')}}
+              <li><a href="/admin/users/index"><i class="fa fa-user"></i><span>فهرست کاربران</span></a></li>
+            {{/if}} 
+
+            {{#if (hasPermissionAction userPermissionLists 'people' 'read')}}
+              <li><a href="/admin/person/index"><i class="fa fa-thumbs-up"></i><span>فهرست پروفایل کاربران</span></a></li>
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'permissions' 'read')}}
+              <li><a href="/admin/permission/index"><i class="fa fa-unlock"></i><span>فهرست دسترسی‌ها(مجوزها)</span></a></li>
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'roles' 'read')}}
+              <li><a href="/admin/role/index"><i class="fa fa-user"></i><span>فهرست نقش ها</span></a></li>                  
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'rolepermissions' 'read')}}
+              <li><a href="/admin/rolePermission/index"><i class="fa fa-list-alt"></i><span>فهرست مجوزهای نقش</span></a></li> 
+            {{/if}}   
+
+            {{#if (hasPermissionAction userPermissionLists 'userroles' 'read')}}
+              <li><a href="/admin/userRole/index"><i class="fa fa-users"></i><span>فهرست نقش‌های کاربر</span></a></li> 
+            {{/if}} 
           </ul>
         </li>
 
         <li class="has-sub-menu reports"  {{#if menuState.reports}}open{{/if}}><a href="#" data-menu="reports"><i class="fa fa-bar-chart"></i>
             <span>گزارشات</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="/static/user/list"><span>گزارش حساب‌ها</span></a></li>
-            <li><a href="##"><span>گزارش کاربران</span></a></li>
+            {{#if (hasPermissionAction userPermissionLists 'accountInfo' 'report')}}
+              <li><a href="##"><span>گزارش حساب‌ها</span></a></li>
+            {{/if}} 
+
+            {{#if (hasPermissionAction userPermissionLists 'users' 'report')}}
+              <li><a href="##"><span>گزارش کاربران</span></a></li>
+            {{/if}} 
           </ul>
         </li>
 
         <li class="has-sub-menu settings" {{#if menuState.settings}}open{{/if}}><a href="#" data-menu="settings"><i class="ti-panel"></i>
             <span>تنظیمات</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="#"><i class="ti-hummer"></i>
-                <span>تنظیمات صفحه اصلی</span></a></li>
-            <li><a href="#"><i class="ti-comments"></i>
-                <span>سایر تنظیمات </span></a></li>
+            {{#if (hasPermissionName userPermissionLists 'settings_read')}}
+              <li><a href="#"><i class="ti-hummer"></i><span>تنظیمات صفحه اصلی</span></a></li>
+            {{/if}} 
+
+            {{#if (hasPermissionName userPermissionLists 'otherSettings_read')}}
+              <li><a href="#"><i class="ti-comments"></i><span>سایر تنظیمات </span></a></li>
+            {{/if}} 
           </ul>
         </li>
 

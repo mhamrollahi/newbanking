@@ -91,7 +91,7 @@ exports.doLogin = async (req, res, next) => {
       }))
     );
 
-    console.log(userPermissionLists);
+    // console.log(userPermissionLists);
 
     req.session.user = user;
     req.session.permissions = userPermissionLists;

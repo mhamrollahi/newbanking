@@ -21,6 +21,7 @@ module.exports = (app) => {
         hasError,
         removeSuccess,
         user,
+        userPermissionLists:req.session.permissions,
         menuState: req.session.menuState || {},
       };
 
