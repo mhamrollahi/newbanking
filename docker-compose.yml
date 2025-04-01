@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 904957
+      MYSQL_DATABASE: newbanking
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 904957
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: 904957
+      DB_NAME: newbanking
+    volumes:
+      - .:/app
+    command: ["node", "server.js"]
+
+volumes:
+  mysql_data:
