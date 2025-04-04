@@ -11,7 +11,8 @@ const userRoleRouter = require('./admin/userRole')
 
 const authRouter = require('./auth/index')
 
-const authMiddleware = require('../middlewares/authMiddleware')
+
+const authMiddleware = require('@middlewares/authMiddleware')
 
 module.exports = (app) => {
   app.use('/accManagement',[authMiddleware],accManagementRouter)
