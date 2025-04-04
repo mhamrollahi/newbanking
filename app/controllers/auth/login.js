@@ -81,7 +81,7 @@ exports.doLogin = async (req, res, next) => {
     const userPermissionLists = userRoles.userRoles.flatMap((userRole) =>
       userRole.roles.rolePermissions.map((rolePerm) => ({
         userFullname: userRoles.fullName, // نام کامل کاربر
-        username: userRoles.username, // نام کامل کاربر
+        username: userRoles.username, // نام  کاربر
         permissionId: rolePerm.permissions.id, // آی‌دی مجوز
         permissionName: rolePerm.permissions.name, // نام مجوز
         permissionEntity_type: rolePerm.permissions.entity_type, // نام مجوزe, // نام مجوز

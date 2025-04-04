@@ -24,6 +24,7 @@
     "@validators": "app/validators",
     "@presenters": "app/presenters",
     "@middlewares": "app/middlewares",
+    "@constants": "app/constants",
     "@security": "app/security"
   },
   "dependencies": {

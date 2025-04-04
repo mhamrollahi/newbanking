@@ -3,6 +3,7 @@ const { models, sequelize } = require('@models/');
 const { PermissionModel, UserViewModel,CodingDataModel,CodeTableListModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
+const coding = require('@constants/codingDataTables.js');
 
 exports.getData = async (req, res, next) => {
   try {
@@ -46,7 +47,7 @@ exports.create = async (req, res, next) => {
       attributes:['id','title'],
       include: [{
         model: CodeTableListModel,
-        where: {en_TableName: 'actionpermission'}
+        where: {en_TableName: coding.CODING_Action_Permission}
       }],
       raw: true,
       nest: true
