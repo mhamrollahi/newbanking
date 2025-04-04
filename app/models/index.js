@@ -13,6 +13,7 @@ const rolePermissionModel = require('./admin/rolePermission');
 // const contactCategoryModel = require('./auth/contactCategory')
 
 const sequelize = new Sequelize({
+  host: process.env.MYSQL_HOST || 'mysql_db',
   username: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
