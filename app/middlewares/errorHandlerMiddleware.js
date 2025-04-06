@@ -7,11 +7,7 @@ module.exports = (app) => {
   app.use((error, req, res, next) => {
     // خطای 404
     if (error.status === 404) {
-      return res.status(404).send({
-        code: 'Not found',
-        status: 404,
-        message: 'درخواست مورد نظر یافت نشد'
-      });
+      return res.status(404).redirect('/errors/404');
     }
 
     // خطاهای Sequelize Validation
@@ -81,7 +77,8 @@ module.exports = (app) => {
 
     // خطاهای پیش‌بینی نشده
     console.error(error);
-    req.flash('errors', ['خطای سیستمی رخ داده است']);
-    return res.redirect('back');
+    return next(error)
+    // req.flash('errors', ['خطای سیستمی رخ داده است']);
+    // return res.redirect('back');
   });
 };

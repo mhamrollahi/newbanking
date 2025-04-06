@@ -9,8 +9,9 @@ const permissionRouter = require('./admin/permission')
 const rolePermissionRouter = require('./admin/rolePermission')
 const userRoleRouter = require('./admin/userRole')
 
-const authRouter = require('./auth/index')
+const errorRoute = require('./errors/index')
 
+const authRouter = require('./auth/index')
 
 const authMiddleware = require('@middlewares/authMiddleware')
 
@@ -29,5 +30,6 @@ module.exports = (app) => {
   app.use('/admin/rolePermission',[authMiddleware],rolePermissionRouter)
   app.use('/admin/userRole',[authMiddleware],userRoleRouter)
 
+  app.use('/errors',errorRoute)
   app.use('/auth',authRouter)
 }

@@ -9,7 +9,7 @@ module.exports = (tableName,actionName)=>{
       permission.actionName.toLowerCase() === actionName.toLowerCase())
     
       if(!hasAccess){
-        return res.redirect('./errors/403')
+        return res.redirect('/errors/403')
     } 
     next()  
   }

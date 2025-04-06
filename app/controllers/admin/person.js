@@ -25,14 +25,10 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-    // const success = req.flash('success');
-    // const removeSuccess = req.flash('removeSuccess');
 
     res.adminRender('./admin/person/index', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'فهرست پروفایل کاربران',
-      // success,
-      // removeSuccess
     });
   } catch (error) {
     next(error);
