@@ -6,7 +6,7 @@ require('./middlewares/render')(app);
 require('./routes')(app);
 
 
-require('./middlewares/errors400Middleware')(app)
+require('./middlewares/errors404Middleware')(app)
 require('./middlewares/errorHandlerMiddleware')(app);
 require('./middlewares/exceptionMiddleware')(app);
 
