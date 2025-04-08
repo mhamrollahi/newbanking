@@ -1,4 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
+const { models,  } = require('@models/');
+const { PermissionModel, CodingDataModel,CodeTableListModel } = models;
+const coding = require('@constants/codingDataTables.js');
+
 const dateService = require('@services/dateService');
 
 class BaseModel extends Model {
@@ -65,6 +69,9 @@ class BaseModel extends Model {
               instance.updaterId = options.userId;
             }
             instance.updatedAt = new Date();
+          },
+          afterInit: async(model) =>{
+            await model.createPermissions()
           }
         }
       }
@@ -75,6 +82,27 @@ class BaseModel extends Model {
     this.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     this.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
   }
-}
 
+  static async createPermissions() {
+    const actionListData = await CodingDataModel.findAll({ 
+      attributes:['id','title'],
+      include: [{
+        model: CodeTableListModel,
+        where: {en_TableName: coding.CODING_Action_Permission}
+        }],
+  })
+
+  for(const action of actionListData){
+    await PermissionModel.findOrCreate({where:{
+      actionId:action.id,
+      entity_name:this.name.toLowerCase(),
+      name:`${this.name.toLowerCase()}_${action.title.toLowerCase()}`,
+      creatorId:1,
+    }})
+  }
+
+
+
+}
+}
 module.exports = BaseModel;
