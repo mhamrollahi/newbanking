@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
-const { models,  } = require('@models/');
-const { PermissionModel, CodingDataModel,CodeTableListModel } = models;
+const db  = require('../../../database/mysql');
+const CodingDataModel  = require('../baseInformation/codingData');
+const CodeTableListModel  = require('../baseInformation/codeTableList');
 const coding = require('@constants/codingDataTables.js');
 
 const dateService = require('@services/dateService');
@@ -89,20 +90,14 @@ class BaseModel extends Model {
       include: [{
         model: CodeTableListModel,
         where: {en_TableName: coding.CODING_Action_Permission}
-        }],
-  })
+      }],
+    })
 
   for(const action of actionListData){
-    await PermissionModel.findOrCreate({where:{
-      actionId:action.id,
-      entity_name:this.name.toLowerCase(),
-      name:`${this.name.toLowerCase()}_${action.title.toLowerCase()}`,
-      creatorId:1,
-    }})
+    await db.query(`INSERT INTO permissions (actionId,entity_name,name,creatorId) 
+      VALUES (${action.id},'${this.name.toLowerCase()}','${this.name.toLowerCase()}_${action.title.toLowerCase()}',1`)} 
   }
 
-
-
 }
-}
+
 module.exports = BaseModel;
