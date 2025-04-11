@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const db  = require('../../../database/mysql');
-const CodingDataModel  = require('../baseInformation/codingData');
-const CodeTableListModel  = require('../baseInformation/codeTableList');
+// const CodingDataModel  = require('../baseInformation/codingData');
+// const CodeTableListModel  = require('../baseInformation/codeTableList');
 const coding = require('@constants/codingDataTables.js');
 
 const dateService = require('@services/dateService');
@@ -53,47 +53,91 @@ class BaseModel extends Model {
       }
     };
     
+
+
+    const defaultHooks = {
+      afterInit: async (model) => {
+        console.log('✅ afterInit executed for:', model.name);
+        await model.createPermissions?.(); // مطمئن شو این متد تو کلاس هست
+      },
+      beforeCreate: (instance, options) => {
+        if (options.userId) instance.creatorId = options.userId;
+        instance.updatedAt = null;
+      },
+      beforeUpdate: (instance, options) => {
+        if (options.userId) instance.updaterId = options.userId;
+        instance.updatedAt = new Date();
+      },
+    };
+  
+    const mergedHooks = {
+      ...defaultHooks,
+      ...(options?.hooks || {})
+    };
+  
     return super.init(
       { ...attributes, ...commonFields },
       {
         ...options,
-        timestamps: true,
-        hooks: {
-          beforeCreate: (instance, options) => {
-            if (options.userId) {
-              instance.creatorId = options.userId;
-            }
-            instance.updatedAt = null;
-          },
-          beforeUpdate: (instance, options) => {
-            if (options.userId) {
-              instance.updaterId = options.userId;
-            }
-            instance.updatedAt = new Date();
-          },
-          afterInit: async(model) =>{
-            await model.createPermissions()
-          }
-        }
+        hooks: mergedHooks,
+        timestamps: true
       }
     );
   }
+
+
+
+
+
+    // return super.init(
+    //   { ...attributes, ...commonFields },
+    //   {
+    //     ...options,
+    //     timestamps: true,
+    //     hooks: {
+          
+    //       afterInit: async(model) =>{
+    //         await model.createPermissions()
+    //       },
+
+    //       beforeCreate: (instance, options) => {
+    //         if (options.userId) {
+    //           instance.creatorId = options.userId;
+    //         }
+    //         instance.updatedAt = null;
+    //       },
+    //       beforeUpdate: (instance, options) => {
+    //         if (options.userId) {
+    //           instance.updaterId = options.userId;
+    //         }
+    //         instance.updatedAt = new Date();
+    //       },
+    //     }
+    //   }
+    // );
+// }
 
   static associate(models) {
     this.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     this.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
   }
 
-  static async createPermissions() {
-    const actionListData = await CodingDataModel.findAll({ 
-      attributes:['id','title'],
-      include: [{
-        model: CodeTableListModel,
-        where: {en_TableName: coding.CODING_Action_Permission}
-      }],
-    })
+  static async createPermissions(models) {
+    const CodingDataModel = models.CodingDataModel;
+    const CodeTableListModel = models.CodeTableListModel;
 
+    // const actionListData = await CodingDataModel.findAll({ 
+    //   attributes:['id','title'],
+    //   include: [{
+    //     model: CodeTableListModel,
+    //     where: {en_TableName: coding.CODING_Action_Permission}
+    //   }],
+    // })
+
+    const actionListData = ['create','read','update','delete']
+    
   for(const action of actionListData){
+    console.log(`${this.name.toLowerCase()} - ${this.name.toLowerCase()} _ ${action.title.toLowerCase()}`)
     await db.query(`INSERT INTO permissions (actionId,entity_name,name,creatorId) 
       VALUES (${action.id},'${this.name.toLowerCase()}','${this.name.toLowerCase()}_${action.title.toLowerCase()}',1`)} 
   }

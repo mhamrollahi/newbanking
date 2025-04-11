@@ -54,13 +54,6 @@ module.exports = (sequelize) => {
           args: true,
           msg: 'نام و نام‌خانوادگی نمی تواند تکراری باشد.'
         },
-        //   validate: {
-        //     notNull: {
-        //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-        //     },
-        //     notEmpty: {
-        //       msg: 'لطفا نام و نام‌خانوادگی را وارد کنید.'
-        //     },
 
         references: {
           model: 'Person',
@@ -137,6 +130,9 @@ module.exports = (sequelize) => {
 
     User.hasMany(models.RolePermissionModel, { foreignKey: 'creatorId' });
     User.hasMany(models.RolePermissionModel, { foreignKey: 'updaterId' });
+
+    // User.hasMany(models.BankBranchModel, { foreignKey: 'creatorId' });
+    // User.hasMany(models.BankBranchModel, { foreignKey: 'updaterId' });
 
   };
 

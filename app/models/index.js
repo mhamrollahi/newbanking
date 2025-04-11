@@ -8,9 +8,7 @@ const permissionModel = require('./admin/permission');
 const roleModel = require('./admin/role');
 const userRoleModel = require('./admin/userRole');
 const rolePermissionModel = require('./admin/rolePermission');
-
-// const contactModel = require('./auth/contact')
-// const contactCategoryModel = require('./auth/contactCategory')
+const bankBranchModel = require('./accountManagement/bankBranch');
 
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,
@@ -43,6 +41,7 @@ const models = {
   RoleModel: roleModel(sequelize),
   UserRoleModel: userRoleModel(sequelize),
   RolePermissionModel: rolePermissionModel(sequelize),
+  BankBranchModel: bankBranchModel(sequelize),
   
 };
 
@@ -51,6 +50,19 @@ Object.values(models).forEach((model) => {
     model.associate(models);
   }
 });
+
+(async () => {
+  for (const model of Object.values(models)) {
+    if (typeof model.createPermissions === 'function' && model.name === 'BankBranch') {
+      try {
+        await model.createPermissions(models);
+        console.log(`✅ Permissions created for ${model.name}`);
+      } catch (err) {
+        console.error(`❌ Failed to create permissions for ${model.name}:`, err.message);
+      }
+    }
+  }
+})();
 
 module.exports = {
   sequelize,

@@ -62,11 +62,12 @@ module.exports = (app) => {
       partialsDir: path.join(__dirname, '../views/partials'),
       helpers: {
         hasPermissionName: function (array, value) {
+          // console.log("🔍 Checking permission for: array ", array);
+          // console.log("🔎 User Permissions: value ", value);
+
           return array.some(item => item.permissionName.toLowerCase() === value.toLowerCase())
         },
         hasPermissionAction: function (permissionList,entityType,action) {
-          // console.log("🔍 Checking permission for:", entityType, action);
-          // console.log("🔎 User Permissions:", permissionList);
   
           return permissionList.some(permission=>
             permission.permissionEntity_type.toLowerCase() === entityType.toLowerCase() && permission.actionName.toLowerCase() === action.toLowerCase())
