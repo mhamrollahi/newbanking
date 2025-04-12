@@ -64,12 +64,12 @@ module.exports = (sequelize) => {
       timestamps: true,
       sequelize,
       indexes:[
-        {
-          name: 'ix_permissionName',
-          unique: true,
-          fields: ['name'],
-          msg: 'این مجوز  تکراری می‌باشد... '
-        },
+        // {
+        //   name: 'ix_permissionName',
+        //   unique: true,
+        //   fields: ['name'],
+        //   msg: 'این مجوز  تکراری می‌باشد... '
+        // },
         {
           name: 'ix_entity_type_actionId',
           unique: true,

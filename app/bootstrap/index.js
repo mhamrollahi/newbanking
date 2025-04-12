@@ -14,12 +14,12 @@ const menuRoute = require('@routes/menu.js');
 
 const loggerMiddleware = require('../middlewares/loggerMiddleware');
 
-try {
-  sequelize.sync({ alter: false });
-  console.log('All models were synchronized successfully');
-} catch (error) {
-  console.log('Error in syncing models ... ', error);
-}
+// try {
+//   sequelize.sync({ alter: false });
+//   console.log('All models were synchronized successfully');
+// } catch (error) {
+//   console.log('Error in syncing models ... ', error);
+// }
 
 module.exports = (app) => {
   // app.use(limiter);

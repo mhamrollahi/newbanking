@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const db  = require('../../../database/mysql');
+const db = require('../../../database/mysql');
 // const CodingDataModel  = require('../baseInformation/codingData');
 // const CodeTableListModel  = require('../baseInformation/codeTableList');
 const coding = require('@constants/codingDataTables.js');
@@ -52,8 +52,6 @@ class BaseModel extends Model {
         }
       }
     };
-    
-
 
     const defaultHooks = {
       afterInit: async (model) => {
@@ -67,14 +65,14 @@ class BaseModel extends Model {
       beforeUpdate: (instance, options) => {
         if (options.userId) instance.updaterId = options.userId;
         instance.updatedAt = new Date();
-      },
+      }
     };
-  
+
     const mergedHooks = {
       ...defaultHooks,
       ...(options?.hooks || {})
     };
-  
+
     return super.init(
       { ...attributes, ...commonFields },
       {
@@ -85,37 +83,33 @@ class BaseModel extends Model {
     );
   }
 
+  // return super.init(
+  //   { ...attributes, ...commonFields },
+  //   {
+  //     ...options,
+  //     timestamps: true,
+  //     hooks: {
 
+  //       afterInit: async(model) =>{
+  //         await model.createPermissions()
+  //       },
 
-
-
-    // return super.init(
-    //   { ...attributes, ...commonFields },
-    //   {
-    //     ...options,
-    //     timestamps: true,
-    //     hooks: {
-          
-    //       afterInit: async(model) =>{
-    //         await model.createPermissions()
-    //       },
-
-    //       beforeCreate: (instance, options) => {
-    //         if (options.userId) {
-    //           instance.creatorId = options.userId;
-    //         }
-    //         instance.updatedAt = null;
-    //       },
-    //       beforeUpdate: (instance, options) => {
-    //         if (options.userId) {
-    //           instance.updaterId = options.userId;
-    //         }
-    //         instance.updatedAt = new Date();
-    //       },
-    //     }
-    //   }
-    // );
-// }
+  //       beforeCreate: (instance, options) => {
+  //         if (options.userId) {
+  //           instance.creatorId = options.userId;
+  //         }
+  //         instance.updatedAt = null;
+  //       },
+  //       beforeUpdate: (instance, options) => {
+  //         if (options.userId) {
+  //           instance.updaterId = options.userId;
+  //         }
+  //         instance.updatedAt = new Date();
+  //       },
+  //     }
+  //   }
+  // );
+  // }
 
   static associate(models) {
     this.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
@@ -126,22 +120,29 @@ class BaseModel extends Model {
     const CodingDataModel = models.CodingDataModel;
     const CodeTableListModel = models.CodeTableListModel;
 
-    // const actionListData = await CodingDataModel.findAll({ 
-    //   attributes:['id','title'],
-    //   include: [{
-    //     model: CodeTableListModel,
-    //     where: {en_TableName: coding.CODING_Action_Permission}
-    //   }],
-    // })
+    const actionListData = await CodingDataModel.findAll({
+      attributes:['id','title'],
+      include: [{
+        model: CodeTableListModel,
+        where: {en_TableName: coding.CODING_Action_Permission}
+      }],
+    })
 
-    const actionListData = ['create','read','update','delete']
-    
-  for(const action of actionListData){
-    console.log(`${this.name.toLowerCase()} - ${this.name.toLowerCase()} _ ${action.title.toLowerCase()}`)
-    await db.query(`INSERT INTO permissions (actionId,entity_name,name,creatorId) 
-      VALUES (${action.id},'${this.name.toLowerCase()}','${this.name.toLowerCase()}_${action.title.toLowerCase()}',1`)} 
+
+    for (const action of actionListData) {
+      // console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.name.toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.name.toLowerCase()}`);
+      await models.PermissionModel.findOrCreate({
+        where: {
+          actionId: action.id, 
+          entity_type: this.name.toLowerCase()
+        }, 
+        defaults: {
+          name: `${this.name.toLowerCase()}_${action.title.toLowerCase()}`, 
+          creatorId: 1,// Admin user id
+        }
+      });
+    }
   }
-
 }
 
 module.exports = BaseModel;

@@ -16,7 +16,8 @@ const sequelize = new Sequelize({
   database: process.env.MYSQL_DATABASE,
   dialect: process.env.APP_DIALECT,
   logging: false,
-  port: process.env.MYSQL_PORT
+  port: process.env.MYSQL_PORT,
+  host: process.env.MYSQL_HOST,
 });
 
 async function getConnection() {
@@ -51,18 +52,30 @@ Object.values(models).forEach((model) => {
   }
 });
 
-(async () => {
-  for (const model of Object.values(models)) {
-    if (typeof model.createPermissions === 'function' && model.name === 'BankBranch') {
-      try {
-        await model.createPermissions(models);
-        console.log(`✅ Permissions created for ${model.name}`);
-      } catch (err) {
-        console.error(`❌ Failed to create permissions for ${model.name}:`, err.message);
+async function initApp() { 
+  try {
+    await sequelize.authenticate()
+    console.log('Database connected successfully.')
+
+    await sequelize.sync({ force: false })
+    console.log('All models were synchronized successfully');
+
+    for (const model of Object.values(models)) {
+      if (typeof model.createPermissions === 'function') {
+        try {
+          await model.createPermissions(models);
+          console.log(`✅ Permissions created for ${model.name}`);
+        } catch (err) {
+          console.error(`❌ Failed to create permissions for ${model.name}:`, err.message);
+        }
       }
     }
+  } catch (error) {
+    console.error('❌ Error initializing the application:', error.message);
   }
-})();
+};
+
+initApp();
 
 module.exports = {
   sequelize,
