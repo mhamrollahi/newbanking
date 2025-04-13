@@ -153,6 +153,9 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
+      tableName: 'codingData',
+      freezeTableName: true,
+
       indexes: [
         {
           name: 'ix_CodeTableListId_Title',

@@ -4,6 +4,10 @@ module.exports = (tableName,actionName)=>{
       return res.status(403).send('Access Denied')
     }
 
+    if(req.session.permissions.some(item => item.roleName.toLowerCase() === 'admin')){
+      return next()
+    }
+
     const hasAccess = req.session.permissions.some(
       permission => permission.permissionEntity_type.toLowerCase() === tableName.toLowerCase() && 
       permission.actionName.toLowerCase() === actionName.toLowerCase())

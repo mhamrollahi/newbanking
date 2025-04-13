@@ -40,7 +40,7 @@
         <li class="has-sub-menu base-information" {{#if menuState.base-information}}open{{/if}}><a href="#"  data-menu="base-information"><i class="fa fa-file-text"></i>
             <span>اطلاعات پایه</span></a>
           <ul class="side-header-sub-menu">
-            {{#if (hasPermissionAction userPermissionLists 'codetablelists' 'read')}}
+            {{#if (hasPermissionAction userPermissionLists 'codetablelist' 'read')}}
               <li><a href="/baseInformation/codeTableList/index"><i class="fa fa-pencil-square-o"></i><span>جدول کدینگ اصلی</span></a></li>
             {{/if}}  
             {{#if (hasPermissionAction userPermissionLists 'codingdata' 'read')}}
@@ -64,7 +64,7 @@
         <li class="has-sub-menu users-management" {{#if menuState.users-management}}open{{/if}}><a href="#"  data-menu="users-management"><i class="fa fa-users"></i>
             <span>مدیریت کاربران</span></a>
           <ul class="side-header-sub-menu">
-            {{#if (hasPermissionAction userPermissionLists 'users' 'read')}}
+            {{#if (hasPermissionAction userPermissionLists 'user' 'read')}}
               <li><a href="/admin/users/index"><i class="fa fa-user"></i><span>فهرست کاربران</span></a></li>
             {{/if}} 
 
@@ -72,19 +72,19 @@
               <li><a href="/admin/person/index"><i class="fa fa-thumbs-up"></i><span>فهرست پروفایل کاربران</span></a></li>
             {{/if}}  
 
-            {{#if (hasPermissionAction userPermissionLists 'permissions' 'read')}}
+            {{#if (hasPermissionAction userPermissionLists 'permission' 'read')}}
               <li><a href="/admin/permission/index"><i class="fa fa-unlock"></i><span>فهرست دسترسی‌ها(مجوزها)</span></a></li>
             {{/if}}  
 
-            {{#if (hasPermissionAction userPermissionLists 'roles' 'read')}}
+            {{#if (hasPermissionAction userPermissionLists 'role' 'read')}}
               <li><a href="/admin/role/index"><i class="fa fa-user"></i><span>فهرست نقش ها</span></a></li>                  
             {{/if}}  
 
-            {{#if (hasPermissionAction userPermissionLists 'rolepermissions' 'read')}}
+            {{#if (hasPermissionAction userPermissionLists 'rolepermission' 'read')}}
               <li><a href="/admin/rolePermission/index"><i class="fa fa-list-alt"></i><span>فهرست مجوزهای نقش</span></a></li> 
             {{/if}}   
 
-            {{#if (hasPermissionAction userPermissionLists 'userroles' 'read')}}
+            {{#if (hasPermissionAction userPermissionLists 'userrole' 'read')}}
               <li><a href="/admin/userRole/index"><i class="fa fa-users"></i><span>فهرست نقش‌های کاربر</span></a></li> 
             {{/if}} 
           </ul>
@@ -97,7 +97,7 @@
               <li><a href="##"><span>گزارش حساب‌ها</span></a></li>
             {{/if}} 
 
-            {{#if (hasPermissionAction userPermissionLists 'users' 'report')}}
+            {{#if (hasPermissionAction userPermissionLists 'user' 'report')}}
               <li><a href="##"><span>گزارش کاربران</span></a></li>
             {{/if}} 
           </ul>

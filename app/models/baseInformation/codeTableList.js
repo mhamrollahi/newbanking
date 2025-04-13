@@ -50,6 +50,9 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
+      tableName: 'codeTableList',
+      freezeTableName: true,
+
       validate: {}
     }
   );

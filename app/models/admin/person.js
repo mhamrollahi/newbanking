@@ -101,6 +101,9 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      tableName: 'person',
+      freezeTableName: true,
+
       validate: {},
       // virtualFields: {
       //   fa_createdAt: {
