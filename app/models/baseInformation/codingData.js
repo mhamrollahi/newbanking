@@ -153,8 +153,8 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      tableName: 'codingData',
-      freezeTableName: true,
+//    tableName: 'codingData',
+//    freezeTableName: true,
 
       indexes: [
         {

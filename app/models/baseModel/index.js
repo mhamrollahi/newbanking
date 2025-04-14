@@ -130,14 +130,15 @@ class BaseModel extends Model {
 
 
     for (const action of actionListData) {
-      // console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.name.toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.name.toLowerCase()}`);
+      console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.getTableName().toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.getTableName().toLowerCase()}`);
       await models.PermissionModel.findOrCreate({
         where: {
           actionId: action.id, 
-          entity_type: this.name.toLowerCase()
+          //entity_type: this.name.toLowerCase()
+          entity_type: this.getTableName().toLowerCase()
         }, 
         defaults: {
-          name: `${this.name.toLowerCase()}_${action.title.toLowerCase()}`, 
+          name: `${this.getTableName().toLowerCase()}_${action.title.toLowerCase()}`, 
           creatorId: 1,// Admin user id
         }
       });

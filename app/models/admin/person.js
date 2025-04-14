@@ -101,8 +101,8 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
-      tableName: 'person',
-      freezeTableName: true,
+      //tableName: 'people',
+      //freezeTableName: true,
 
       validate: {},
       // virtualFields: {

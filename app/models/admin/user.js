@@ -74,8 +74,8 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
-      tableName: 'user',
-      freezeTableName: true,
+      //tableName: 'users',
+      //freezeTableName: true,
 
       validate: {},
 

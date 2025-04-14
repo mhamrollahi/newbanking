@@ -8,7 +8,11 @@ const sourceDB = new Sequelize('NewBanking', 'root', '904957', {
   dialect: 'mysql'
 });
 
-const tablesToSync = ['users','people','permissions','roles','rolepermissions','userroles'];
+// const tablesToSync = ['users','people','permissions','roles','rolepermissions','userroles'];
+const tablesToSync = async () => {
+  const [tables] = await sourceDB.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();')
+  return tables.map((t) => ({ name: t.TABLE_NAME}));
+}
 
 async function generateSeeders() {
   for (const table of tablesToSync) {
