@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const db = require('../../../database/mysql');
+// const db = require('../../../database/mysql');
 // const CodingDataModel  = require('../baseInformation/codingData');
 // const CodeTableListModel  = require('../baseInformation/codeTableList');
 const coding = require('@constants/codingDataTables.js');
@@ -134,7 +134,6 @@ class BaseModel extends Model {
       await models.PermissionModel.findOrCreate({
         where: {
           actionId: action.id, 
-          //entity_type: this.name.toLowerCase()
           entity_type: this.getTableName().toLowerCase()
         }, 
         defaults: {
