@@ -130,7 +130,7 @@ class BaseModel extends Model {
 
 
     for (const action of actionListData) {
-      console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.getTableName().toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.getTableName().toLowerCase()}`);
+      // console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.getTableName().toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.getTableName().toLowerCase()}`);
       await models.PermissionModel.findOrCreate({
         where: {
           actionId: action.id, 
