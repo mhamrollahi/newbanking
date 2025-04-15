@@ -54,10 +54,6 @@ class BaseModel extends Model {
     };
 
     const defaultHooks = {
-      // afterInit: async (model) => {
-      //   console.log('✅ afterInit executed for:', model.name);
-      //   await model.createPermissions?.(); // مطمئن شو این متد تو کلاس هست
-      // },
       beforeCreate: (instance, options) => {
         if (options.userId) instance.creatorId = options.userId;
         instance.updatedAt = null;
