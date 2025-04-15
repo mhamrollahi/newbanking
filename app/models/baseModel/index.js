@@ -54,10 +54,10 @@ class BaseModel extends Model {
     };
 
     const defaultHooks = {
-      afterInit: async (model) => {
-        console.log('✅ afterInit executed for:', model.name);
-        await model.createPermissions?.(); // مطمئن شو این متد تو کلاس هست
-      },
+      // afterInit: async (model) => {
+      //   console.log('✅ afterInit executed for:', model.name);
+      //   await model.createPermissions?.(); // مطمئن شو این متد تو کلاس هست
+      // },
       beforeCreate: (instance, options) => {
         if (options.userId) instance.creatorId = options.userId;
         instance.updatedAt = null;
@@ -73,7 +73,7 @@ class BaseModel extends Model {
       ...(options?.hooks || {})
     };
 
-    return super.init(
+    const model = super.init(
       { ...attributes, ...commonFields },
       {
         ...options,
@@ -81,35 +81,18 @@ class BaseModel extends Model {
         timestamps: true
       }
     );
+
+    model.afterSync = async (models) => {
+      console.log(`✅ Table ${model.tableName} is new. Creating permissions....`);
+      if (typeof model.createPermissions === 'function') {
+        await model.createPermissions(models);
+        console.log(`✅ Permissions created for ${model.name}`);
+      } else {
+        console.log(`🟢 Table [${model.getTableName()}] already exists. Skipping permission creation.`);
+      }
+    };
+    return model;
   }
-
-  // return super.init(
-  //   { ...attributes, ...commonFields },
-  //   {
-  //     ...options,
-  //     timestamps: true,
-  //     hooks: {
-
-  //       afterInit: async(model) =>{
-  //         await model.createPermissions()
-  //       },
-
-  //       beforeCreate: (instance, options) => {
-  //         if (options.userId) {
-  //           instance.creatorId = options.userId;
-  //         }
-  //         instance.updatedAt = null;
-  //       },
-  //       beforeUpdate: (instance, options) => {
-  //         if (options.userId) {
-  //           instance.updaterId = options.userId;
-  //         }
-  //         instance.updatedAt = new Date();
-  //       },
-  //     }
-  //   }
-  // );
-  // }
 
   static associate(models) {
     this.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
@@ -121,24 +104,25 @@ class BaseModel extends Model {
     const CodeTableListModel = models.CodeTableListModel;
 
     const actionListData = await CodingDataModel.findAll({
-      attributes:['id','title'],
-      include: [{
-        model: CodeTableListModel,
-        where: {en_TableName: coding.CODING_Action_Permission}
-      }],
-    })
-
+      attributes: ['id', 'title'],
+      include: [
+        {
+          model: CodeTableListModel,
+          where: { en_TableName: coding.CODING_Action_Permission }
+        }
+      ]
+    });
 
     for (const action of actionListData) {
       // console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.getTableName().toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.getTableName().toLowerCase()}`);
       await models.PermissionModel.findOrCreate({
         where: {
-          actionId: action.id, 
+          actionId: action.id,
           entity_type: this.getTableName().toLowerCase()
-        }, 
+        },
         defaults: {
-          name: `${this.getTableName().toLowerCase()}_${action.title.toLowerCase()}`, 
-          creatorId: 1,// Admin user id
+          name: `${this.getTableName().toLowerCase()}_${action.title.toLowerCase()}`,
+          creatorId: 1 // Admin user id
         }
       });
     }

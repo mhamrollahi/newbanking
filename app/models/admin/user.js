@@ -103,6 +103,8 @@ module.exports = (sequelize) => {
     }
   });
 
+  User.sequelize = sequelize;
+  
   User.associate = (models) => {
     User.belongsTo(models.PersonModel, {
       foreignKey: 'PersonId',

@@ -201,6 +201,8 @@ module.exports = (sequelize) => {
     }
   );
 
+  CodingData.sequelize = sequelize;
+  
   CodingData.associate = (models) => {
     CodingData.belongsTo(models.CodeTableListModel, {
       foreignKey: {

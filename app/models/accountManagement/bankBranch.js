@@ -118,6 +118,10 @@ module.exports = (sequelize) => {
     }
   );
 
+  BankBranch.sequelize = sequelize;
+
+ 
+
   BankBranch.associate = (models) => {
 
     BankBranch.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });

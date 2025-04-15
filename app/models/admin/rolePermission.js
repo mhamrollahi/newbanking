@@ -56,6 +56,7 @@ module.exports = (sequelize) => {
 
     }
   );
+  RolePermission.sequelize = sequelize;
 
   RolePermission.associate = (models)=>{
 

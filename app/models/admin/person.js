@@ -122,6 +122,7 @@ module.exports = (sequelize) => {
 
     }
   );
+  Person.sequelize = sequelize;
 
   Person.associate = (models)=>{
     Person.hasMany(models.UserModel,{foreignKey:'PersonId'})

@@ -85,6 +85,7 @@ module.exports = (sequelize) => {
 
     }
   );
+  Permission.sequelize = sequelize;
 
   Permission.associate = (models)=>{
     

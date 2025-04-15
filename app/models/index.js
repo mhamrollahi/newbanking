@@ -9,6 +9,7 @@ const roleModel = require('./admin/role');
 const userRoleModel = require('./admin/userRole');
 const rolePermissionModel = require('./admin/rolePermission');
 const bankBranchModel = require('./accountManagement/bankBranch');
+const cityModel = require('./accountManagement/city');
 
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,
@@ -43,6 +44,7 @@ const models = {
   UserRoleModel: userRoleModel(sequelize),
   RolePermissionModel: rolePermissionModel(sequelize),
   BankBranchModel: bankBranchModel(sequelize),
+  CityModel: cityModel(sequelize),
   
 };
 
@@ -56,15 +58,20 @@ async function initApp() {
   try {
     await sequelize.authenticate()
     console.log('Database connected successfully.')
+    const existingTables = await sequelize.getQueryInterface().showAllTables()
 
     await sequelize.sync({ force: false })
     console.log('All models were synchronized successfully');
 
     for (const model of Object.values(models)) {
-      if (typeof model.createPermissions === 'function') {
+      if (typeof model.afterSync === 'function') {
         try {
-          await model.createPermissions(models);
-          console.log(`✅ Permissions created for ${model.name}`);
+          const tableName = model.getTableName().toLowerCase();
+          const wasCreateNow = !existingTables.includes(tableName);
+          if(wasCreateNow) {
+            await model.afterSync(models);
+          }
+          // console.log(`✅ Permissions created for ${model.name}`);
         } catch (err) {
           console.error(`❌ Failed to create permissions for ${model.name}:`, err.message);
         }
