@@ -1,0 +1,92 @@
+<link rel='stylesheet' href='/static/assets/css/style.css' />
+
+<div class='box-codingdata'></div>
+
+<main class='container myform-section-wrapper my-4 mt-5'>
+  <div class='row justify-content-between align-items-center mb-10'>
+    <!-- Page Heading Start -->
+    <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
+      <div class='page-heading page-heading-custom'>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+      </div>
+    </div><!-- Page Heading End -->
+  </div>
+
+  <div class='row login-form'>
+    <div class='col-12 col-sm-12 col-md-12'>
+      <form method='POST' name='frmPermissions' id='frmPermissions' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>
+                {{this}}
+              </small>
+            {{/each}}
+          </div>
+        {{/if}}
+        {{#if removeSuccess}}
+          <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1'>
+            <p class='alert alert-danger w-50 text-center'>
+              {{removeSuccess}}
+            </p>
+          </div>
+        {{/if}}
+
+        <div class='form-floating mb-3'>
+          <input type='text' class='form-control' id='name' name='name'  placeholder='نام مجوز / دسترسی را وارد کنید.' autocomplete='off' autofocus='true' required />
+          <label for='name' class='mandatory'>
+           نام مجوز (permission)
+          </label>
+        </div>
+
+        <div style='margin:1px; '>
+          <label for='cmbAllTables' class='mandatory'>موجودیت / جدول</label>
+          <select id='cmbAllTables' name='entity_type' style='position: relative;' data-farsiname='موجودیت / جدول' onchange='doAction(this.value);' required>
+            <option value=''>لطفا موجودیت / جدول را انتخاب کنید</option>
+            {{#each allTablesList}}
+              <option value='{{name}}'>{{name}} </option>
+            {{/each}}
+          </select>
+        </div>
+
+
+        <div style='margin:20px 1px 1px 1px; '>
+          <label for='cmbactionPermission' class='mandatory'>اکشن / عملیات</label>
+          <select id='cmbactionPermission' name='actionId' style='position: relative;' data-farsiname='اکشن / عملیات' onchange='doAction(this.value);' required>
+            <option value=''>لطفا اکشن / عملیات را انتخاب کنید</option>
+            {{#each actionListData}}
+              <option value='{{this.id}}'>{{this.title}} </option>
+            {{/each}}
+          </select>
+        </div>
+
+
+        <div class='form-floating mb-3'>
+          <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.' />
+          <label for='description'>
+            توضیحات
+          </label>
+        </div>
+
+        <div class='col-12 my-2 text-center'>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit'>
+            ثبت
+          </button>
+          <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='./index'>
+            انصراف
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script>
+  function doAction(val){
+    console.log('val = ',val);
+  }
+</script>
+<script src='/static/assets/js/formValidation.js'></script>
+
+
+
