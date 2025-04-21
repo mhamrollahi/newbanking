@@ -1,7 +1,7 @@
 $(document).ready(function () {
-  $('#bankBarnchListDataTable').DataTable({
+  $('#bankBranchListDataTable').DataTable({
     ajax: {
-      url: '/admin/bankBranch/api/getData',
+      url: '/baseInformation/bankBranch/api/getData',
       dataSrc: ''
     },
     columns: [
@@ -11,8 +11,10 @@ $(document).ready(function () {
           return meta.row + 1;
         }
       },
+      { data: 'branchName' },
+      { data: 'branchCode' },
+      { data: 'bank.title' },
       { data: 'cityName' },
-      { data: 'province.title' },
       { data: 'description' },
       { data: 'fa_createdAt' },
       { data: 'creator.fullName' },
@@ -42,6 +44,9 @@ $(document).ready(function () {
       { target: 3, className: 'text-center' },
       { target: 4, className: 'text-center' },
       { target: 5, className: 'text-center' },
+      { target: 6, className: 'text-center' },
+      { target: 7, className: 'text-center' },
+      { target: 8, className: 'text-center' },
     ],
     order: [[0, 'desc']], // مرتب‌سازی پیش‌فرض بر اساس ردیف به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی

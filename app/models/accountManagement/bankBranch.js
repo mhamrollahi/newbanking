@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
             msg: 'لطفا کد شعبه را وارد کنید.'
           },
           len: {
-            args: [2, 10],
+            args: [1, 10],
             msg: 'کد شعبه باید بین ۲ تا 10 حرف باشد.'
           }
         }
@@ -84,7 +84,6 @@ module.exports = (sequelize) => {
         }
       },
 
-
       description: {
         type: DataTypes.TEXT,
         validate: {
@@ -94,6 +93,7 @@ module.exports = (sequelize) => {
           }
         }
       }
+
     },
     {
       timestamps: true,

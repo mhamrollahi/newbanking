@@ -1,13 +1,16 @@
 const dateService = require('@services/dateService');
 const { models, sequelize } = require('@models/');
-const { PermissionModel, UserViewModel,CodingDataModel,CodeTableListModel } = models;
+const { BankBranchModel, UserViewModel, CodingDataModel, CodeTableListModel, CityModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 const coding = require('@constants/codingDataTables.js');
 
+const title = 'مدیریت اطلاعات پایه ';
+const subTitle = 'فهرست شعب بانک ';
+
 exports.getData = async (req, res, next) => {
   try {
-    const result = await PermissionModel.findAll({
+    const result = await BankBranchModel.findAll({
       include: [
         {
           model: UserViewModel,
@@ -15,9 +18,14 @@ exports.getData = async (req, res, next) => {
           attributes: ['username', 'fullName']
         },
         {
-          model:CodingDataModel,
-         as:'action',
-         attributes:['title']
+          model: CodingDataModel,
+          as: 'bank',
+          attributes: ['title']
+        },
+        {
+          model: CityModel,
+          as: 'city',
+          attributes: ['cityName']
         }
       ]
     });
@@ -31,10 +39,9 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-
-    res.adminRender('./admin/permission/index', {
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست مجوز‌های سیستم',
+    res.adminRender('./accManagement/bankbranch/index', {
+      title,
+      subTitle
     });
   } catch (error) {
     next(error);
@@ -43,26 +50,30 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const actionListData = await CodingDataModel.findAll({ 
-      attributes:['id','title'],
-      include: [{
-        model: CodeTableListModel,
-        where: {en_TableName: coding.CODING_Action_Permission}
-      }],
+    const banksListData = await CodingDataModel.findAll({
+      attributes: ['id', 'title'],
+      include: [
+        {
+          model: CodeTableListModel,
+          where: { en_TableName: coding.CODING_BANK }
+        }
+      ],
       raw: true,
       nest: true
-    })
-    
-    const allTablesList = await getAllTables()
+    });
 
-    console.log('allTablesList = ', allTablesList);
+    const cityListData = await CityModel.findAll({
+      attributes: ['id', 'cityName'],
 
-      
-    res.adminRender('./admin/permission/create', {
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست مجوز‌های سیستم',
-      actionListData,
-      allTablesList,
+      raw: true,
+      nest: true
+    });
+
+    res.adminRender('./accManagement/bankbranch/create', {
+      title,
+      subTitle,
+      banksListData,
+      cityListData
     });
   } catch (error) {
     next(error);
@@ -76,10 +87,13 @@ exports.store = async (req, res, next) => {
       userId = req.session?.user?.id ?? 0;
     }
 
-    const permissionData = {
-      name: req.body.name.toLowerCase(),
-      entity_type: req.body.entity_type,
-      actionId: req.body.actionId,
+    const bankBranchData = {
+      branchName: req.body.branchName,
+      branchCode: req.body.branchCode,
+      bankId: req.body.bankId,
+      cityId: req.body.cityId,
+      contactTel: req.body.contactTel,
+      address: req.body.address,
       description: req.body.description,
       creatorId: userId
     };
@@ -97,7 +111,7 @@ exports.store = async (req, res, next) => {
 
     //اعتبار سنجی فرم ورودی - End
 
-    const { id } = await PermissionModel.create(permissionData); 
+    const { id } = await BankBranchModel.create(bankBranchData);
 
     if (id) {
       req.flash('success', 'اطلاعات کاربر با موفقیت ثبت شد.');
@@ -110,10 +124,10 @@ exports.store = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
-    const permissionId = req.params.id;
+    const bankBranchId = req.params.id;
 
-    const permissionData = await PermissionModel.findOne({
-      where: { id: permissionId },
+    const bankBranchData = await BankBranchModel.findOne({
+      where: { id: bankBranchId },
       include: [
         {
           model: UserViewModel,
@@ -124,23 +138,33 @@ exports.edit = async (req, res, next) => {
           model: UserViewModel,
           as: 'updater',
           attributes: ['fullName']
+        },
+        {
+          model: CodingDataModel,
+          as: 'bank',
+          attributes: ['id','title']
+        },
+        {
+          model:CityModel,
+          as: 'city',
+          attributes: ['id','cityName']
         }
       ],
       raw: true,
-      nest: true,
+      nest: true
     });
 
-    if (permissionData) {
-      permissionData.fa_createdAt = dateService.toPersianDate(permissionData.createdAt);
-      permissionData.fa_updatedAt = dateService.toPersianDate(permissionData.updatedAt);
+    if (bankBranchData) {
+      bankBranchData.fa_createdAt = dateService.toPersianDate(bankBranchData.createdAt);
+      bankBranchData.fa_updatedAt = dateService.toPersianDate(bankBranchData.updatedAt);
     }
 
     // console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
 
-    res.adminRender('./admin/permission/edit', {
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست مجوز‌های سیستم',
-      permissionData,
+    res.adminRender('./accManagement/bankbranch/edit', {
+      title,
+      subTitle,
+      bankBranchData
     });
   } catch (error) {
     next(error);
@@ -149,7 +173,7 @@ exports.edit = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const permissionId = req.params.id;
+    const bankBranchId = req.params.id;
 
     const { error } = formValidation(req, 1);
     if (error) {
@@ -157,16 +181,21 @@ exports.update = async (req, res, next) => {
         'errors',
         error.details.map((err) => err.message)
       );
-      return res.redirect(`../edit/${permissionId}`);
+      return res.redirect(`../edit/${bankBranchId}`);
     }
 
-    const rowsAffected = await PermissionModel.update(
+    const rowsAffected = await BankBranchModel.update(
       {
-        name: req.body.name,
+        branchName: req.body.branchName,
+        branchCode: req.body.branchCode,
+        bankId: req.body.bankId,
+        cityId: req.body.cityId,
+        contactTel: req.body.contactTel,
+        address: req.body.address,
         description: req.body.description,
-        updaterId: req.session?.user?.id ?? 0,
+        updaterId: req.session?.user?.id ?? 0
       },
-      { where: { id: permissionId }, individualHooks: true }
+      { where: { id: bankBranchId }, individualHooks: true }
     );
 
     if (rowsAffected[0] > 0) {
@@ -176,18 +205,17 @@ exports.update = async (req, res, next) => {
 
     req.flash('errors', 'اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید...');
 
-    return res.redirect(`../edit/${permissionId}`);
+    return res.redirect(`../edit/${bankBranchId}`);
   } catch (error) {
-
     next(error);
   }
 };
 
 exports.delete = async (req, res, next) => {
   try {
-    const permissionId = req.params.id;
-    const rowsAffected = await PermissionModel.destroy({
-      where: { id: permissionId }
+    const bankBranchId = req.params.id;
+    const rowsAffected = await BankBranchModel.destroy({
+      where: { id: bankBranchId }
     });
 
     if (rowsAffected > 0) {
@@ -195,38 +223,45 @@ exports.delete = async (req, res, next) => {
       return res.redirect('../index');
     }
   } catch (error) {
-
     next(error);
   }
 };
 
 const formValidation = (req) => {
-  const permissionData = {
-    name: req.body.name
+  const bankBranchData = {
+    branchName: req.body.branchName,
+    branchCode: req.body.branchCode,
+    bankId: req.body.bankId,
+    cityId: req.body.cityId
   };
 
   const schema = Joi.object({
-    name: Joi.string()
-      .min(2)
-      .max(200)
-      .required()
-      .label('نام مجوز')
-      // .pattern(new RegExp("^[\\p{L}\\s\\-\\u200C\\u200D\\(\\)ـ]+$", "u")) // فقط حروف فارسی و انگلیسی (و فاصله مجاز)
-      .messages({
-        'string.empty': errMessages['string.empty'],
-        'string.min': errMessages['string.min'],
-        'string.max': errMessages['string.max'],
-        'string.required': errMessages['any.required'],
-        // 'string.pattern.base': '{#label} باید فقط شامل حروف فارسی یا انگلیسی باشد'
-      }),
+    branchName: Joi.string().min(2).max(200).required().label('نام شعب').messages({
+      'string.empty': errMessages['string.empty'],
+      'string.min': errMessages['string.min'],
+      'string.max': errMessages['string.max'],
+      'string.required': errMessages['any.required']
+    }),
 
+    branchCode: Joi.string().min(1).max(10).required().label('نام شعب').messages({
+      'string.empty': errMessages['string.empty'],
+      'string.min': errMessages['string.min'],
+      'string.max': errMessages['string.max'],
+      'string.required': errMessages['any.required']
+    }),
 
+    bankId: Joi.number().integer().required().label('نام بانک').messages({
+      'number.base': '{#label} باید یک عدد باشد',
+      'number.integer': '{#label} باید یک عدد صحیح باشد',
+      'any.required': errMessages['any.required']
+    }),
+
+    cityId: Joi.number().integer().required().label('نام شهر').messages({
+      'number.base': '{#label} باید یک عدد باشد',
+      'number.integer': '{#label} باید یک عدد صحیح باشد',
+      'any.required': errMessages['any.required']
+    })
   });
 
-  return schema.validate(permissionData, { abortEarly: false });
+  return schema.validate(bankBranchData, { abortEarly: false });
 };
-
-const getAllTables = async () => {
-  const [tables] = await sequelize.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();')
-  return tables.map((t) => ({ name: t.TABLE_NAME}));
-}

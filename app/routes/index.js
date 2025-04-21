@@ -8,6 +8,8 @@ const roleRouter = require('./admin/role')
 const permissionRouter = require('./admin/permission')
 const rolePermissionRouter = require('./admin/rolePermission')
 const userRoleRouter = require('./admin/userRole')
+const cityRouter = require('./accountManagement/city')
+const bankBranchRouter = require('./accountManagement/bankBranch')
 
 const errorRoute = require('./errors/index')
 
@@ -29,6 +31,8 @@ module.exports = (app) => {
   app.use('/admin/permission',[authMiddleware],permissionRouter)
   app.use('/admin/rolePermission',[authMiddleware],rolePermissionRouter)
   app.use('/admin/userRole',[authMiddleware],userRoleRouter)
+  app.use('/baseInformation/city',[authMiddleware],cityRouter)
+  app.use('/baseInformation/bankBranch',[authMiddleware],bankBranchRouter)
 
   app.use('/errors',errorRoute)
   app.use('/auth',authRouter)

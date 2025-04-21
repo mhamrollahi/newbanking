@@ -5,6 +5,9 @@ const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 const coding = require('@constants/codingDataTables.js');
 
+const title = 'مدیریت اطلاعات پایه '
+const subTitle = 'فهرست شهرها '
+
 exports.getData = async (req, res, next) => {
   try {
     const result = await CityModel.findAll({
@@ -21,7 +24,7 @@ exports.getData = async (req, res, next) => {
         }
       ]
     });
-    // console.log(result);
+     console.log(result);
 
     res.json(result);
   } catch (error) {
@@ -32,9 +35,9 @@ exports.getData = async (req, res, next) => {
 exports.index = async (req, res, next) => {
   try {
 
-    res.adminRender('./admin/permission/index', {
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست مجوز‌های سیستم',
+    res.adminRender('./accManagement/city/index', {
+      title,
+      subTitle,
     });
   } catch (error) {
     next(error);
@@ -43,7 +46,7 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const actionListData = await CodingDataModel.findAll({ 
+    const provinceListData = await CodingDataModel.findAll({ 
       attributes:['id','title'],
       include: [{
         model: CodeTableListModel,
@@ -53,16 +56,10 @@ exports.create = async (req, res, next) => {
       nest: true
     })
     
-    const allTablesList = await getAllTables()
-
-    // console.log('allTablesList = ', allTablesList);
-
-      
-    res.adminRender('./admin/permission/create', {
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست مجوز‌های سیستم',
-      actionListData,
-      allTablesList,
+    res.adminRender('./accManagement/city/create', {
+      title,
+      subTitle,
+      provinceListData,
     });
   } catch (error) {
     next(error);
@@ -76,10 +73,9 @@ exports.store = async (req, res, next) => {
       userId = req.session?.user?.id ?? 0;
     }
 
-    const permissionData = {
-      name: req.body.name.toLowerCase(),
-      entity_type: req.body.entity_type,
-      actionId: req.body.actionId,
+    const cityData = {
+      cityName: req.body.cityName,
+      provinceId: req.body.provinceId,
       description: req.body.description,
       creatorId: userId
     };
@@ -97,10 +93,10 @@ exports.store = async (req, res, next) => {
 
     //اعتبار سنجی فرم ورودی - End
 
-    const { id } = await CityModel.create(permissionData); 
+    const { id } = await CityModel.create(cityData); 
 
     if (id) {
-      req.flash('success', 'اطلاعات کاربر با موفقیت ثبت شد.');
+      req.flash('success', 'اطلاعات شهر با موفقیت ثبت شد.');
       return res.redirect('./index');
     }
   } catch (error) {
@@ -110,10 +106,10 @@ exports.store = async (req, res, next) => {
 
 exports.edit = async (req, res, next) => {
   try {
-    const permissionId = req.params.id;
+    const cityId = req.params.id;
 
-    const permissionData = await CityModel.findOne({
-      where: { id: permissionId },
+    const cityData = await CityModel.findOne({
+      where: { id: cityId },
       include: [
         {
           model: UserViewModel,
@@ -124,23 +120,28 @@ exports.edit = async (req, res, next) => {
           model: UserViewModel,
           as: 'updater',
           attributes: ['fullName']
+        },
+        {
+          model:CodingDataModel,
+          as: 'province',
+          attributes: ['title'],
         }
       ],
       raw: true,
       nest: true,
     });
 
-    if (permissionData) {
-      permissionData.fa_createdAt = dateService.toPersianDate(permissionData.createdAt);
-      permissionData.fa_updatedAt = dateService.toPersianDate(permissionData.updatedAt);
+    if (cityData) {
+      cityData.fa_createdAt = dateService.toPersianDate(cityData.createdAt);
+      cityData.fa_updatedAt = dateService.toPersianDate(cityData.updatedAt);
     }
 
     // console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
 
-    res.adminRender('./admin/permission/edit', {
-      title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست مجوز‌های سیستم',
-      permissionData,
+    res.adminRender('./accManagement/city/edit', {
+      title,
+      subTitle,
+      cityData,
     });
   } catch (error) {
     next(error);
@@ -149,24 +150,24 @@ exports.edit = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const permissionId = req.params.id;
+    const cityId = req.params.id;
 
-    const { error } = formValidation(req, 1);
+    const { error } = formValidation(req);
     if (error) {
       req.flash(
         'errors',
         error.details.map((err) => err.message)
       );
-      return res.redirect(`../edit/${permissionId}`);
+      return res.redirect(`../edit/${cityId}`);
     }
 
     const rowsAffected = await CityModel.update(
       {
-        name: req.body.name,
+        cityName: req.body.cityName,
         description: req.body.description,
         updaterId: req.session?.user?.id ?? 0,
       },
-      { where: { id: permissionId }, individualHooks: true }
+      { where: { id: cityId }, individualHooks: true }
     );
 
     if (rowsAffected[0] > 0) {
@@ -176,7 +177,7 @@ exports.update = async (req, res, next) => {
 
     req.flash('errors', 'اصلاح اطلاعات با مشکل مواجه شد . لطفا مجددا سعی کنید...');
 
-    return res.redirect(`../edit/${permissionId}`);
+    return res.redirect(`../edit/${cityId}`);
   } catch (error) {
 
     next(error);
@@ -185,9 +186,9 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
-    const permissionId = req.params.id;
+    const cityId = req.params.id;
     const rowsAffected = await CityModel.destroy({
-      where: { id: permissionId }
+      where: { id: cityId }
     });
 
     if (rowsAffected > 0) {
@@ -201,32 +202,25 @@ exports.delete = async (req, res, next) => {
 };
 
 const formValidation = (req) => {
-  const permissionData = {
-    name: req.body.name
+  const cityData = {
+    cityName: req.body.cityName
   };
 
   const schema = Joi.object({
-    name: Joi.string()
+    cityName: Joi.string()
       .min(2)
-      .max(200)
+      .max(50)
       .required()
-      .label('نام مجوز')
-      // .pattern(new RegExp("^[\\p{L}\\s\\-\\u200C\\u200D\\(\\)ـ]+$", "u")) // فقط حروف فارسی و انگلیسی (و فاصله مجاز)
+      .label('نام شهر')
       .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
         'string.max': errMessages['string.max'],
         'string.required': errMessages['any.required'],
-        // 'string.pattern.base': '{#label} باید فقط شامل حروف فارسی یا انگلیسی باشد'
       }),
 
 
   });
 
-  return schema.validate(permissionData, { abortEarly: false });
+  return schema.validate(cityData, { abortEarly: false });
 };
-
-const getAllTables = async () => {
-  const [tables] = await sequelize.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();')
-  return tables.map((t) => ({ name: t.TABLE_NAME}));
-}

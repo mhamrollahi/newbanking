@@ -1,7 +1,7 @@
 $(document).ready(function () {
   $('#cityListDataTable').DataTable({
     ajax: {
-      url: '/admin/city/api/getData',
+      url: '/baseInformation/city/api/getData',
       dataSrc: ''
     },
     columns: [
