@@ -8,16 +8,16 @@ const sourceDB = new Sequelize('NewBanking', 'root', '904957', {
   dialect: 'mysql'
 });
 
-// const tablesToSync = ['users','people','permissions','roles','rolepermissions','userroles'];
-const tablesToSync = async () => {
-  const [tables] = await sourceDB.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();')
-  return tables.map((t) => ({ name: t.TABLE_NAME}));
-}
+const tablesToSync = ['users','people','permissions','roles','rolepermissions','userroles','codetablelists','codingdata'];
+// const tablesToSync = async () => {
+//   const [tables] = await sourceDB.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();')
+//   return tables.map((t) => ({ name: t.TABLE_NAME}));
+// }
 
 async function generateSeeders() {
   for (const table of tablesToSync) {
   
-    const seedersDir = path.join(__dirname, 'seeders');
+    const seedersDir = path.join(__dirname, 'app/seeders/initial');
     if (!fs.existsSync(seedersDir)) {
       fs.mkdirSync(seedersDir, { recursive: true });
     }
@@ -40,7 +40,7 @@ async function generateSeeders() {
       }
     };`;
 
-    const filename = path.join(__dirname, 'seeders', `${Date.now()}-${table}-seeder.js`);
+    const filename = path.join(__dirname, 'app/seeders/initial', `${Date.now()}-${table}-seeder.js`);
 
     console.log('seederContent  = ', seederContent);
     console.log('fileName = ', filename);
