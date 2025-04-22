@@ -249,7 +249,7 @@ exports.delete = async (req, res, next) => {
     const rolePermissionId = req.params.id;
     
     if(req.session.permissions.some(item => item.roleName.toLowerCase() === 'admin')){
-      req.flash('errors', 'امکان حذف اطلاعات برای کاربر ادمین وجود ندارد .');
+      req.flash('success', 'امکان حذف اطلاعات برای کاربر ادمین وجود ندارد .');
       return res.redirect('../index');
     }
 
