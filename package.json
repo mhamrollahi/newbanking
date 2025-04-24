@@ -4,15 +4,17 @@
   "description": "A program for executing all banking provesses of the Treasury General Department, including account opening, account blocking, and signature changes for all state-owned banks in Iran",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test": "jest"
   },
   "author": "Mohammad Hassan Amrollahi",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@types/jest": "^29.5.14",
     "eslint": "^9.9.0",
-    "globals": "^15.9.0"
+    "globals": "^15.9.0",
+    "jest": "^29.7.0"
   },
   "_moduleAliases": {
     "@root": ".",
