@@ -35,7 +35,21 @@ module.exports = (sequelize) => {
           },
           len: {
             args: [1, 10],
-            msg: 'کد شعبه باید بین ۲ تا 10 حرف باشد.'
+            msg: 'کد شعبه باید بین 1 تا 10 عدد باشد.'
+          },
+          isNumericOrPersian(value) {
+            // تبدیل اعداد فارسی به انگلیسی
+            const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+            const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            let convertedValue = value;
+            for (let i = 0; i < 10; i++) {
+              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+            }
+
+            // بررسی اینکه آیا همه کاراکترها عدد هستند
+            if (!/^\d+$/.test(convertedValue)) {
+              throw new Error('کد شعبه شعبه شعبه باید فقط شامل اعداد باشد 111.');
+            }
           }
         }
       },
@@ -68,6 +82,21 @@ module.exports = (sequelize) => {
           len: {
             args: [0, 20],
             msg: 'شماره تلفن باید بین 0 تا 20 حرف باشد.'
+          },
+          isNumericOrPersian(value) {
+            if (!value || value.trim() === '') return; // اگر مقدار خالی باشد، اجازه می‌دهیم
+            // تبدیل اعداد فارسی به انگلیسی
+            const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+            const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            let convertedValue = value;
+            for (let i = 0; i < 10; i++) {
+              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+            }
+
+            // بررسی اینکه آیا همه کاراکترها عدد هستند
+            if (!/^\d+$/.test(convertedValue)) {
+              throw new Error('شماره تلفن باید فقط شامل اعداد باشد.');
+            }
           }
         }
       },
@@ -91,7 +120,6 @@ module.exports = (sequelize) => {
           }
         }
       }
-
     },
     {
       timestamps: true,
@@ -109,7 +137,7 @@ module.exports = (sequelize) => {
           unique: true,
           fields: ['branchName', 'bankId'],
           msg: 'این نام شعبه برای این بانک تکراری می‌باشد.... '
-        },
+        }
       ],
 
       validate: {}
@@ -118,10 +146,7 @@ module.exports = (sequelize) => {
 
   BankBranch.sequelize = sequelize;
 
- 
-
   BankBranch.associate = (models) => {
-
     BankBranch.belongsTo(models.CodingDataModel, { foreignKey: 'bankId', as: 'bank' });
     BankBranch.belongsTo(models.CityModel, { foreignKey: 'cityId', as: 'city' });
 

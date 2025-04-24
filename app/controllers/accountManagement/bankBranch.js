@@ -257,14 +257,14 @@ const formValidation = (req) => {
   };
 
   const schema = Joi.object({
-    branchName: Joi.string().min(2).max(200).required().label('نام شعب').messages({
+    branchName: Joi.string().min(2).max(200).required().label('نام شعبه').messages({
       'string.empty': errMessages['string.empty'],
       'string.min': errMessages['string.min'],
       'string.max': errMessages['string.max'],
       'string.required': errMessages['any.required']
     }),
 
-    branchCode: Joi.string().min(1).max(10).required().label('نام شعب').messages({
+    branchCode: Joi.string().min(1).max(10).required().label('کد شعبه ').messages({
       'string.empty': errMessages['string.empty'],
       'string.min': errMessages['string.min'],
       'string.max': errMessages['string.max'],

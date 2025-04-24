@@ -46,9 +46,6 @@ exports.index = async (req, res, next) => {
       nest: true
     });
 
-    const success = req.flash('success');
-    const removeSuccess = req.flash('removeSuccess');
-
     let fa_TableName = '';
 
     if (codingDataList.length > 0) {
