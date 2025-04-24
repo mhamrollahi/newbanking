@@ -55,7 +55,7 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'rolepermissions',
+          model: 'cities',
           key: 'id'
         },
         onUpdate: 'RESTRICT',
@@ -64,22 +64,20 @@ module.exports = (sequelize) => {
 
       contactTel: {
         type: DataTypes.STRING(20),
-        allowNull: true,
         validate: {
           len: {
-            args: [10, 20],
-            msg: 'شماره تلفن باید بین 10 تا 20 حرف باشد.'
+            args: [0, 20],
+            msg: 'شماره تلفن باید بین 0 تا 20 حرف باشد.'
           }
         }
       },
 
       address: {
         type: DataTypes.STRING(200),
-        allowNull: true,
         validate: {
           len: {
-            args: [10, 200],
-            msg: 'آدرس شعبه بانک باید بین 10 تا 200 حرف باشد.'
+            args: [0, 200],
+            msg: 'آدرس شعبه بانک باید بین 0 تا 200 حرف باشد.'
           }
         }
       },
@@ -123,6 +121,9 @@ module.exports = (sequelize) => {
  
 
   BankBranch.associate = (models) => {
+
+    BankBranch.belongsTo(models.CodingDataModel, { foreignKey: 'bankId', as: 'bank' });
+    BankBranch.belongsTo(models.CityModel, { foreignKey: 'cityId', as: 'city' });
 
     BankBranch.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     BankBranch.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });

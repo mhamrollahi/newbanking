@@ -17,7 +17,7 @@
 
   <div class='row login-form'>
     <div class='col-12 col-sm-12 col-md-12'>
-      <form method='POST' name='frmPermission' id="frmPermission" action='../update/{{permissionData.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
+      <form method='POST' name='frmBankBranch' id="frmBankBranch" action='../update/{{bankBranchData.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
         {{#if hasError}}
           <div class='alert alert-danger'>
             {{#each errors}}
@@ -27,42 +27,67 @@
         {{/if}}
 
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control'  name='name' value='{{permissionData.name}}' />
-          <label for='name' class='mandatory'>نام مجوز</label>
+          <input type='text' class='form-control'  name='branchName' value='{{bankBranchData.branchName}}' required />
+          <label for='branchName' class='mandatory'>نام شعبه بانک</label>
         </div>
 
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control'  name='entity_type' value='{{permissionData.entity_type}}' />
-          <label for='name' class='mandatory'>نام جدول / موجودیت</label>
+          <input type='text' class='form-control'  name='branchCode' value='{{bankBranchData.branchCode}}' required />
+          <label for='branchCode' class='mandatory'> کد شعبه بانک </label>
+        </div>
+
+         <div style='margin:20px 1px 1px 1px; '>
+          <label for='bankId' class='mandatory'>نام بانک</label>
+          <select id='cmbBankList' name='bankId' style='position: relative;' data-farsiname='نام بانک' required>
+            <option value=''>لطفا نام بانک را انتخاب کنید</option>
+            {{#each banksListData}}
+              <option value='{{this.id}}' {{isSelected id ../bankBranchData.bank.id}}>{{title}} </option>
+            {{/each}}
+          </select>
+        </div>
+
+         <div style='margin:20px 1px 1px 1px; '>
+          <label for='cityId' class='mandatory'>نام شهر</label>
+          <select id='cmbCityList' name='cityId' style='position: relative;' data-farsiname='نام شهر' required>
+            <option value=''>لطفا نام شهر را انتخاب کنید</option>
+            {{#each cityListData}}
+              <option value='{{this.id}}' {{isSelected id ../bankBranchData.city.id}}>{{this.cityName}} </option>
+            {{/each}}
+          </select>
+        </div>
+
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' name='contactTel' value='{{bankBranchData.contactTel}}' />
+          <label for='contactTel'>شماره تماس</label>
         </div>
 
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control'  name='action' value='{{permissionData.action}}' />
-          <label for='name' class='mandatory'>اکشن مجوز</label>
+          <input type='text' class='form-control' name='address' value='{{bankBranchData.address}}' />
+          <label for='address'>آدرس</label>
         </div>
 
-
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control' name='description' value='{{permissionData.description}}' />
+          <input type='text' class='form-control' name='description' value='{{bankBranchData.description}}' />
           <label for='description'>توضیحات</label>
         </div>
 
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control' readonly name='creator' value='{{permissionData.creator.fullName}}' />
+          <input type='text' class='form-control' readonly name='creator' value='{{bankBranchData.creator.fullName}}' />
           <label for='creator' class='mandatory'>ایجاد کننده</label>
         </div>
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control' readonly name='created_at' value='{{permissionData.fa_createdAt}}' />
+          <input type='text' class='form-control' readonly name='created_at' value='{{bankBranchData.fa_createdAt}}' />
           <label for='created_at' class='mandatory'>تاریخ ایجاد</label>
         </div>
 
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control' readonly name='updater' value='{{permissionData.updater.fullName}}' />
+          <input type='text' class='form-control' readonly name='updater' value='{{bankBranchData.updater.fullName}}' />
           <label for='updater' class='mandatory'>اصلاح کننده</label>
         </div>
 
         <div class='form-floating mb-1'>
-          <input type='text' class='form-control' readonly name='updated_at' value='{{permissionData.fa_updatedAt}}' />
+          <input type='text' class='form-control' readonly name='updated_at' value='{{bankBranchData.fa_updatedAt}}' />
           <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
         </div>
 

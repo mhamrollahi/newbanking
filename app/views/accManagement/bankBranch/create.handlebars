@@ -33,22 +33,22 @@
         {{/if}}
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='branchName' name='branchName'  placeholder='نام شعبه بانک را وارد کنید.' autocomplete='off' autofocus='true' required />
+          <input type='text' class='form-control' id='branchName' name='branchName' placeholder='نام شعبه بانک را وارد کنید.' autocomplete='off' autofocus='true' required />
           <label for='branchName' class='mandatory'>
-           نام شعبه بانک
+            نام شعبه بانک
           </label>
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='branchCode' name='branchCode'  placeholder='کد شعبه را وارد کنید.' autocomplete='off' autofocus='true' required />
+          <input type='text' class='form-control' id='branchCode' name='branchCode' placeholder='کد شعبه را وارد کنید.' autocomplete='off' autofocus='true' required />
           <label for='branchCode' class='mandatory'>
-           کد شعبه
+            کد شعبه
           </label>
         </div>
 
         <div style='margin:1px; '>
-          <label for='cmbbanks' class='mandatory'>نام بانک</label>
-          <select id='cmbbanks' name='bankId' style='position: relative;' data-farsiname='بانک' onchange='doAction(this.value);' required>
+          <label for='bankId' class='mandatory'>نام بانک</label>
+          <select id='cmbBankList' name='bankId' style='position: relative;' data-farsiname='بانک' required>
             <option value=''>لطفا نام بانک را انتخاب کنید</option>
             {{#each banksListData}}
               <option value='{{this.id}}'>{{this.title}} </option>
@@ -56,17 +56,15 @@
           </select>
         </div>
 
-
         <div style='margin:20px 1px 1px 1px; '>
-          <label for='cmbcity' class='mandatory'>نام شهر</label>
-          <select id='cmbcity' name='cityId' style='position: relative;' data-farsiname='شهر' onchange='doAction(this.value);' required>
+          <label for='cityId' class='mandatory'>نام شهر</label>
+          <select id='cmbCityList' name='cityId' style='position: relative;' data-farsiname='شهر' required>
             <option value=''>لطفا نام شهر را انتخاب کنید</option>
             {{#each cityListData}}
               <option value='{{this.id}}'>{{this.cityName}} </option>
             {{/each}}
           </select>
         </div>
-
 
         <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='contactTel' name='contactTel' autocomplete='off' placeholder='شماره تماس.' />
@@ -103,11 +101,6 @@
 </main>
 
 <script>
-  function doAction(val){
-    console.log('val = ',val);
-  }
+  function doAction(val){ console.log('val = ',val); }
 </script>
-<script src='/static/assets/js/formValidation.js'></script>
-
-
-
+<script src='/static/assets/js/formValidation.js'></script

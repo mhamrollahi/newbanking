@@ -1,5 +1,5 @@
 const dateService = require('@services/dateService');
-const { models, sequelize } = require('@models/');
+const { models, } = require('@models/');
 const { BankBranchModel, UserViewModel, CodingDataModel, CodeTableListModel, CityModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
@@ -154,6 +154,25 @@ exports.edit = async (req, res, next) => {
       nest: true
     });
 
+    const banksListData = await CodingDataModel.findAll({
+      attributes: ['id', 'title'],
+      include: [
+        {
+          model: CodeTableListModel,
+          where: { en_TableName: coding.CODING_BANK }
+        }
+      ],
+      raw: true,
+      nest: true
+    });
+
+    const cityListData = await CityModel.findAll({
+      attributes: ['id', 'cityName'],
+
+      raw: true,
+      nest: true
+    });
+
     if (bankBranchData) {
       bankBranchData.fa_createdAt = dateService.toPersianDate(bankBranchData.createdAt);
       bankBranchData.fa_updatedAt = dateService.toPersianDate(bankBranchData.updatedAt);
@@ -164,7 +183,9 @@ exports.edit = async (req, res, next) => {
     res.adminRender('./accManagement/bankbranch/edit', {
       title,
       subTitle,
-      bankBranchData
+      bankBranchData,
+      banksListData,
+      cityListData,
     });
   } catch (error) {
     next(error);

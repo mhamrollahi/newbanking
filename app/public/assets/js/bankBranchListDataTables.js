@@ -14,7 +14,7 @@ $(document).ready(function () {
       { data: 'branchName' },
       { data: 'branchCode' },
       { data: 'bank.title' },
-      { data: 'cityName' },
+      { data: 'city.cityName' },
       { data: 'description' },
       { data: 'fa_createdAt' },
       { data: 'creator.fullName' },
