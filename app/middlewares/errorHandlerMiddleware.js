@@ -25,7 +25,10 @@ module.exports = (app) => {
     // خطای تکراری بودن داده
     if (error.name === 'SequelizeUniqueConstraintError') {
       const uniqueError = error.errors[0];
-      const errorKey = `${uniqueError.instance.constructor.name}.${uniqueError.path}`;
+
+      // اگر instance نال باشه، از model name استفاده می‌کنیم
+      // const modelName = uniqueError?.instance?.constructor?.name || uniqueError?.model?.name || 'Unknown';
+      const errorKey = `${uniqueError?.path}`;
 
       const myError = error.message === 'Validation error' ? 'این اطلاعات قبلا ثبت شده است' : error.message;
       const errorMessage = uniqueErrorMessages[errorKey] || myError;

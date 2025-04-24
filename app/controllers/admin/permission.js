@@ -16,8 +16,8 @@ exports.getData = async (req, res, next) => {
         },
         {
           model:CodingDataModel,
-         as:'action',
-         attributes:['title']
+          as:'action',
+          attributes:['title']
         }
       ]
     });

@@ -23,10 +23,10 @@ $(document).ready(function () {
           return `
           <div class="row-table text-center">
             <div class= "11table-action-buttons"> 
-            <a class="edit button button-box button-xs button-info" href="/admin/city/edit/${row.id}">
+            <a class="edit button button-box button-xs button-info" href="/baseInformation/city/edit/${row.id}">
               <i class="zmdi zmdi-edit"></i>
             </a>
-            <a class="delete button button-box button-xs button-danger" href="/admin/city/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
+            <a class="delete button button-box button-xs button-danger" href="/baseInformation/city/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
               <i class="zmdi zmdi-delete"></i>
             </a>
             </div>

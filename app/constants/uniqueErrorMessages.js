@@ -2,6 +2,7 @@ module.exports = {
   // خطاهای جدول User
   'User.ix_Users_PersonId': 'برای این نام و نام‌خانوادگی نام کاربری قبلاً ثبت شده است',
   'User.Users_username_unique': 'این نام کاربری (کد ملی) قبلاً ثبت شده است',
+  'ix_cityName_provinceid': 'این نام شهر در این استان قبلاً ثبت شده است',
 
   // خطاهای جدول Person
   'Person.nationalCode': 'این کد ملی قبلاً ثبت شده است',

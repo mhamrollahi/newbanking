@@ -28,7 +28,8 @@ module.exports = (sequelize) => {
         allowNull: false,
         references: {
           model: 'codingdata',
-          key: 'id'
+          key: 'id',
+          
         },
         onUpdate: 'RESTRICT',
         onDelete: 'RESTRICT'
@@ -65,6 +66,8 @@ module.exports = (sequelize) => {
   City.sequelize = sequelize;
 
   City.associate = (models) => {
+    City.belongsTo(models.CodingDataModel, { foreignKey: 'provinceId', as: 'province' });
+    
     City.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     City.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
   };

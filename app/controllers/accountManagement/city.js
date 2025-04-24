@@ -1,12 +1,12 @@
-const dateService = require('@services/dateService');
-const { models, sequelize } = require('@models/');
-const { CityModel, UserViewModel,CodingDataModel,CodeTableListModel } = models;
+ const dateService = require('@services/dateService');
+const { models } = require('@models/');
+const { CityModel, UserViewModel, CodingDataModel, CodeTableListModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 const coding = require('@constants/codingDataTables.js');
 
-const title = 'مدیریت اطلاعات پایه '
-const subTitle = 'فهرست شهرها '
+const title = 'مدیریت اطلاعات پایه ';
+const subTitle = 'فهرست شهرها ';
 
 exports.getData = async (req, res, next) => {
   try {
@@ -18,13 +18,13 @@ exports.getData = async (req, res, next) => {
           attributes: ['username', 'fullName']
         },
         {
-          model:CodingDataModel,
-          as:'province',
-          attributes:['title']
+          model: CodingDataModel,
+          as: 'province',
+          attributes: ['title']
         }
       ]
     });
-     console.log(result);
+    // console.log(result);
 
     res.json(result);
   } catch (error) {
@@ -34,10 +34,9 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-
     res.adminRender('./accManagement/city/index', {
       title,
-      subTitle,
+      subTitle
     });
   } catch (error) {
     next(error);
@@ -46,20 +45,22 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const provinceListData = await CodingDataModel.findAll({ 
-      attributes:['id','title'],
-      include: [{
-        model: CodeTableListModel,
-        where: {en_TableName: coding.CODING_PROVINCE}
-      }],
+    const provinceListData = await CodingDataModel.findAll({
+      attributes: ['id', 'title'],
+      include: [
+        {
+          model: CodeTableListModel,
+          where: { en_TableName: coding.CODING_PROVINCE }
+        }
+      ],
       raw: true,
       nest: true
-    })
-    
+    });
+
     res.adminRender('./accManagement/city/create', {
       title,
       subTitle,
-      provinceListData,
+      provinceListData
     });
   } catch (error) {
     next(error);
@@ -93,7 +94,7 @@ exports.store = async (req, res, next) => {
 
     //اعتبار سنجی فرم ورودی - End
 
-    const { id } = await CityModel.create(cityData); 
+    const { id } = await CityModel.create(cityData);
 
     if (id) {
       req.flash('success', 'اطلاعات شهر با موفقیت ثبت شد.');
@@ -122,13 +123,26 @@ exports.edit = async (req, res, next) => {
           attributes: ['fullName']
         },
         {
-          model:CodingDataModel,
+          model: CodingDataModel,
           as: 'province',
-          attributes: ['title'],
+          attributes: ['id', 'title']
         }
       ],
       raw: true,
-      nest: true,
+      nest: true
+    });
+
+    // Get all provinces for dropdown
+    const provinceListData = await CodingDataModel.findAll({
+      attributes: ['id', 'title'],
+      include: [
+        {
+          model: CodeTableListModel,
+          where: { en_TableName: coding.CODING_PROVINCE }
+        }
+      ],
+      raw: true,
+      nest: true
     });
 
     if (cityData) {
@@ -136,12 +150,11 @@ exports.edit = async (req, res, next) => {
       cityData.fa_updatedAt = dateService.toPersianDate(cityData.updatedAt);
     }
 
-    // console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
-
     res.adminRender('./accManagement/city/edit', {
       title,
       subTitle,
       cityData,
+      provinceListData
     });
   } catch (error) {
     next(error);
@@ -164,8 +177,10 @@ exports.update = async (req, res, next) => {
     const rowsAffected = await CityModel.update(
       {
         cityName: req.body.cityName,
+        provinceId: req.body.provinceId,
         description: req.body.description,
-        updaterId: req.session?.user?.id ?? 0,
+        updated_at: new Date().toLocaleDateString('en-US'),
+        updaterId: req.session?.user?.id ?? 0
       },
       { where: { id: cityId }, individualHooks: true }
     );
@@ -179,7 +194,6 @@ exports.update = async (req, res, next) => {
 
     return res.redirect(`../edit/${cityId}`);
   } catch (error) {
-
     next(error);
   }
 };
@@ -196,7 +210,6 @@ exports.delete = async (req, res, next) => {
       return res.redirect('../index');
     }
   } catch (error) {
-
     next(error);
   }
 };
@@ -207,19 +220,12 @@ const formValidation = (req) => {
   };
 
   const schema = Joi.object({
-    cityName: Joi.string()
-      .min(2)
-      .max(50)
-      .required()
-      .label('نام شهر')
-      .messages({
-        'string.empty': errMessages['string.empty'],
-        'string.min': errMessages['string.min'],
-        'string.max': errMessages['string.max'],
-        'string.required': errMessages['any.required'],
-      }),
-
-
+    cityName: Joi.string().min(2).max(50).required().label('نام شهر').messages({
+      'string.empty': errMessages['string.empty'],
+      'string.min': errMessages['string.min'],
+      'string.max': errMessages['string.max'],
+      'string.required': errMessages['any.required']
+    })
   });
 
   return schema.validate(cityData, { abortEarly: false });

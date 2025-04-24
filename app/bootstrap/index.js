@@ -9,6 +9,7 @@ const flash = require('connect-flash');
 // const { sequelize } = require('@models/index.js');
 const limiter = require('@security/rateLimiter.js');
 const menuRoute = require('@routes/menu.js');
+const handlebarsHelpers = require('../helpers/handlebarsHelper');
 
 // const {connect} = require('../configs/dbConfig')
 
@@ -61,33 +62,31 @@ module.exports = (app) => {
       layoutsDir: path.join(__dirname, '../views/layouts'),
       partialsDir: path.join(__dirname, '../views/partials'),
       helpers: {
-
+        ...handlebarsHelpers,
         hasPermissionName: function (array, value) {
-          if(!array) return false;
+          if (!array) return false;
 
           //console.log("in hasPermissionName : 🔍 roleName : ", array.length==0 ? 'empty' : array[0].roleName);
           // console.log("in hasPermissionName : 🔎 User Permissions: value ", value);
-          if(array.some(item => item.roleName === 'admin')) return true;
+          if (array.some((item) => item.roleName === 'admin')) return true;
 
-          return array.some(item => item.permissionName.toLowerCase() === value.toLowerCase())
+          return array.some((item) => item.permissionName.toLowerCase() === value.toLowerCase());
         },
-        hasPermissionAction: function (permissionList,entityType,action) {
-          if(!permissionList) return false;
+        hasPermissionAction: function (permissionList, entityType, action) {
+          if (!permissionList) return false;
 
           //console.log("in hasPermissionAction : 🔍 roleName : ", permissionList[0].roleName);
-          
-          if(permissionList.some(item => item.roleName === 'admin')) return true
-          
-          return permissionList.some(permission=>
-            permission.permissionEntity_type.toLowerCase() === entityType.toLowerCase() && 
-            permission.actionName.toLowerCase() === action.toLowerCase())
-        },
+
+          if (permissionList.some((item) => item.roleName === 'admin')) return true;
+
+          return permissionList.some((permission) => permission.permissionEntity_type.toLowerCase() === entityType.toLowerCase() && permission.actionName.toLowerCase() === action.toLowerCase());
+        }
       }
     })
   );
 
   const favicon = require('serve-favicon');
   app.use(favicon(path.join(__dirname, '../public/assets/images/favicon.ico')));
-  
+
   app.use('/static', express.static(path.join(__dirname, '../public')));
 };

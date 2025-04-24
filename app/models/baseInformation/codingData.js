@@ -213,7 +213,6 @@ module.exports = (sequelize) => {
       }
     });
 
-    CodingData.hasMany(models.PermissionModel, { foreignKey: 'actionId' });
 
     CodingData.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     CodingData.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
