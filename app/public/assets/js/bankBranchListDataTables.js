@@ -1,7 +1,7 @@
 $(document).ready(function () {
   $('#bankBranchListDataTable').DataTable({
     ajax: {
-      url: '/baseInformation/bankBranch/api/getData',
+      url: '/baseInformation/account/bankBranch/api/getData',
       dataSrc: ''
     },
     columns: [
@@ -25,10 +25,10 @@ $(document).ready(function () {
           return `
           <div class="row-table text-center">
             <div class= "11table-action-buttons"> 
-            <a class="edit button button-box button-xs button-info" href="/baseInformation/bankBranch/edit/${row.id}">
+            <a class="edit button button-box button-xs button-info" href="/baseInformation/account/bankBranch/edit/${row.id}">
               <i class="zmdi zmdi-edit"></i>
             </a>
-            <a class="delete button button-box button-xs button-danger" href="/baseInformation/bankBranch/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
+            <a class="delete button button-box button-xs button-danger" href="/baseInformation/account/bankBranch/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
               <i class="zmdi zmdi-delete"></i>
             </a>
             </div>

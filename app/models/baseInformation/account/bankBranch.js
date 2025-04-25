@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const BaseModel = require('../baseModel');
+const BaseModel = require('../../baseModel');
 
 class BankBranch extends BaseModel {}
 

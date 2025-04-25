@@ -39,7 +39,7 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-    res.adminRender('./accManagement/bankbranch/index', {
+    res.adminRender('./baseInformation/account/bankbranch/index', {
       title,
       subTitle
     });
@@ -69,7 +69,7 @@ exports.create = async (req, res, next) => {
       nest: true
     });
 
-    res.adminRender('./accManagement/bankbranch/create', {
+    res.adminRender('./baseInformation/account/bankbranch/create', {
       title,
       subTitle,
       banksListData,
@@ -180,7 +180,7 @@ exports.edit = async (req, res, next) => {
 
     // console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
 
-    res.adminRender('./accManagement/bankbranch/edit', {
+    res.adminRender('./baseInformation/account/bankbranch/edit', {
       title,
       subTitle,
       bankBranchData,

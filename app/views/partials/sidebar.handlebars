@@ -48,12 +48,12 @@
               <li><a href="/baseInformation/codingData/index/1"><i class="zmdi zmdi-collection-text"></i><span>جزییات کدینگ داده</span></a></li>
             {{/if}}  
 
-            {{#if (hasPermissionAction userPermissionLists 'cites' 'read')}}
-              <li><a href="/baseInformation/city/index"><i class="zmdi zmdi-collection-text"></i><span>اطلاعات شهرها</span></a></li>
+            {{#if (hasPermissionAction userPermissionLists 'cities' 'read')}}
+              <li><a href="/baseInformation/account/city/index"><i class="zmdi zmdi-collection-text"></i><span>اطلاعات شهرها</span></a></li>
             {{/if}}  
 
             {{#if (hasPermissionAction userPermissionLists 'bankBranches' 'read')}}
-              <li><a href="/baseInformation/bankbranch/index"><i class="zmdi zmdi-collection-text"></i><span>اطلاعات شعب بانک‌ها</span></a></li>
+              <li><a href="/baseInformation/account/bankBranch/index"><i class="zmdi zmdi-collection-text"></i><span>اطلاعات شعب بانک‌ها</span></a></li>
             {{/if}}  
           </ul>
         </li>

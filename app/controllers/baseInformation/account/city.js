@@ -34,7 +34,7 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-    res.adminRender('./accManagement/city/index', {
+    res.adminRender('./baseInformation/account/city/index', {
       title,
       subTitle
     });
@@ -57,7 +57,7 @@ exports.create = async (req, res, next) => {
       nest: true
     });
 
-    res.adminRender('./accManagement/city/create', {
+    res.adminRender('./baseInformation/account/city/create', {
       title,
       subTitle,
       provinceListData
@@ -150,7 +150,7 @@ exports.edit = async (req, res, next) => {
       cityData.fa_updatedAt = dateService.toPersianDate(cityData.updatedAt);
     }
 
-    res.adminRender('./accManagement/city/edit', {
+    res.adminRender('./baseInformation/account/city/edit', {
       title,
       subTitle,
       cityData,

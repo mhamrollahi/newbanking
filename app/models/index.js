@@ -8,8 +8,8 @@ const permissionModel = require('./admin/permission');
 const roleModel = require('./admin/role');
 const userRoleModel = require('./admin/userRole');
 const rolePermissionModel = require('./admin/rolePermission');
-const bankBranchModel = require('./accountManagement/bankBranch');
-const cityModel = require('./accountManagement/city');
+const bankBranchModel = require('./baseInformation/account/bankBranch');
+const cityModel = require('./baseInformation/account/city');
 
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,

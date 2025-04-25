@@ -1,5 +1,5 @@
 const express = require('express')
-const bankBranchControllers = require('@controllers/accountManagement/bankBranch')
+const bankBranchControllers = require('@controllers/baseInformation/account/bankBranch')
 const router = express.Router()
 const accessControlMiddleware = require('@middlewares/accessControlMiddleware')
 
