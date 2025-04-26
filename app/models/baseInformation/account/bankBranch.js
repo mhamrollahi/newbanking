@@ -124,7 +124,6 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
-      //tableName: 'bankBranches',
       indexes: [
         {
           name: 'ix_branchCode,bankId',

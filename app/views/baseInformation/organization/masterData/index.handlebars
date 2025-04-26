@@ -1,0 +1,80 @@
+ <link rel='stylesheet' href='/static/assets/css/style.css' />
+
+<main class='container myform-section-wrapper my-4 mt-5'>
+  <div class='row justify-content-between align-items-center mb-10'>
+    <!-- Page Heading Start -->
+    <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
+      <div class='page-heading page-heading-custom'>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+      </div>
+    </div><!-- Page Heading End -->
+
+    <!-- Page Button Start -->
+    <div class='col-12 col-lg-auto mb-20'>
+      <div class='page-buttons'>
+        <a href='./create' class='btn btn-primary btn-default btn-squared btn-outline-primary'>
+          <i class='lni lni-plus'></i>
+          <span>جدید</span>
+        </a>
+      </div>
+    </div><!-- Page Button End -->
+  </div>
+
+  <div class='row'>
+    <div class='col-12'>
+      <div class='table-responsive'>
+        <table class='table table-striped table-bordered table-hover' id='tblOrganization'>
+          <thead>
+            <tr>
+              <th>ردیف</th>
+              <th>شناسه ملی</th>
+              <th>نام سازمان</th>
+              <th>تاریخ ثبت</th>
+              <th>شماره ثبت</th>
+              <th>استان</th>
+              <th>نوع سازمان</th>
+              <th>دسته سازمان</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each organizations}}
+              <tr>
+                <td>{{inc @index}}</td>
+                <td>{{this.nationalCode}}</td>
+                <td>{{this.organizationName}}</td>
+                <td>{{formatDate this.registerDate}}</td>
+                <td>{{this.registerNo}}</td>
+                <td>{{this.province.title}}</td>
+                <td>{{this.organizationType.title}}</td>
+                <td>{{this.organizationCategory.title}}</td>
+                <td>
+                  <div class='action-buttons'>
+                    <a href='./edit/{{this.id}}' class='btn btn-primary btn-sm' title='ویرایش'>
+                      <i class='lni lni-pencil'></i>
+                    </a>
+                    <a href='./delete/{{this.id}}' class='btn btn-danger btn-sm' title='حذف' onclick='return confirm("آیا از حذف این رکورد اطمینان دارید؟")'>
+                      <i class='lni lni-trash'></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  $(document).ready(function() {
+    $('#tblOrganization').DataTable({
+      language: {
+        url: '/static/assets/js/datatables/persian.json'
+      },
+      order: [[0, 'desc']],
+      pageLength: 10
+    });
+  });
+</script>
