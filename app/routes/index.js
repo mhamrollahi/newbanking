@@ -10,6 +10,7 @@ const rolePermissionRouter = require('./admin/rolePermission');
 const userRoleRouter = require('./admin/userRole');
 const cityRouter = require('./baseInformation/account/city');
 const bankBranchRouter = require('./baseInformation/account/bankBranch');
+const organizationMasterDataRouter = require('./baseInformation/organization/masterData.js');
 
 const errorRoute = require('./errors/index');
 
@@ -35,6 +36,8 @@ module.exports = (app) => {
 
   app.use('/baseInformation/account/city', [authMiddleware], cityRouter);
   app.use('/baseInformation/account/bankBranch', [authMiddleware], bankBranchRouter);
+
+  app.use('/baseInformation/organization/masterData', [authMiddleware], organizationMasterDataRouter);
 
   app.use('/importFiles', [authMiddleware], importFilesRouter);
 

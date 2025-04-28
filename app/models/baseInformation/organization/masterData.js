@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const BaseModel = require('../../baseModel');
+const BaseModel = require('@models/baseModel');
 
 class OrganizationMasterData extends BaseModel {}
 
@@ -219,7 +219,6 @@ module.exports = (sequelize) => {
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'provinceId', as: 'province' });
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'organizationTypeId', as: 'organizationType' });
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'organizationCategoryId', as: 'organizationCategory' });
-    OrganizationMasterData.belongsTo(models.OrganizationMasterData, { foreignKey: 'parentOrganizationId', as: 'parentOrganization' });  
 
     OrganizationMasterData.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     OrganizationMasterData.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });

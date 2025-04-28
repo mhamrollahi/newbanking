@@ -10,6 +10,7 @@ const userRoleModel = require('./admin/userRole');
 const rolePermissionModel = require('./admin/rolePermission');
 const bankBranchModel = require('./baseInformation/account/bankBranch');
 const cityModel = require('./baseInformation/account/city');
+const organizationMasterDataModel = require('./baseInformation/organization/masterData');
 
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,
@@ -45,6 +46,7 @@ const models = {
   RolePermissionModel: rolePermissionModel(sequelize),
   BankBranchModel: bankBranchModel(sequelize),
   CityModel: cityModel(sequelize),
+  OrganizationMasterDataModel: organizationMasterDataModel(sequelize),
   
 };
 
