@@ -6,14 +6,24 @@ const { RoleModel, UserViewModel, PermissionModel, CodingDataModel, UserRoleMode
 
 exports.login = async (req, res, next) => {
   try {
-    res.authRender('./auth/login', {});
+    // Generate random 4-digit captcha
+    const captcha = Math.floor(1000 + Math.random() * 9000);
+    req.session.captcha = captcha;
+    
+    res.authRender('./auth/login', { captcha });
   } catch (error) {
     next(error);
   }
 };
 
 exports.doLogin = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password, captcha } = req.body;
+
+  // Check captcha first
+  if (!req.session.captcha || req.session.captcha.toString() !== captcha) {
+    req.flash('errors', 'کد امنیتی وارد شده صحیح نیست');
+    return res.redirect('/auth/login');
+  }
 
   //اعتبار سنجی فرم ورودی - Start
   const { error } = formValidation(req, 0);
@@ -37,6 +47,9 @@ exports.doLogin = async (req, res, next) => {
     req.flash('errors', 'نام کاربری شما غیر فعال است؛ لطفا با مدیر سیستم تماس بگیرید.');
     return res.redirect('/auth/login');
   }
+
+  // Clear captcha after successful validation
+  delete req.session.captcha;
 
   try {
     const userRoles = await UserViewModel.findByPk(user.id, {
@@ -142,7 +155,8 @@ exports.logout = async (req, res, next) => {
 const formValidation = (req) => {
   const userData = {
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    captcha: req.body.captcha
   };
 
   const schema = Joi.object({
@@ -157,12 +171,17 @@ const formValidation = (req) => {
       .min(6)
       .label('کلمه عبور')
       .required()
-      // .pattern(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-zA-Z]).{6,20}$/)
       .messages({
         'string.empty': errMessages['string.empty'],
         'string.min': errMessages['string.min'],
         'string.required': errMessages['any.required']
-        // 'string.pattern.base': 'رمز عبور باید حداقل شامل یک عدد، یک کاراکتر خاص (!@#$%^&*) و حروف باشد و حداقل ۶ کاراکتر داشته باشد.'
+      }),
+    captcha: Joi.string()
+      .required()
+      .label('کد امنیتی')
+      .messages({
+        'string.empty': 'لطفا کد امنیتی را وارد کنید',
+        'string.required': 'کد امنیتی الزامی است'
       })
   });
 

@@ -1,4 +1,23 @@
 <link rel='stylesheet' href='/static/assets/css/style.css' />
+<style>
+  .captcha-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .captcha-display {
+    background: #f8f9fa;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    min-width: 80px;
+    text-align: center;
+  }
+</style>
 
 <div class='d-flex align-self-center justify-content-center order-2 order-lg-1 col-lg-5 col-12'>
   <div class='login-register-form-wrap'>
@@ -31,6 +50,17 @@
               autocomplete='off' placeholder='لطفا کلمه عبور را وارد کنید.'  required />
             <i class='zmdi zmdi-eye-off icon-pass-login-form' id='password-eye1'></i>
           </div>
+
+          <div class='col-12 mb-20'>
+            <div class="captcha-container">
+              <div class="captcha-display" id="captcha-display">{{captcha}}</div>
+              <button type="button" class="btn btn-light" onclick="window.location.reload()" style="padding: 8px 12px;">
+                <i class="zmdi zmdi-refresh"></i>
+              </button>
+              <input type="text" class="form-control" id="captcha" name="captcha" placeholder="لطفا عدد نمایش داده شده را وارد کنید" required>
+            </div>
+          </div>
+
           <div class='col-12 mb-20'>
             <label for='remember' class='adomx-checkbox-2'>
               <input id='remember' name='remember_me' type='checkbox' />
@@ -38,6 +68,7 @@
               مرا به خاطر داشته باش.
             </label>
           </div>
+
           <div class='col-12'>
             <div class='row justify-content-between'>
               <div class='col-auto mb-15'>
@@ -46,7 +77,7 @@
             </div>
           </div>
           <div class='col-12 mt-10'>
-            <button class='button button-primary button-outline'>ورود</button>
+            <button class='button button-primary button-outline' style='width:180px; margin: 10px 80px;' type='submit'>ورود</button>
           </div>
         </div>
       </form>
@@ -59,9 +90,9 @@
   $(document).ready(function (){ 
     $('#password-eye1').click(function(){ 
       console.log('click eye ...')
-    if($('.txt-password').attr('type')==='password'){ 
-       $('.txt-password').attr('type','text') 
-       $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') }
+      if($('.txt-password').attr('type')==='password'){ 
+         $('.txt-password').attr('type','text') 
+         $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye') }
       else{ 
         $('.txt-password').attr('type','password')
         $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off') } 
