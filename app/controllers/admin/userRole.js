@@ -40,7 +40,8 @@ exports.index = async (req, res, next) => {
   try {
     res.adminRender('./admin/userRole/index', {
       title,
-      subTitle
+      subTitle,
+      
     });
   } catch (error) {
     next(error);
@@ -243,17 +244,25 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const userRoleId = req.params.id;
-    const rowsAffected = await UserRoleModel.destroy({
-      where: { id: userRoleId }
-    });
-
-    if (rowsAffected > 0) {
-      req.flash('success', 'اطلاعات با موفقیت حذف شد.');
+    
+    if(req.session.permissions.some(item => item.roleName.toLowerCase() === 'admin')){
+      req.flash('errors', 'امکان حذف اطلاعات برای کاربر ادمین وجود ندارد .');
       return res.redirect('../index');
     }
+
+    const rowsAffected = await UserRoleModel.destroy({
+        where: { id: userRoleId }
+    });
+  
+    if (rowsAffected > 0) {
+        req.flash('success', 'اطلاعات با موفقیت حذف شد.');
+        return res.redirect('../index');
+    }
+
   } catch (error) {
     next(error);
   }
+
 };
 
 const formValidation = (req) => {

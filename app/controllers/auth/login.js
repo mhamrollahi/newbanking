@@ -54,6 +54,7 @@ exports.doLogin = async (req, res, next) => {
               include: [
                 {
                   model: RolePermissionModel,
+                  required : false,
                   as: 'rolePermissions',
                   include: [
                     {
@@ -63,6 +64,7 @@ exports.doLogin = async (req, res, next) => {
                       include: [
                         {
                           model: CodingDataModel,
+                          required : false,
                           as: 'action',
                           attributes: ['id', 'title']
                         }
@@ -76,39 +78,6 @@ exports.doLogin = async (req, res, next) => {
         }
       ]
     });
-
-    if(!userRoles){
-      const userRoles = await UserViewModel.findByPk(user.id, {
-        attributes: ['id', 'fullName', 'username'],
-        include: [
-          {
-            model: UserRoleModel,
-            as: 'userRoles',
-            include: [
-              {
-                model: RoleModel,
-                as: 'roles',
-                attributes: ['id', 'name']
-              }
-            ]
-          }
-        ]
-      });
-
-      const userPermissionLists = userRoles.userRoles.flatMap((userRole) =>
-        userRole.roles.rolePermissions.map((rolePerm) => ({
-          userFullname: userRoles.fullName, // نام کامل کاربر
-          username: userRoles.username, // نام  کاربر
-          roleId: userRole.roles.id, // آی‌دی نقش
-          roleName: userRole.roles.name // نام نقش
-        }))
-      );
-      req.session.user = user;
-      req.session.permissions = userPermissionLists;
-  
-      return res.redirect('../accManagement/index');
-  
-    }
 
     const userPermissionLists = userRoles.userRoles.flatMap((userRole) =>
       userRole.roles.rolePermissions.map((rolePerm) => ({
