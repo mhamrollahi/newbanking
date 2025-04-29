@@ -1,5 +1,5 @@
 const { models, } = require('@models/');
-const {  UserViewModel, CodingDataModel, CodeTableListModel,  OrganizationMasterData } = models;
+const {  UserViewModel, CodingDataModel, CodeTableListModel,  OrganizationMasterDataModel } = models;
 const coding = require('@constants/codingDataTables.js');
 
 const path = require('path');
@@ -10,39 +10,51 @@ const subTitle = 'فهرست دستگاه ها ';
 
 exports.getData = async (req, res, next) => {
   try {
-    const result = await OrganizationMasterData.findAll({
-      include: [
-        {
-          model: UserViewModel,
-          as: 'creator',
-          attributes: ['username', 'fullName']
-        },
-        {
-          model: CodingDataModel,
-          as: 'province',
-          attributes: ['title']
-        },
-        {
-          model: CodingDataModel,
-          as: 'organizationType',
-          attributes: ['title']
-        },
-        {
-          model: CodingDataModel,
-          as: 'organizationCategory',
-          attributes: ['title']
-        },
-        {
-          model: OrganizationMasterData,
-          as: 'parentOrganization',
-          attributes: ['organizationName']
-        } 
-      ],
-      
+    
+    res.json({
+      nationalCode: '123',
+      organizationName: 'test',
+      registerDate: '2025-04-29',
+      registerNo: '123',
+      province: 'test',
+      organizationType: 'test',
+      organizationCategory: 'test',
+      creator: 'test'
     });
-    // console.log(result);
 
-    res.json(result);
+    // const result = await OrganizationMasterDataModel.findAll({
+    //   include: [
+    //     {
+    //       model: UserViewModel,
+    //       as: 'creator',
+    //       attributes: ['username', 'fullName']
+    //     },
+    //     {
+    //       model: CodingDataModel,
+    //       as: 'province',
+    //       attributes: ['title']
+    //     },
+    //     {
+    //       model: CodingDataModel,
+    //       as: 'organizationType',
+    //       attributes: ['title']
+    //     },
+    //     {
+    //       model: CodingDataModel,
+    //       as: 'organizationCategory',
+    //       attributes: ['title']
+    //     },
+    //     // {
+    //     //   model: OrganizationMasterDataModel,
+    //     //   as: 'parentOrganization',
+    //     //   attributes: ['organizationName']
+    //     // } 
+    //   ],
+      
+    // });
+    // // console.log(result);
+
+    // res.json(result);
   } catch (error) {
     next(error);
   }
@@ -92,7 +104,7 @@ exports.create = async (req, res, next) => {
         }
       ],
     });
-    const parentOrganizationsListData = await OrganizationMasterData.findAll({
+    const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
       attributes: ['id', 'organizationName'],
     });
 
@@ -142,7 +154,7 @@ exports.store = async (req, res, next) => {
       }
     }
 
-    const organization = await OrganizationMasterData.create({
+    const organization = await OrganizationMasterDataModel.create({
       nationalCode,
       organizationName,
       registerDate,
@@ -159,13 +171,7 @@ exports.store = async (req, res, next) => {
 
     res.redirect('/baseInformation/organization');
   } catch (error) {
-    console.error('Error in organization store:', error);
-    res.render('baseInformation/organization/create', {
-      title: 'سازمان',
-      subTitle: 'ایجاد سازمان جدید',
-      hasError: true,
-      errors: [error.message]
-    });
+   next(error);
   }
 };
 
@@ -173,7 +179,7 @@ exports.store = async (req, res, next) => {
 exports.edit = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const organizationData = await OrganizationMasterData.findByPk(id, {
+    const organizationData = await OrganizationMasterDataModel.findByPk(id, {
       include: [
         {
           model: UserViewModel,
@@ -273,7 +279,7 @@ exports.update = async (req, res, next) => {
       description
     } = req.body;
 
-    const organization = await OrganizationMasterData.findByPk(id);
+    const organization = await OrganizationMasterDataModel.findByPk(id);
     if (!organization) {
       return res.status(404).send('سازمان مورد نظر یافت نشد');
     }
@@ -318,22 +324,15 @@ exports.update = async (req, res, next) => {
 
     res.redirect('/baseInformation/organization');
   } catch (error) {
-    console.error('Error in organization update:', error);
-    res.render('baseInformation/organization/edit', {
-      title: 'سازمان',
-      subTitle: 'ویرایش سازمان',
-      organization: req.body,
-      hasError: true,
-      errors: [error.message]
-    });
+   next(error);
   }
 };
 
 // حذف سازمان
-exports.destroy = async (req, res, next) => {
+exports.delete = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const organization = await OrganizationMasterData.findByPk(id);
+    const organization = await OrganizationMasterDataModel.findByPk(id);
 
     if (!organization) {
       return res.status(404).send('سازمان مورد نظر یافت نشد');
@@ -355,7 +354,6 @@ exports.destroy = async (req, res, next) => {
     await organization.destroy();
     res.redirect('/baseInformation/organization');
   } catch (error) {
-    console.error('Error in organization destroy:', error);
-    res.status(500).send('خطا در حذف سازمان');
+    next(error);
   }
 };
