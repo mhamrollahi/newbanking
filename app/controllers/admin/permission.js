@@ -186,6 +186,13 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const permissionId = req.params.id;
+
+    if(req.session.permissions.some(item => item.roleName.toLowerCase() === 'admin')){
+      req.flash('errors', 'امکان حذف اطلاعات برای کاربر ادمین وجود ندارد .');
+      return res.redirect('../index');
+    }
+
+
     const rowsAffected = await PermissionModel.destroy({
       where: { id: permissionId }
     });

@@ -3,6 +3,8 @@ module.exports = (tableName,actionName)=>{
     if(!req.session || !req.session.permissions) {
       return res.status(403).send('Access Denied')
     }
+    
+    console.log(req.session.permissions)
 
     if(req.session.permissions.some(item => item.roleName.toLowerCase() === 'admin')){
       return next()
@@ -16,6 +18,7 @@ module.exports = (tableName,actionName)=>{
         return res.redirect('/errors/403')
     } 
     next()  
+    
   }
 
 }

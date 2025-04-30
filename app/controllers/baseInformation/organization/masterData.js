@@ -67,6 +67,9 @@ exports.index = async (req, res, next) => {
       title,
       subTitle,
     });
+
+    console.log('in index ... ',req.session.permissions)
+    
   } catch (error) {
     next(error);
   } 
