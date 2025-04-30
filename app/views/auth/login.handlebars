@@ -1,23 +1,5 @@
 <link rel='stylesheet' href='/static/assets/css/style.css' />
-<style>
-  .captcha-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .captcha-display {
-    background: #f8f9fa;
-    padding: 8px 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    min-width: 80px;
-    text-align: center;
-  }
-</style>
+
 
 <div class='d-flex align-self-center justify-content-center order-2 order-lg-1 col-lg-5 col-12'>
   <div class='login-register-form-wrap'>
@@ -53,8 +35,10 @@
 
           <div class='col-12 mb-20'>
             <div class="captcha-container">
-              <div class="captcha-display" id="captcha-display">{{captcha}}</div>
-              <button type="button" class="btn btn-light" onclick="window.location.reload()" style="padding: 8px 12px;">
+              <div class="captcha-display" id="captcha-display">
+                <span>{{captcha}}</span>
+              </div>
+              <button type="button" class="btn btn-light" onclick="window.location.reload()" style="padding: 8px 12px; height: 45px;">
                 <i class="zmdi zmdi-refresh"></i>
               </button>
               <input type="text" class="form-control" id="captcha" name="captcha" placeholder="لطفا عدد نمایش داده شده را وارد کنید" required>

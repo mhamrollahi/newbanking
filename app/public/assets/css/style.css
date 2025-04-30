@@ -117,3 +117,60 @@ table tr th a.sort-down-cols::after{
   border:2px solid #ccc;
   border-radius: 5px;
 }
+.captcha-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.captcha-display {
+  background: linear-gradient(45deg, #f3f3f3, #f17070);
+  padding: 8px 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  min-width: 100px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.captcha-display::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(45deg, transparent 45%, rgba(0,0,0,0.1) 45%, rgba(0,0,0,0.1) 55%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, rgba(0,0,0,0.1) 45%, rgba(0,0,0,0.1) 55%, transparent 55%);
+  pointer-events: none;
+}
+
+.captcha-display::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(0,0,0,0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0,0,0,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.captcha-display span {
+  position: relative;
+  z-index: 1;
+  color: #333;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+  transform: rotate(-2deg);
+}
