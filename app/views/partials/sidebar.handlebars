@@ -48,9 +48,9 @@
               <li><a href="/baseInformation/codingData/index/1"><i class="zmdi zmdi-collection-text"></i><span>جزییات کدینگ داده</span></a></li>
             {{/if}}  
 
-            {{!-- {{#if (hasPermissionAction userPermissionLists 'organizationmasterdata' 'read')}} --}}
+            {{#if (hasPermissionAction userPermissionLists 'organizationmasterdata' 'read')}}
               <li><a href="/baseInformation/organization/masterData/index"><i class="zmdi zmdi-collection-text"></i><span>اطلاعات پایه دستگاه‌ها</span></a></li>
-            {{!-- {{/if}}   --}}
+            {{/if}}  
 
             {{#if (hasPermissionAction userPermissionLists 'cities' 'read')}}
               <li><a href="/baseInformation/account/city/index"><i class="zmdi zmdi-collection-text"></i><span>اطلاعات شهرها</span></a></li>

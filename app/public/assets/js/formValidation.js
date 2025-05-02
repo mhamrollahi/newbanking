@@ -2,7 +2,7 @@ const frm = document.querySelector('[data-frmValidation]')
 let errorMessage = document.createElement("div");
 errorMessage.classList.add("errMessage");
 
-console.log('form in formValidation ....',frm)
+// console.log('form in formValidation ....',frm)
 
 const errMessages = {
   badInput : () => 'badInput',
@@ -72,12 +72,12 @@ frm.addEventListener("submit", function (event) {
         appendError2(input,"لطفاً یک فایل انتخاب کنید.")
       } else {
         // بررسی نوع فایل
-        const validTypes = [".xls", ".xlsx"];
+        const validTypes = [".xls", ".xlsx", ".pdf"];
         const fileName = file.name.toLowerCase();
         const isTypeValid = validTypes.some(type => fileName.endsWith(type));
         if (!isTypeValid) {
           isValid = false;
-          appendError2(input,"فقط فایل‌های اکسل (.xls یا .xlsx) مجاز هستند.")
+          appendError2(input,"فقط فایل‌های اکسل (.xls یا .xlsx) یا PDF مجاز هستند.")
         }
 
         // بررسی سایز فایل

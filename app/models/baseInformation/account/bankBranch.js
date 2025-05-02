@@ -48,7 +48,7 @@ module.exports = (sequelize) => {
 
             // بررسی اینکه آیا همه کاراکترها عدد هستند
             if (!/^\d+$/.test(convertedValue)) {
-              throw new Error('کد شعبه شعبه شعبه باید فقط شامل اعداد باشد 111.');
+              throw new Error('کد شعبه  باید فقط شامل اعداد باشد 111.');
             }
           }
         }

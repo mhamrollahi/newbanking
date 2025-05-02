@@ -10,9 +10,11 @@
     </div><!-- Page Heading End -->
   </div>
 
-  <div class='row login-form'>
+  <div class='row organization-form'>
     <div class='col-12 col-sm-12 col-md-12'>
-      <form method='POST' name='frmOrganization' id='frmOrganization' action='./store' class='row g-3 needs-validation' enctype="multipart/form-data" data-frmValidation novalidate>
+      {{!-- <form method='POST' name='frmOrganization' id='frmOrganization' action='./store' class='row g-3 needs-validation' enctype="multipart/form-data" data-frmValidation novalidate> --}}
+      <form method='POST' name='frmOrganization' id='frmOrganization' action='./store' class='row g-3 needs-validation'  data-frmValidation novalidate>
+
         {{#if hasError}}
           <div class='alert alert-danger'>
             {{#each errors}}
@@ -26,7 +28,7 @@
         <!-- ستون سمت چپ -->
         <div class='col-md-6'>
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='nationalCode' name='nationalCode' placeholder='شناسه ملی را وارد کنید.' autocomplete='off' required />
+            <input type='text' class='form-control' id='nationalCode' name='nationalCode' maxlength="11" minlength="11" placeholder='شناسه ملی را وارد کنید.' autocomplete='off' required />
             <label for='nationalCode' class='mandatory'>
               شناسه ملی
             </label>
@@ -67,11 +69,11 @@
             </label>
           </div>
 
-          <div class='mb-3'>
+          {{!-- <div class='mb-3'>
             <label for='filePathStatute' class='form-label'>اساسنامه سازمان</label>
             <input type='file' class='form-control' id='filePathStatute' name='filePathStatute' accept='.pdf' />
             <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
-          </div>
+          </div> --}}
         </div>
 
         <!-- ستون سمت راست -->
@@ -86,9 +88,19 @@
             </select>
           </div>
 
+          {{!-- <div style='margin:1px; '>
+            <label for='parentOrganizationId' class='mandatory'>نام دستگاه مادر</label>
+            <select id='cmbparentOrganizationId' name='parentOrganizationId' style='position: relative;' accept='.pdf' data-farsiname='نام دستگاه مادر' >
+              <option value=''>لطفا نام دستگاه مادر را انتخاب کنید</option>
+              {{#each parentorganizationListData}}
+                <option value='{{this.id}}'>{{this.title}} </option>
+              {{/each}}
+            </select>
+          </div> --}}
+
           <div style='margin:1px; '>
             <label for='organizationTypeId' class='mandatory'>نوع سازمان</label>
-            <select id='cmbOrganizationType' name='organizationTypeId' style='position: relative;' data-farsiname='نوع سازمان' >
+            <select id='cmbOrganizationType' name='organizationTypeId' style='position: relative;' accept='.pdf' data-farsiname='نوع سازمان' >
               <option value=''>لطفا نوع سازمان را انتخاب کنید</option>
               {{#each organizationTypesListData}}
                 <option value='{{this.id}}'>{{this.title}} </option>
@@ -98,7 +110,7 @@
 
           <div style='margin:1px; '>
             <label for='organizationCategoryId' class='mandatory'>دسته سازمان</label>
-            <select id='cmbOrganizationCategory' name='organizationCategoryId' style='position: relative;' data-farsiname='دسته سازمان' >
+            <select id='cmbOrganizationCategory' name='organizationCategoryId' style='position: relative;' accept='.pdf' data-farsiname='دسته سازمان' >
               <option value=''>لطفا دسته سازمان را انتخاب کنید</option>
               {{#each organizationCategoriesListData}}
                 <option value='{{this.id}}'>{{this.title}} </option>
@@ -106,17 +118,17 @@
             </select>
           </div>
 
-          <div class='mb-3'>
+          {{!-- <div class='mb-3'>
             <label for='filePathFinancial' class='form-label'>گزارش مالی</label>
             <input type='file' class='form-control' id='filePathFinancial' name='filePathFinancial' accept='.pdf' />
             <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
-          </div>
+          </div> --}}
 
-          <div class='mb-3'>
+          {{!-- <div class='mb-3'>
             <label for='filePathFoundationAd' class='form-label'>آگهی تأسیس</label>
             <input type='file' class='form-control' id='filePathFoundationAd' name='filePathFoundationAd' accept='.pdf' />
             <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
-          </div>
+          </div> --}}
 
           <div class='form-floating mb-3'>
             <textarea class='form-control' id='description' name='description' placeholder='توضیحات را وارد کنید.' autocomplete='off'></textarea>

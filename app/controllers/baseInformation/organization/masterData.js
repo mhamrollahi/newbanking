@@ -1,60 +1,80 @@
-const { models, } = require('@models/');
-const {  UserViewModel, CodingDataModel, CodeTableListModel,  OrganizationMasterDataModel } = models;
+const { models } = require('@models/');
+const { UserViewModel, CodingDataModel, CodeTableListModel, OrganizationMasterDataModel } = models;
 const coding = require('@constants/codingDataTables.js');
-
+// const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
 const title = 'مدیریت اطلاعات پایه ';
 const subTitle = 'فهرست دستگاه ها ';
 
+// // تنظیمات multer برای آپلود فایل‌ها
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     const uploadDir = path.join(__dirname, '../../../uploads/organizations');
+//     if (!fs.existsSync(uploadDir)) {
+//       fs.mkdirSync(uploadDir, { recursive: true });
+//     }
+//     cb(null, uploadDir);
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+//     cb(null, uniqueSuffix + path.extname(file.originalname));
+//   }
+// });
+
+// const upload = multer({
+//   storage: storage,
+//   limits: {
+//     fileSize: 5 * 1024 * 1024 // محدودیت 5 مگابایت
+//   }
+// });
+
 exports.getData = async (req, res, next) => {
   try {
-    
-    res.json({
-      nationalCode: '123',
-      organizationName: 'test',
-      registerDate: '2025-04-29',
-      registerNo: '123',
-      province: 'test',
-      organizationType: 'test',
-      organizationCategory: 'test',
-      creator: 'test'
-    });
-
-    // const result = await OrganizationMasterDataModel.findAll({
-    //   include: [
-    //     {
-    //       model: UserViewModel,
-    //       as: 'creator',
-    //       attributes: ['username', 'fullName']
-    //     },
-    //     {
-    //       model: CodingDataModel,
-    //       as: 'province',
-    //       attributes: ['title']
-    //     },
-    //     {
-    //       model: CodingDataModel,
-    //       as: 'organizationType',
-    //       attributes: ['title']
-    //     },
-    //     {
-    //       model: CodingDataModel,
-    //       as: 'organizationCategory',
-    //       attributes: ['title']
-    //     },
-    //     // {
-    //     //   model: OrganizationMasterDataModel,
-    //     //   as: 'parentOrganization',
-    //     //   attributes: ['organizationName']
-    //     // } 
-    //   ],
-      
+    // res.json({
+    //   nationalCode: '123',
+    //   organizationName: 'test',
+    //   registerDate: '2025-04-29',
+    //   registerNo: '123',
+    //   province: 'test',
+    //   organizationType: 'test',
+    //   organizationCategory: 'test',
+    //   creator: 'test'
     // });
-    // // console.log(result);
 
-    // res.json(result);
+    const result = await OrganizationMasterDataModel.findAll({
+      include: [
+        {
+          model: UserViewModel,
+          as: 'creator',
+          attributes: ['username', 'fullName']
+        },
+        {
+          model: CodingDataModel,
+          as: 'province',
+          attributes: ['title']
+        },
+        {
+          model: CodingDataModel,
+          as: 'organizationType',
+          attributes: ['title']
+        },
+        {
+          model: CodingDataModel,
+          as: 'organizationCategory',
+          attributes: ['title']
+        }
+        // {
+        //   model: OrganizationMasterDataModel,
+        //   as: 'parentOrganization',
+        //   attributes: ['organizationName']
+        // }
+      ]
+    });
+    // console.log(result);
+
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -63,21 +83,19 @@ exports.getData = async (req, res, next) => {
 // نمایش لیست سازمان‌ها
 exports.index = async (req, res, next) => {
   try {
-    res.render('./baseInformation/organization/masterData/index', {
+    res.adminRender('./baseInformation/organization/masterData/index', {
       title,
-      subTitle,
+      subTitle
     });
-
-    console.log('in index ... ',req.session.permissions)
-    
   } catch (error) {
     next(error);
-  } 
+  }
 };
 
 // نمایش فرم ایجاد سازمان جدید
 exports.create = async (req, res, next) => {
   try {
+
     const provincesListData = await CodingDataModel.findAll({
       attributes: ['id', 'title'],
       include: [
@@ -86,6 +104,8 @@ exports.create = async (req, res, next) => {
           where: { en_TableName: coding.CODING_PROVINCE }
         }
       ],
+      raw: true,
+      nest: true
     });
 
     const organizationTypesListData = await CodingDataModel.findAll({
@@ -96,6 +116,8 @@ exports.create = async (req, res, next) => {
           where: { en_TableName: coding.CODING_ORGANIZATION_TYPE }
         }
       ],
+      raw: true,
+      nest: true
     });
 
     const organizationCategoriesListData = await CodingDataModel.findAll({
@@ -106,12 +128,15 @@ exports.create = async (req, res, next) => {
           where: { en_TableName: coding.CODING_ORGANIZATION_CATEGORY }
         }
       ],
-    });
-    const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName'],
+      raw: true,
+      nest: true
     });
 
-    res.render('baseInformation/organization/create', {
+    const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
+      attributes: ['id', 'organizationName']
+    });
+
+    res.adminRender('./baseInformation/organization/masterData/create', {
       title,
       subTitle,
       provincesListData,
@@ -124,57 +149,32 @@ exports.create = async (req, res, next) => {
   }
 };
 
+
 // ذخیره سازمان جدید
 exports.store = async (req, res, next) => {
   try {
-    const {
+    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
+    const {id} = await OrganizationMasterDataModel.create({
       nationalCode,
       organizationName,
-      registerDate,
-      registerNo,
-      postalCode,
-      address,
-      provinceId,
-      organizationTypeId,
-      organizationCategoryId,
-      description
-    } = req.body;
-
-    // آپلود فایل‌ها
-    const files = {
-      filePathStatute: req.files?.filePathStatute?.[0],
-      filePathFinancial: req.files?.filePathFinancial?.[0],
-      filePathFoundationAd: req.files?.filePathFoundationAd?.[0]
-    };
-
-    const filePaths = {};
-    for (const [key, file] of Object.entries(files)) {
-      if (file) {
-        const fileName = `${Date.now()}-${file.originalname}`;
-        const filePath = path.join('uploads', 'organizations', fileName);
-        fs.writeFileSync(filePath, file.buffer);
-        filePaths[key] = filePath;
-      }
-    }
-
-    const organization = await OrganizationMasterDataModel.create({
-      nationalCode,
-      organizationName,
-      registerDate,
-      registerNo,
-      postalCode,
-      address,
-      provinceId,
-      organizationTypeId,
-      organizationCategoryId,
+      registerDate: cleanRegisterDate,
+      registerNo: registerNo == '' ? null : registerNo,
+      postalCode: postalCode == '' ? null : postalCode,
+      address: address == '' ? null : address,
+      provinceId: provinceId == '' ? null : provinceId,
+      organizationTypeId: organizationTypeId == '' ? null : organizationTypeId,
+      organizationCategoryId: organizationCategoryId == '' ? null : organizationCategoryId,
       description,
-      ...filePaths,
-      creatorId: req.user.id
+      creatorId: req.session.user.id
     });
 
-    res.redirect('/baseInformation/organization');
+    if (id) {
+      req.flash('success', 'اطلاعات دستگاه با موفقیت ثبت شد.');
+      return res.redirect('./index');
+    }
   } catch (error) {
-   next(error);
+    next(error);
   }
 };
 
@@ -231,7 +231,7 @@ exports.edit = async (req, res, next) => {
       include: [
         {
           model: CodeTableListModel,
-              where: { en_TableName: coding.CODING_ORGANIZATION_TYPE }
+          where: { en_TableName: coding.CODING_ORGANIZATION_TYPE }
         }
       ],
       raw: true,
@@ -256,10 +256,7 @@ exports.edit = async (req, res, next) => {
       provincesListData,
       organizationTypesListData,
       organizationCategoriesListData
-    }); 
-
-
-
+    });
   } catch (error) {
     next(error);
   }
@@ -269,18 +266,7 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const {
-      nationalCode,
-      organizationName,
-      registerDate,
-      registerNo,
-      postalCode,
-      address,
-      provinceId,
-      organizationTypeId,
-      organizationCategoryId,
-      description
-    } = req.body;
+    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
     const organization = await OrganizationMasterDataModel.findByPk(id);
     if (!organization) {
@@ -325,9 +311,9 @@ exports.update = async (req, res, next) => {
       updaterId: req.user.id
     });
 
-    res.redirect('/baseInformation/organization');
+    res.redirect('./index');
   } catch (error) {
-   next(error);
+    next(error);
   }
 };
 
@@ -342,11 +328,7 @@ exports.delete = async (req, res, next) => {
     }
 
     // حذف فایل‌ها
-    const files = [
-      organization.filePathStatute,
-      organization.filePathFinancial,
-      organization.filePathFoundationAd
-    ];
+    const files = [organization.filePathStatute, organization.filePathFinancial, organization.filePathFoundationAd];
 
     for (const file of files) {
       if (file && fs.existsSync(file)) {
@@ -355,7 +337,7 @@ exports.delete = async (req, res, next) => {
     }
 
     await organization.destroy();
-    res.redirect('/baseInformation/organization');
+    res.redirect('./index');
   } catch (error) {
     next(error);
   }

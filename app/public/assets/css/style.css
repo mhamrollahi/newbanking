@@ -117,3 +117,16 @@ table tr th a.sort-down-cols::after{
   border:2px solid #ccc;
   border-radius: 5px;
 }
+.organization-form{
+  width:80%;
+  margin:auto;
+  background-color:#fafafa;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; 
+  padding-top:10px ;
+  border:2px solid #ccc;
+  border-radius: 5px;
+}
+.custom-btn{
+  width:100px;
+  font-size:16px;
+}
