@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const BaseModel = require('@models/baseModel');
+const dateService = require('@services/dateService');
 
 class OrganizationMasterData extends BaseModel {}
 
@@ -55,7 +56,11 @@ module.exports = (sequelize) => {
       },
 
       registerDate: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        get() {
+          const rawValue = this.getDataValue('registerDate');
+          return dateService.toPersianDate(rawValue);
+        }
       },
 
       registerNo: {

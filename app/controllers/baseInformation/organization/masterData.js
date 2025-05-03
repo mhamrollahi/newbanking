@@ -8,40 +8,9 @@ const fs = require('fs');
 const title = 'مدیریت اطلاعات پایه ';
 const subTitle = 'فهرست دستگاه ها ';
 
-// // تنظیمات multer برای آپلود فایل‌ها
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     const uploadDir = path.join(__dirname, '../../../uploads/organizations');
-//     if (!fs.existsSync(uploadDir)) {
-//       fs.mkdirSync(uploadDir, { recursive: true });
-//     }
-//     cb(null, uploadDir);
-//   },
-//   filename: function (req, file, cb) {
-//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-//     cb(null, uniqueSuffix + path.extname(file.originalname));
-//   }
-// });
-
-// const upload = multer({
-//   storage: storage,
-//   limits: {
-//     fileSize: 5 * 1024 * 1024 // محدودیت 5 مگابایت
-//   }
-// });
 
 exports.getData = async (req, res, next) => {
   try {
-    // res.json({
-    //   nationalCode: '123',
-    //   organizationName: 'test',
-    //   registerDate: '2025-04-29',
-    //   registerNo: '123',
-    //   province: 'test',
-    //   organizationType: 'test',
-    //   organizationCategory: 'test',
-    //   creator: 'test'
-    // });
 
     const result = await OrganizationMasterDataModel.findAll({
       include: [
