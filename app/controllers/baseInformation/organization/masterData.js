@@ -4,7 +4,7 @@ const coding = require('@constants/codingDataTables.js');
 // const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const { organizationSchema  } = require('@validators/organization/masterData');
 const title = 'مدیریت اطلاعات پایه ';
 const subTitle = 'فهرست دستگاه ها ';
 
@@ -124,6 +124,14 @@ exports.store = async (req, res, next) => {
   try {
     const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
     const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
+
+    const validationResult = organizationSchema.validate(req.body,{abortEarly: false});
+    
+    if (validationResult.error) {
+      req.flash('errors',validationResult.error.details.map((err) => err.message));
+      return res.redirect('./create');
+    }
+
     const {id} = await OrganizationMasterDataModel.create({
       nationalCode,
       organizationName,
