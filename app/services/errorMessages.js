@@ -5,6 +5,7 @@ module.exports = {
   'string.email': 'فرمت ایمیل معتبر نمی‌باشد.',
   'string.length': '{#label} باید {#limit} کاراکتر داشته باشد.',
   'any.required': '{#label} اجباری می‌باشد.',
+  'number.integer': '{#label} باید عدد صحیح معتبر باشد.',
   'number.base': '{#label} باید عدد معتبر باشد.',
   'number.min': '{#label} حداقل {#limit} باشد.',
   'number.max': '{#label} حداکثر {#limit} باشد.',

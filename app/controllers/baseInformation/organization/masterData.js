@@ -244,6 +244,13 @@ exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+  
+    const validationResult = organizationSchema.validate(req.body,{abortEarly: false});
+    
+    if (validationResult.error) {
+      req.flash('errors',validationResult.error.details.map((err) => err.message));
+      return res.redirect('./create');
+    }
 
     const organization = await OrganizationMasterDataModel.findByPk(id);
     if (!organization) {
@@ -298,23 +305,15 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const organization = await OrganizationMasterDataModel.findByPk(id);
+    const rowsAffected = await OrganizationMasterDataModel.destroy({
+      where: { id }
+    });
 
-    if (!organization) {
-      return res.status(404).send('سازمان مورد نظر یافت نشد');
+    if (rowsAffected > 0) {
+      req.flash('success', 'اطلاعات با موفقیت حذف شد.');
+      return res.redirect('../index');
     }
 
-    // حذف فایل‌ها
-    const files = [organization.filePathStatute, organization.filePathFinancial, organization.filePathFoundationAd];
-
-    for (const file of files) {
-      if (file && fs.existsSync(file)) {
-        fs.unlinkSync(file);
-      }
-    }
-
-    await organization.destroy();
-    res.redirect('./index');
   } catch (error) {
     next(error);
   }
