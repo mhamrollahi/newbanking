@@ -1,6 +1,7 @@
 const { models } = require('@models/');
 const { UserViewModel, CodingDataModel, CodeTableListModel, OrganizationMasterDataModel } = models;
 const coding = require('@constants/codingDataTables.js');
+const dateService = require('@services/dateService.js');
 // const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -123,6 +124,9 @@ exports.create = async (req, res, next) => {
 exports.store = async (req, res, next) => {
   try {
     const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    console.log('Register Date before save:', registerDate);
+    // const englishDate = dateService.toEnglishDate(registerDate);
+
     const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
 
     const validationResult = organizationSchema.validate(req.body,{abortEarly: false});

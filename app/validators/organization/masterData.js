@@ -39,6 +39,42 @@ const validateFile = (value, helpers) => {
   return value;
 };
 
+// تابع کمکی برای اعتبارسنجی تاریخ فارسی
+const validatePersianDate = (value, helpers) => {
+  
+  // اگر مقدار خالی باشد، اجازه می‌دهیم
+  if (!value || value.trim() === '') {
+    console.log('Empty value, returning as is');
+    return value;
+  }
+  
+  // حذف فاصله‌های اضافی و کاراکترهای نامرئی
+  const trimmedValue = value.trim().replace(/[\u200B-\u200D\uFEFF]/g, '');
+  
+  // تبدیل اعداد فارسی به انگلیسی
+  const englishValue = convertPersianToEnglish(trimmedValue);
+  
+  // الگوی تاریخ فارسی - با بررسی دقیق‌تر
+  const persianDatePattern = /^(\d{4})\/(\d{2})\/(\d{2})$/;
+  const match = englishValue.match(persianDatePattern);
+  
+  if (!match) {
+    return helpers.error('date.base');
+  }
+  
+  // جداسازی اجزای تاریخ
+  const [, year, month, day] = match;
+  console.log('Parsed date parts:', { year, month, day });
+  
+  // بررسی محدوده منطقی
+  if (year < 1300 || year > 1499 || month < 1 || month > 12 || day < 1 || day > 31) {
+    console.log('Date parts out of range');
+    return helpers.error('date.base');
+  }
+  
+  return trimmedValue; // برگرداندن مقدار اصلی با اعداد فارسی
+};
+
 const organizationSchema = Joi.object({
   nationalCode: Joi.string().required().length(11).label('شناسه ملی').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
     'string.empty': errMessages['string.empty'],
@@ -54,8 +90,8 @@ const organizationSchema = Joi.object({
     'any.required': errMessages['any.required']
   }),
 
-  registerDate: Joi.date().allow('').label('تاریخ ثبت').messages({
-    'date.base': errMessages['date.base']
+  registerDate: Joi.string().allow('', null).custom(validatePersianDate, 'اعتبارسنجی تاریخ').label('تاریخ ثبت').messages({
+    'date.base': 'فرمت تاریخ نامعتبر است. لطفا از فرمت YYYY/MM/DD استفاده کنید (مثال: 1402/12/29)'
   }),
 
   registerNo: Joi.string().allow('').max(10).label('شماره ثبت').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
