@@ -101,16 +101,3 @@
 </main>
 
 <script src='/static/assets/js/formValidation.js'></script>
-<script>
-  $(document).ready(function (){
-    $('#password-eye1').click(function(){
-      if($('.txt-password').attr('type')==='password'){
-        $('.txt-password').attr('type','text')
-        $('#password-eye1').removeClass('zmdi zmdi-eye-off').addClass('zmdi zmdi-eye')
-      }else{
-        $('.txt-password').attr('type','password')
-        $('#password-eye1').removeClass('zmdi-eye').addClass('zmdi-eye-off')
-      }
-    })
-  })
-</script>
