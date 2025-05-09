@@ -60,44 +60,20 @@ module.exports = (sequelize) => {
         get() {
           const rawValue = this.getDataValue('registerDate');
           if (!rawValue) return null;
-          
-          // تبدیل تاریخ میلادی به شمسی
-          const date = new Date(rawValue);
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          
-          return `${year}/${month}/${day}`;
+          // Convert Date to string and format it as YYYY/MM/DD
+          const dateStr = rawValue.toISOString().split('T')[0];
+          return dateStr.replace(/-/g, '/');
         },
-        // set(value) {
-        //   if (!value || value.trim() === '') {
-        //     this.setDataValue('registerDate', null);
-        //     return;
-        //   }
-
-        //   try {
-        //     // تبدیل اعداد فارسی به انگلیسی
-        //     const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
-        //     const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        //     let englishValue = value;
-        //     for (let i = 0; i < 10; i++) {
-        //       englishValue = englishValue.replace(persianNumbers[i], englishNumbers[i]);
-        //     }
-
-        //     // تبدیل تاریخ فارسی به میلادی
-        //     const [year, month, day] = englishValue.split('/').map(Number);
-        //     const persianDate = new Date(year, month - 1, day);
-        //     const gregorianDate = new Date(persianDate.getTime() + (3.5 * 60 * 60 * 1000)); // تبدیل به میلادی
-            
-        //     console.log('persianDate', persianDate);
-        //     console.log('gregorianDate', gregorianDate);
-            
-        //     this.setDataValue('registerDate', gregorianDate);
-        //   } catch (error) {
-        //     console.error('Error converting date:', error);
-        //     this.setDataValue('registerDate', null);
-        //   }
-        // }
+        set(value) {
+          console.log('Setting date value:', value);
+          if (!value) {
+            this.setDataValue('registerDate', null);
+            return;
+          }
+          const gregorianDate = dateService.toEnglishDate(value);
+          console.log('Converted to Gregorian:', gregorianDate);
+          this.setDataValue('registerDate', gregorianDate);
+        }
       },
 
       registerNo: {

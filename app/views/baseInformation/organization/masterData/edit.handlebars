@@ -27,7 +27,7 @@
         <!-- ستون سمت چپ -->
         <div class='col-md-6'>
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='nationalCode' name='nationalCode' placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' required />
+            <input type='text' class='form-control' id='nationalCode' name='nationalCode' maxlength='11' minlength='11' placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' required />
             <label for='nationalCode' class='mandatory'>
               شناسه ملی
             </label>
@@ -215,5 +215,23 @@
     }
   });
 </script> --}}
-
+<script>
+  $(document).ready(function() {
+    $('#registerDate').persianDatepicker({
+      format: 'YYYY/MM/DD',
+      initialValue: false,
+      autoClose: true,
+      position: 'auto',
+      calendar: {
+        persian: {
+          locale: 'fa'
+        }
+      },
+      onSelect: function(unix) {
+        const date = new persianDate(unix);
+        $('#registerDate').val(date.format('YYYY/MM/DD'));
+      }
+    });
+  });
+</script>
 <script src='/static/assets/js/formValidation.js'></script>

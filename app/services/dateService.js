@@ -1,12 +1,11 @@
-const jm = require('jalali-moment')
+const jm = require('jalali-moment');
 
-
-exports.toPersianDate = (date,format='YYYY/MM/DD') => {
-  if(date != null){
-    return jm(date).locale('fa').format(format)
+exports.toPersianDate = (date, format = 'YYYY/MM/DD') => {
+  if (date != null) {
+    return jm(date).locale('fa').format(format);
   }
-  return null
-}
+  return null;
+};
 
 exports.toEnglishDate = (date, format = 'YYYY/MM/DD') => {
   if (!date || date.trim() === '') {
@@ -25,7 +24,17 @@ exports.toEnglishDate = (date, format = 'YYYY/MM/DD') => {
     // تبدیل تاریخ فارسی به میلادی
     const [year, month, day] = englishValue.split('/').map(Number);
     const persianDate = jm(`${year}/${month}/${day}`, 'YYYY/MM/DD');
-    return persianDate.toDate();
+    const gregorianDate = persianDate.toDate();
+    console.log('Converting date:', {
+      input: date,
+      englishValue,
+      year,
+      month,
+      day,
+      persianDate: persianDate.format('YYYY/MM/DD'),
+      gregorianDate
+    });
+    return gregorianDate;
   } catch (error) {
     console.error('Error converting date:', error);
     return null;
