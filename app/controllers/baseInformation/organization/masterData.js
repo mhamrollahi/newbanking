@@ -263,7 +263,10 @@ exports.update = async (req, res, next) => {
     });
 
     if (validationResult.error) {
-      req.flash('errors',validationResult.error.details.map((err) => err.message));
+      req.flash(
+        'errors',
+        validationResult.error.details.map((err) => err.message)
+      );
       return res.redirect(`../edit/${id}`);
     }
 
