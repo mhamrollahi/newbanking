@@ -1,0 +1,76 @@
+<link rel='stylesheet' href='/static/assets/css/style.css' />
+
+<div class='box-codingdata'></div>
+
+<main class='container myform-section-wrapper my-4 mt-5'>
+
+  <div class='row justify-content-between align-items-center mb-10'>
+
+    <!-- Page Heading Start -->
+    <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
+      <div class='page-heading page-heading-custom'>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+      </div>
+    </div><!-- Page Heading End -->
+
+  </div>
+
+  <div class='row login-form'>
+    <div class='col-12 col-sm-12 col-md-12'>
+      <form method='POST' name='frmCodeOnline' id="frmCodeOnline" action='../update/{{codeOnlineData.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>{{this}}</small>
+            {{/each}}
+          </div>
+        {{/if}}
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control'  name='onlineCode' value='{{codeOnlineData.code}}' />
+          <label for='onlineCode' class='mandatory'>کد آنلاین</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <select class='form-select' name='organizationId' id='organizationId'>
+            {{#each organizationListData}}
+              <option value='{{id}}' {{isSelected id ../codeOnlineData.organization.id}}>{{title}}</option>
+            {{/each}}
+          </select>
+          <label for='organizationId' class='mandatory'>نام دستگاه</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' name='description' value='{{codeOnlineData.description}}' />
+          <label for='description'>توضیحات</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='creator' value='{{codeOnlineData.creator.fullName}}' />
+          <label for='creator' class='mandatory'>ایجاد کننده</label>
+        </div>
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='created_at' value='{{codeOnlineData.fa_createdAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ ایجاد</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updater' value='{{codeOnlineData.updater.fullName}}' />
+          <label for='updater' class='mandatory'>اصلاح کننده</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updated_at' value='{{codeOnlineData.fa_updatedAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
+        </div>
+
+        <div class='col-12 my-2 text-center'>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit'>اصلاح </button>
+          <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='../index'>انصراف</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script src='/static/assets/js/formValidation.js'></script>

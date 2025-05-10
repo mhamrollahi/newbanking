@@ -235,7 +235,7 @@ exports.edit = async (req, res, next) => {
     if (organization) {
       organization.fa_createdAt = dateService.toPersianDate(organization.createdAt);
       organization.fa_updatedAt = dateService.toPersianDate(organization.updatedAt);
-      const dateStr = organization.registerDate.toISOString().split('T')[0];
+      const dateStr = organization.registerDate == null ? '' : organization.registerDate.toISOString().split('T')[0];
       organization.registerDate = dateStr.replace(/-/g, '/');
     }
     res.adminRender('./baseInformation/organization/masterData/edit', {
