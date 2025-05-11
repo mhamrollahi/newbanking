@@ -101,11 +101,11 @@ table tr th a.sort-down-cols::after{
 .mandatory::after{
   content: "\f005";
   font-family: "FontAwesome";
-  position: absolute;
-  top:8px;
+  position: relative;
+  top:-9px;
   color:#ad030c;
-  font-size:7px
- 
+  font-size:7px;
+  right:3px;
 }
 
 .login-form{

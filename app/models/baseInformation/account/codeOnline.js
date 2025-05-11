@@ -31,9 +31,23 @@ module.exports = (sequelize) => {
 
             // بررسی اینکه آیا همه کاراکترها عدد هستند
             if (!/^\d+$/.test(convertedValue)) {
-              throw new Error('کد آنلاین  باید فقط شامل اعداد باشد 111.');
+              throw new Error('کد آنلاین  باید فقط شامل اعداد باشد .');
             }
-          }
+          },
+          set(value) {
+            // تبدیل اعداد فارسی به انگلیسی
+            const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+            const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            let convertedValue = value;
+            for (let i = 0; i < 10; i++) {
+              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+            }
+            // اضافه کردن صفر به انتهای مقدار تا ۴ رقم شود
+            if (convertedValue.length < 4) {
+              convertedValue =  '0'.repeat(4 - convertedValue.length) + convertedValue;
+            }
+            this.setDataValue('code', convertedValue);
+          },
 
         }
       },
@@ -68,6 +82,12 @@ module.exports = (sequelize) => {
           unique: true,
           fields: ['code'],
           msg: 'این کد آنلاین  تکراری می‌باشد.... '
+        },
+        {
+          name: 'ix_organizationId',
+          unique: true,
+          fields: ['organizationId'],
+          msg: 'این کد آنلاین برای این سازمان  تکراری می‌باشد.... '
         }
       ],
 

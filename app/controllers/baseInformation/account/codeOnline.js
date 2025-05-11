@@ -118,7 +118,7 @@ exports.edit = async (req, res, next) => {
         {
           model: OrganizationMasterDataModel,
           as: 'organization',
-          attributes: ['id', 'organizationName']
+          attributes: ['id', 'organizationName','nationalCode']
         }
       ],
       raw: true,
@@ -127,7 +127,7 @@ exports.edit = async (req, res, next) => {
 
     // Get all provinces for dropdown
     const organizationListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName'],
+      attributes: ['id', 'organizationName','nationalCode'],
       raw: true,
       nest: true
     });

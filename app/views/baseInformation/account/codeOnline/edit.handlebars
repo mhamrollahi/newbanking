@@ -34,7 +34,7 @@
         <div class='form-floating mb-1'>
           <select class='form-select' name='organizationId' id='organizationId'>
             {{#each organizationListData}}
-              <option value='{{id}}' {{isSelected id ../codeOnlineData.organization.id}}>{{title}}</option>
+              <option value='{{id}}' {{isSelected id ../codeOnlineData.organization.id}}>{{organizationName}}-{{nationalCode}}</option>
             {{/each}}
           </select>
           <label for='organizationId' class='mandatory'>نام دستگاه</label>
