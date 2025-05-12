@@ -90,6 +90,13 @@ const organizationSchema = Joi.object({
     'any.required': errMessages['any.required']
   }),
 
+  budgetRow: Joi.string().required().length(6).label('ردیف بودجه').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+    'string.empty': errMessages['string.empty'],
+    'string.length': errMessages['string.length'],
+    'any.required': errMessages['any.required'],
+    'any.invalid': errMessages['any.invalid']
+  }),
+
   registerDate: Joi.string().allow('', null).custom(validatePersianDate, 'اعتبارسنجی تاریخ').label('تاریخ ثبت').messages({
     'date.base': 'فرمت تاریخ نامعتبر است. لطفا از فرمت YYYY/MM/DD استفاده کنید (مثال: 1402/12/29)'
   }),

@@ -41,6 +41,13 @@
           </div>
 
           <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='budgetRow' name='budgetRow' maxlength='6' minlength='6' placeholder='ردیف بودجه را وارد کنید.' value='{{organization.budgetRow}}' autocomplete='off' required />
+            <label for='budgetRow' class='mandatory'>
+              ردیف بودجه
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
             <input type='text' class='form-control' id='registerDate' name='registerDate' placeholder='تاریخ ثبت را وارد کنید.' value='{{organization.registerDate}}' autocomplete='off' />
             <label for='registerDate'>
               تاریخ ثبت

@@ -2,9 +2,6 @@ const { models } = require('@models/');
 const { UserViewModel, CodingDataModel, CodeTableListModel, OrganizationMasterDataModel } = models;
 const coding = require('@constants/codingDataTables.js');
 const dateService = require('@services/dateService.js');
-// const multer = require('multer');
-// const path = require('path');
-// const fs = require('fs');
 const { organizationSchema } = require('@validators/organization/masterData');
 const title = 'مدیریت اطلاعات پایه ';
 const subTitle = 'فهرست دستگاه ها ';
@@ -121,7 +118,7 @@ exports.create = async (req, res, next) => {
 // ذخیره دستگاه جدید
 exports.store = async (req, res, next) => {
   try {
-    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { nationalCode, organizationName, budgetRow, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : dateService.toEnglishDate(registerDate);
@@ -142,6 +139,7 @@ exports.store = async (req, res, next) => {
     const { id } = await OrganizationMasterDataModel.create({
       nationalCode,
       organizationName,
+      budgetRow,
       registerDate,
       registerNo: registerNo == '' ? null : registerNo,
       postalCode: postalCode == '' ? null : postalCode,
@@ -275,7 +273,7 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { nationalCode, organizationName, budgetRow, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
     const validationResult = organizationSchema.validate(req.body, {
       abortEarly: false,
@@ -299,6 +297,7 @@ exports.update = async (req, res, next) => {
       {
         nationalCode,
         organizationName,
+        budgetRow,
         registerDate,
         registerNo: registerNo == '' ? null : registerNo,
         postalCode: postalCode == '' ? null : postalCode,

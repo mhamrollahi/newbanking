@@ -7,6 +7,7 @@ class OrganizationMasterData extends BaseModel {}
 module.exports = (sequelize) => {
   OrganizationMasterData.init(
     {
+
       nationalCode: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -51,6 +52,37 @@ module.exports = (sequelize) => {
           len: {
             args: [1, 200],
             msg: 'عنوان دستگاه باید بین 1 تا 200 حرف باشد.'
+          }
+        }
+      },
+
+      budgetRow: {
+        type: DataTypes.STRING(6),
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'لطفا  ردیف بودجه را وارد کنید.'
+          },
+          notEmpty: {
+            msg: 'لطفا  ردیف بودجه را وارد کنید.'
+          },
+          len: {
+            args: [6, 6],
+            msg: 'ردیف بودجه باید 6 رقم باشد.'
+          },
+          isNumericOrPersian(value) {
+            // تبدیل اعداد فارسی به انگلیسی
+            const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+            const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            let convertedValue = value;
+            for (let i = 0; i < 10; i++) {
+              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+            }
+
+            // بررسی اینکه آیا همه کاراکترها عدد هستند
+            if (!/^\d+$/.test(convertedValue)) {
+              throw new Error('شناسه ملی  باید فقط شامل اعداد باشد 111.');
+            }
           }
         }
       },
@@ -157,7 +189,6 @@ module.exports = (sequelize) => {
       },
 
       //جنس دستگاه
-      
       organizationTypeId: {
         type: DataTypes.INTEGER,
         references: {
@@ -179,66 +210,66 @@ module.exports = (sequelize) => {
         onDelete: 'RESTRICT'
       },
 
-      filePathStatute: {
-        type: DataTypes.BLOB,
-        validate: {
-          isFileSizeValid(value) {
-            if (value && value.length > 5 * 1024 * 1024) {
-              // 5MB
-              throw new Error('حجم فایل اساسنامه نباید بیشتر از 5 مگابایت باشد.');
-            }
-          },
-          isFileTypeValid(value) {
-            if (value) {
-              // بررسی نوع فایل (مثلاً فقط PDF)
-              const allowedTypes = ['application/pdf'];
-              if (!allowedTypes.includes(value.type)) {
-                throw new Error('فایل اساسنامه باید از نوع PDF باشد.');
-              }
-            }
-          }
-        }
-      },
+      // filePathStatute: {
+      //   type: DataTypes.BLOB,
+      //   validate: {
+      //     isFileSizeValid(value) {
+      //       if (value && value.length > 5 * 1024 * 1024) {
+      //         // 5MB
+      //         throw new Error('حجم فایل اساسنامه نباید بیشتر از 5 مگابایت باشد.');
+      //       }
+      //     },
+      //     isFileTypeValid(value) {
+      //       if (value) {
+      //         // بررسی نوع فایل (مثلاً فقط PDF)
+      //         const allowedTypes = ['application/pdf'];
+      //         if (!allowedTypes.includes(value.type)) {
+      //           throw new Error('فایل اساسنامه باید از نوع PDF باشد.');
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
 
-      filePathFinancial: {
-        type: DataTypes.BLOB,
-        validate: {
-          isFileSizeValid(value) {
-            if (value && value.length > 5 * 1024 * 1024) {
-              // 5MB
-              throw new Error('حجم فایل مالی نباید بیشتر از 5 مگابایت باشد.');
-            }
-          },
-          isFileTypeValid(value) {
-            if (value) {
-              const allowedTypes = ['application/pdf'];
-              if (!allowedTypes.includes(value.type)) {
-                throw new Error('فایل مالی باید از نوع PDF باشد.');
-              }
-            }
-          }
-        }
-      },
+      // filePathFinancial: {
+      //   type: DataTypes.BLOB,
+      //   validate: {
+      //     isFileSizeValid(value) {
+      //       if (value && value.length > 5 * 1024 * 1024) {
+      //         // 5MB
+      //         throw new Error('حجم فایل مالی نباید بیشتر از 5 مگابایت باشد.');
+      //       }
+      //     },
+      //     isFileTypeValid(value) {
+      //       if (value) {
+      //         const allowedTypes = ['application/pdf'];
+      //         if (!allowedTypes.includes(value.type)) {
+      //           throw new Error('فایل مالی باید از نوع PDF باشد.');
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
 
-      filePathFoundationAd: {
-        type: DataTypes.BLOB,
-        validate: {
-          isFileSizeValid(value) {
-            if (value && value.length > 5 * 1024 * 1024) {
-              // 5MB
-              throw new Error('حجم فایل آگهی تأسیس نباید بیشتر از 5 مگابایت باشد.');
-            }
-          },
-          isFileTypeValid(value) {
-            if (value) {
-              const allowedTypes = ['application/pdf'];
-              if (!allowedTypes.includes(value.type)) {
-                throw new Error('فایل آگهی تأسیس باید از نوع PDF باشد.');
-              }
-            }
-          }
-        }
-      },
+      // filePathFoundationAd: {
+      //   type: DataTypes.BLOB,
+      //   validate: {
+      //     isFileSizeValid(value) {
+      //       if (value && value.length > 5 * 1024 * 1024) {
+      //         // 5MB
+      //         throw new Error('حجم فایل آگهی تأسیس نباید بیشتر از 5 مگابایت باشد.');
+      //       }
+      //     },
+      //     isFileTypeValid(value) {
+      //       if (value) {
+      //         const allowedTypes = ['application/pdf'];
+      //         if (!allowedTypes.includes(value.type)) {
+      //           throw new Error('فایل آگهی تأسیس باید از نوع PDF باشد.');
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
 
       // isConfirmed: {
       //   type: DataTypes.BOOLEAN
