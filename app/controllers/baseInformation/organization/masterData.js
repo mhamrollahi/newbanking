@@ -100,7 +100,9 @@ exports.create = async (req, res, next) => {
     });
 
     const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName']
+      attributes: ['id', 'organizationName','nationalCode'],
+      raw: true,
+      nest: true
     });
 
     res.adminRender('./baseInformation/organization/masterData/create', {
@@ -119,9 +121,9 @@ exports.create = async (req, res, next) => {
 // ذخیره دستگاه جدید
 exports.store = async (req, res, next) => {
   try {
-    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
-    const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
+    // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : dateService.toEnglishDate(registerDate);
 
     const validationResult = organizationSchema.validate(req.body, {
@@ -144,6 +146,7 @@ exports.store = async (req, res, next) => {
       registerNo: registerNo == '' ? null : registerNo,
       postalCode: postalCode == '' ? null : postalCode,
       address: address == '' ? null : address,
+      parentOrganizationId: parentOrganizationId == '' ? null : parentOrganizationId,
       provinceId: provinceId == '' ? null : provinceId,
       organizationTypeId: organizationTypeId == '' ? null : organizationTypeId,
       organizationCategoryId: organizationCategoryId == '' ? null : organizationCategoryId,
@@ -190,7 +193,12 @@ exports.edit = async (req, res, next) => {
           model: CodingDataModel,
           as: 'organizationCategory',
           attributes: ['id', 'title']
-        }
+        }, 
+        {
+          model: OrganizationMasterDataModel,
+          as: 'parentOrganization',
+          attributes: ['id', 'organizationName','nationalCode']
+        },
       ],
       raw: true,
       nest: true
@@ -199,6 +207,7 @@ exports.edit = async (req, res, next) => {
     if (!organization) {
       return res.redirect('/error/404');
     }
+
     const provincesListData = await CodingDataModel.findAll({
       attributes: ['id', 'title'],
       include: [
@@ -210,6 +219,7 @@ exports.edit = async (req, res, next) => {
       raw: true,
       nest: true
     });
+
     const organizationTypesListData = await CodingDataModel.findAll({
       attributes: ['id', 'title'],
       include: [
@@ -221,6 +231,7 @@ exports.edit = async (req, res, next) => {
       raw: true,
       nest: true
     });
+
     const organizationCategoriesListData = await CodingDataModel.findAll({
       attributes: ['id', 'title'],
       include: [
@@ -232,19 +243,28 @@ exports.edit = async (req, res, next) => {
       raw: true,
       nest: true
     });
+
+    const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
+      attributes: ['id', 'organizationName','nationalCode'],
+      raw: true,
+      nest: true
+    });
+
     if (organization) {
       organization.fa_createdAt = dateService.toPersianDate(organization.createdAt);
       organization.fa_updatedAt = dateService.toPersianDate(organization.updatedAt);
       const dateStr = organization.registerDate == null ? '' : organization.registerDate.toISOString().split('T')[0];
       organization.registerDate = dateStr.replace(/-/g, '/');
     }
+
     res.adminRender('./baseInformation/organization/masterData/edit', {
       title,
       subTitle,
       organization,
       provincesListData,
       organizationTypesListData,
-      organizationCategoriesListData
+      organizationCategoriesListData,
+      parentOrganizationsListData,
     });
   } catch (error) {
     next(error);
@@ -255,7 +275,7 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { nationalCode, organizationName, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
     const validationResult = organizationSchema.validate(req.body, {
       abortEarly: false,
@@ -283,6 +303,7 @@ exports.update = async (req, res, next) => {
         registerNo: registerNo == '' ? null : registerNo,
         postalCode: postalCode == '' ? null : postalCode,
         address: address == '' ? null : address,
+        parentOrganizationId: parentOrganizationId == '' ? null : parentOrganizationId,
         provinceId: provinceId == '' ? null : provinceId,
         organizationTypeId: organizationTypeId == '' ? null : organizationTypeId,
         organizationCategoryId: organizationCategoryId == '' ? null : organizationCategoryId,

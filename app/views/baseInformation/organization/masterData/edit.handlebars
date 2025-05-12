@@ -68,6 +68,18 @@
             </label>
           </div>
 
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updater' value='{{organization.updater.fullName}}' />
+          <label for='updater' class='mandatory'>اصلاح کننده</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updated_at' value='{{organization.fa_updatedAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
+        </div>
+
+
+
           {{!-- <div class='mb-3'>
             <label for='filePathStatute' class='form-label'>اساسنامه دستگاه</label>
             <input type='file' class='form-control' id='filePathStatute' name='filePathStatute' accept='.pdf' />
@@ -85,7 +97,17 @@
         <!-- ستون سمت راست -->
         <div class='col-md-6'>
           <div style='margin-top:15px; '>
-            <label for='provinceId' class='mandatory'>استان</label>
+            <label for='parentOrganizationId' >نام دستگاه مادر</label>
+            <select id='cmbparentOrganizationId' name='parentOrganizationId' style='position: relative;' data-farsiname='نام دستگاه مادر' >
+              <option value=''>لطفا نام دستگاه مادر را انتخاب کنید</option>
+              {{#each parentOrganizationsListData}}
+                <option value='{{this.id}}' {{isSelected id ../organization.parentOrganization.id}}>{{this.organizationName}} -- {{this.nationalCode}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div style='margin-top:15px; '>
+            <label for='provinceId' >استان</label>
             <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان' >
               <option value=''>لطفا استان را انتخاب کنید</option>
               {{#each provincesListData}}
@@ -95,7 +117,7 @@
           </div>
 
           <div style='margin-top:15px; '>
-            <label for='organizationTypeId' class='mandatory'>جنس دستگاه</label>
+            <label for='organizationTypeId' >جنس دستگاه</label>
             <select id='cmbOrganizationType' name='organizationTypeId' style='position: relative;' data-farsiname='حنس دستگاه' >
               <option value=''>لطفا جنس دستگاه را انتخاب کنید</option>
               {{#each organizationTypesListData}}
@@ -105,7 +127,7 @@
           </div>
 
           <div style='margin-top:15px; '>
-            <label for='organizationCategoryId' class='mandatory'>نوع دستگاه</label>
+            <label for='organizationCategoryId' >نوع دستگاه</label>
             <select id='cmbOrganizationCategory' name='organizationCategoryId' style='position: relative;' data-farsiname='نوع دستگاه' >
               <option value=''>لطفا نوع دستگاه را انتخاب کنید</option>
               {{#each organizationCategoriesListData}}
@@ -140,30 +162,20 @@
             {{/if}}
           </div> --}}
 
-          <div class='form-floating mb-3'>
+          <div class='form-floating mb-5' style='margin-top:15px;'>
             <textarea class='form-control' id='description' name='description' placeholder='توضیحات را وارد کنید.' autocomplete='off'>{{organization.description}}</textarea>
             <label for='description'>
               توضیحات
             </label>
           </div>
 
-                  <div class='form-floating mb-1'>
+                  <div class='form-floating mb-5'>
           <input type='text' class='form-control' readonly name='creator' value='{{organization.creator.fullName}}' />
           <label for='creator' class='mandatory'>ایجاد کننده</label>
         </div>
-        <div class='form-floating mb-1'>
+        <div class='form-floating mb-5'>
           <input type='text' class='form-control' readonly name='created_at' value='{{organization.fa_createdAt}}' />
           <label for='created_at' class='mandatory'>تاریخ ایجاد</label>
-        </div>
-
-        <div class='form-floating mb-1'>
-          <input type='text' class='form-control' readonly name='updater' value='{{organization.updater.fullName}}' />
-          <label for='updater' class='mandatory'>اصلاح کننده</label>
-        </div>
-
-        <div class='form-floating mb-1'>
-          <input type='text' class='form-control' readonly name='updated_at' value='{{organization.fa_updatedAt}}' />
-          <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
         </div>
 
 
