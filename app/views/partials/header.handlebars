@@ -2,7 +2,7 @@
 
 <div class="header-section">
   <div class="container-fluid">
-    <div class="row justify-content-between align-items-center">
+    <div class="row justify-content-center align-items-center">
 
       <!-- Header Logo (Header Left) Start -->
       <div class="header-logo col-auto" style="padding:0">
@@ -10,6 +10,11 @@
           <img src="/static/assets/images/logo.jpg" alt="" />
         </a>
       </div><!-- Header Logo (Header Left) End -->
+
+      <!-- Center Logo -->
+      <div class="col-auto" style="position: absolute; left: 50%; transform: translateX(-50%);">
+        <img src="/static/assets/images/arm1.png" alt="آرم وزارت امور اقتصادی و دارایی" style="display: block; margin: auto;">
+      </div>
 
       <!-- Header Right Start -->
       <div class="header-right flex-grow-1 col-auto">
@@ -27,15 +32,14 @@
               </div>
 
               <!--Header Search-->
-              <div class="col-auto">
-
-                <div class="header-search">
+              <div class="col-auto" >
+                {{!--<div class="header-search">
 
                   <button class="header-search-open d-block d-xl-none"><i
                       class="zmdi zmdi-search"
                     ></i></button>
 
-                  <div class="header-search-form">
+                   <div class="header-search-form">
                     <form action="#">
                       <input type="text" placeholder="جستجو کنید" />
                       <button><i class="zmdi zmdi-search"></i></button>
@@ -43,9 +47,9 @@
                     <button class="header-search-close d-block d-xl-none"><i
                         class="zmdi zmdi-close"
                       ></i></button>
-                  </div>
+                  </div> 
 
-                </div>
+                </div>--}}
               </div>
 
             </div>

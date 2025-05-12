@@ -32,10 +32,15 @@
           </div>
         {{/if}}
 
-        <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='onlineCode' name='onlineCode' minlength='1' maxlength='4' placeholder='کد آنلاین را وارد کنید.' autocomplete='off' autofocus='true' required />
-          <label for='onlineCode' class='mandatory'>
-           کد آنلاین
+        <div class='form-floating mb-3 position-relative'>
+          <div class="input-group">
+            <input type='text' class='form-control' id='onlineCode' name='onlineCode' minlength='1' maxlength='4'  autocomplete='off'  required />
+            <button type="button" class="btn btn-primary" id="getNextCode">
+              <i class="zmdi zmdi-refresh"></i>
+            </button>
+          </div>
+          <label for='onlineCode' class='mandatory' id="onlineCodeLabel">
+            کد آنلاین
           </label>
         </div>
 
@@ -71,6 +76,58 @@
 </main>
 
 <script src='/static/assets/js/formValidation.js'></script>
+
+<style>
+.input-with-value {
+  font-size: 20px !important;
+  font-weight: bold !important;
+  text-align: center !important;
+}
+
+.label-hidden {
+  display: none !important;
+}
+</style>
+
+<script>
+document.getElementById('getNextCode').addEventListener('click', async function() {
+  try {
+    const response = await fetch('./api/codeOnline/next', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('خطا در دریافت کد');
+    }
+    
+    const data = await response.json();
+    const input = document.getElementById('onlineCode');
+    const label = document.getElementById('onlineCodeLabel');
+    
+    input.value = data.nextCode;
+    input.classList.add('input-with-value');
+    label.classList.add('label-hidden');
+  } catch (error) {
+    console.error('خطا:', error);
+    alert('خطا در دریافت کد بعدی');
+  }
+});
+
+// برای زمانی که کاربر input را پاک می‌کند
+document.getElementById('onlineCode').addEventListener('input', function() {
+  const label = document.getElementById('onlineCodeLabel');
+  if (this.value === '') {
+    this.classList.remove('input-with-value');
+    label.classList.remove('label-hidden');
+  } else {
+    this.classList.add('input-with-value');
+    label.classList.add('label-hidden');
+  }
+});
+</script>
 
 
 

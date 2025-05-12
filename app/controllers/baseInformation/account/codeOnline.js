@@ -31,6 +31,43 @@ exports.getData = async (req, res, next) => {
   }
 };
 
+exports.nextCode = async (req, res, next) => {
+  try {
+    // دریافت همه کدهای موجود
+    const existingCodes = await CodeOnlineModel.findAll({
+      attributes: ['code'],
+      order: [['code', 'ASC']]
+    });
+
+    // تبدیل به آرایه اعداد
+    const codeNumbers = existingCodes.map(code => parseInt(code.code));
+
+    // اگر هیچ کدی وجود نداشت، از 1 شروع کن
+    if (codeNumbers.length === 0) {
+      return res.json({ nextCode: '1' });
+    }
+
+    // پیدا کردن اولین عدد گمشده
+    let nextNumber = 1;
+    for (let i = 0; i < codeNumbers.length; i++) {
+      if (codeNumbers[i] !== nextNumber) {
+        break;
+      }
+      nextNumber++;
+    }
+
+    // اگر همه اعداد پشت سر هم بودند، یک عدد به آخرین عدد اضافه کن
+    if (nextNumber > codeNumbers[codeNumbers.length - 1]) {
+      nextNumber = codeNumbers[codeNumbers.length - 1] + 1;
+    }
+
+    res.json({ nextCode: nextNumber.toString() });
+  } catch (error) {
+    next(error);
+  }
+
+}
+
 exports.index = async (req, res, next) => {
   try {
     res.adminRender('./baseInformation/account/codeOnline/index', {

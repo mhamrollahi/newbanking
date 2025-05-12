@@ -3,8 +3,8 @@ const codeOnlineControllers = require('@controllers/baseInformation/account/code
 const router = express.Router()
 const accessControlMiddleware = require('@middlewares/accessControlMiddleware')
 
-
 router.get('/api/getData',[accessControlMiddleware('codeOnline','read')],codeOnlineControllers.getData)
+router.get('/api/codeOnline/next',[accessControlMiddleware('codeOnline','read')],codeOnlineControllers.nextCode)
 
 router.get('/index',[accessControlMiddleware('codeOnline','read')],codeOnlineControllers.index)
 router.get('/create',[accessControlMiddleware('codeOnline','create')],codeOnlineControllers.create)

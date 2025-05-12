@@ -118,7 +118,11 @@ frm.addEventListener('change', (e) => {
     errorsEL.forEach(el => el.remove());
     
     if (!e.target.value) {
-      appendError2(e.target, "لطفاً یک گزینه را انتخاب کنید");
+      const errorEL = document.createElement('div');
+      errorEL.innerText = "لطفاً یک گزینه را انتخاب کنید";
+      errorEL.classList.add('errMessage');
+      // اضافه کردن خطا بعد از div اصلی select
+      e.target.parentElement.parentElement.appendChild(errorEL);
     }
   }
 });
