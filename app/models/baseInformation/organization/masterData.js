@@ -146,17 +146,18 @@ module.exports = (sequelize) => {
         onDelete: 'RESTRICT'
       },
 
-      // parentOrganizationId: {
-      //   type: DataTypes.INTEGER,
-      //   references: {
-      //     model: 'OrganizationMasterData',
-      //     key: 'id'
-      //   },
-      //   onUpdate: 'RESTRICT',
-      //   onDelete: 'RESTRICT'
-      // },
+      parentOrganizationId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'organizationMasterData',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
+      },
 
       //جنس دستگاه
+      
       organizationTypeId: {
         type: DataTypes.INTEGER,
         references: {
@@ -239,9 +240,9 @@ module.exports = (sequelize) => {
         }
       },
 
-      isConfirmed: {
-        type: DataTypes.BOOLEAN
-      },
+      // isConfirmed: {
+      //   type: DataTypes.BOOLEAN
+      // },
 
       description: {
         type: DataTypes.TEXT,
@@ -275,14 +276,14 @@ module.exports = (sequelize) => {
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'provinceId', as: 'province' });
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'organizationTypeId', as: 'organizationType' });
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'organizationCategoryId', as: 'organizationCategory' });
-
+    OrganizationMasterData.belongsTo(models.OrganizationMasterDataModel, { foreignKey: 'parentOrganizationId', as: 'parentOrganization' });
+    
+    
     OrganizationMasterData.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     OrganizationMasterData.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
 
-    // OrganizationMasterData.belongsTo(models.OrganizationMasterDataModel, {
-    //   foreignKey: 'parentOrganizationId',
-    //   as: 'parentOrganization'
-    // });
+
+
     // OrganizationMasterData.hasMany(models.OrganizationMasterDataModel, {
     //   foreignKey: 'parentOrganizationId',
     //   as: 'childrenOrganizations'
