@@ -35,14 +35,14 @@
         <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='firstName' name='firstName' maxlength='50' minlength='2' autocomplete='off' placeholder=' ' autofocus='true' required />
           <label for='firstName' class='mandatory'>
-            نام 
+            نام
           </label>
         </div>
 
         <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='lastName' name='lastName' maxlength='50' minlength='2' autocomplete='off' placeholder='نام‌خانوادگی را وارد کنید.' required />
           <label for='lastName' class='mandatory'>
-            ناخانوادگی
+            نام‌خانوادگی
           </label>
         </div>
 
@@ -54,6 +54,26 @@
         </div>
 
         <div class='form-floating mb-3'>
+          <select class='form-select' id='profilePicture' name='profilePicture' >
+            <option value=''>انتخاب تصویر پروفایل</option>
+            <option value='man1.jpg'>تصویر پروفایل 1</option>
+            <option value='man2.jpg'>تصویر پروفایل 2</option>
+            <option value='man3.jpg'>تصویر پروفایل 3</option>
+            <option value='man4.jpg'>تصویر پروفایل 4</option>
+            <option value='man5.jpg'>تصویر پروفایل 5</option>
+            <option value='woman1.jpg'>تصویر پروفایل 6</option>
+            <option value='woman2.jpg'>تصویر پروفایل 7</option>
+            <option value='woman3.jpg'>تصویر پروفایل 8</option>
+            <option value='woman4.jpg'>تصویر پروفایل 9</option>
+          </select>
+          <label for='profilePicture'>عکس پروفایل</label>
+        </div>
+
+        <div class='mb-3 text-center'>
+          <img id='profilePreview' src='' alt='پیش‌نمایش تصویر پروفایل' style='max-width: 150px; display: none;' class='rounded-circle border p-1' />
+        </div>
+
+        <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='mobile' name='mobile' maxlength='11' minlength='11' autocomplete='off' placeholder=' شماره موبایل را وارد کنید.' />
           <label for='mobile' class='mandatory'>
             شماره موبایل
@@ -61,7 +81,7 @@
         </div>
 
         <div class='form-floating mb-3'>
-          <input type='text' class='form-control' id='description' name='Description' maxlength="255" autocomplete='off' placeholder='توضیحات.' />
+          <input type='text' class='form-control' id='description' name='Description' maxlength='255' autocomplete='off' placeholder='توضیحات.' />
           <label for='Description'>
             توضیحات
           </label>
@@ -80,3 +100,6 @@
   </div>
 </main>
 <script src='/static/assets/js/formValidation.js'></script>
+<script>
+  document.getElementById('profilePicture').addEventListener('change', function() { const preview = document.getElementById('profilePreview'); const selectedValue = this.value; if (selectedValue) { preview.src = `/static/assets/images/avatars/${selectedValue}`; preview.style.display = 'inline-block'; } else { preview.style.display = 'none'; } });
+</script>

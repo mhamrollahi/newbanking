@@ -5,6 +5,7 @@ class Person extends BaseModel {}
 
 module.exports = (sequelize) => {
   Person.init({
+    
       firstName: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -86,6 +87,27 @@ module.exports = (sequelize) => {
           }
         }
       },
+      
+      profilePicture: {
+        type: DataTypes.BLOB,
+        validate: {
+          isFileSizeValid(value) {
+            if (value && value.length > 1 * 1024 * 1024) {
+              // 5MB
+              throw new Error('حجم فایل عکس باید بیشتر از 1 مگابایت باشد.');
+            }
+          },
+          isFileTypeValid(value) {
+            if (value) {
+              // بررسی نوع فایل (مثلاً فقط PDF)
+              const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+              if (!allowedTypes.includes(value.type)) {
+                throw new Error('فایل عکس باید از نوع jpeg, png, jpg باشد.');
+              }
+            }
+          }
+        }
+      },
 
       Description: {
         type: DataTypes.STRING(255),
@@ -101,27 +123,10 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
-      //tableName: 'people',
-      //freezeTableName: true,
-
       validate: {},
-      // virtualFields: {
-      //   fa_createdAt: {
-      //     type: DataTypes.STRING,
-      //     get() {
-      //       return this.createdAt ? dateService.toPersianDate(this.createdAt) : null;
-      //     }
-      //   },
-      //   fa_updatedAt: {
-      //     type: DataTypes.STRING,
-      //     get() {
-      //       return this.updatedAt ? dateService.toPersianDate(this.updatedAt) : null;
-      //     }
-      //   }
-      // },
-
     }
   );
+
   Person.sequelize = sequelize;
 
   Person.associate = (models)=>{
