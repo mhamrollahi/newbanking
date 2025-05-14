@@ -57,7 +57,7 @@ module.exports = (sequelize) => {
       },
 
       budgetRow: {
-        type: DataTypes.STRING(6),
+        type: DataTypes.STRING(8),
         allowNull: false,
         validate: {
           notNull: {
@@ -67,8 +67,8 @@ module.exports = (sequelize) => {
             msg: 'لطفا  ردیف بودجه را وارد کنید.'
           },
           len: {
-            args: [6, 6],
-            msg: 'ردیف بودجه باید 6 رقم باشد.'
+            args: [8, 8],
+            msg: 'ردیف بودجه باید 8 رقم باشد.'
           },
           isNumericOrPersian(value) {
             // تبدیل اعداد فارسی به انگلیسی
