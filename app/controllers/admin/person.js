@@ -3,6 +3,8 @@ const { models } = require('@models/');
 const { PersonModel, UserViewModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
+const fs = require('fs');
+const path = require('path');
 
 exports.getData = async (req, res, next) => {
   try {
@@ -12,11 +14,9 @@ exports.getData = async (req, res, next) => {
           model: UserViewModel,
           as: 'creator',
           attributes: ['username', 'fullName']
-        },
+        }
       ]
     });
-    // console.log(result);
-
     res.json(result);
   } catch (error) {
     next(error);
@@ -25,10 +25,9 @@ exports.getData = async (req, res, next) => {
 
 exports.index = async (req, res, next) => {
   try {
-
     res.adminRender('./admin/person/index', {
       title: 'مدیریت کاربران سیستم',
-      subTitle: 'فهرست پروفایل کاربران',
+      subTitle: 'فهرست پروفایل کاربران'
     });
   } catch (error) {
     next(error);
@@ -37,16 +36,9 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    // const errors = req.flash('errors');
-    // const success = req.flash('success');
-    // const hasError = errors.length > 0;
-
     res.adminRender('./admin/person/create', {
       title: 'مدیریت کاربران سیستم',
-      subTitle: 'تعریف پرفایل جدید',
-      // errors,
-      // hasError,
-      // success
+      subTitle: 'تعریف پرفایل جدید'
     });
   } catch (error) {
     next(error);
@@ -66,9 +58,10 @@ exports.store = async (req, res, next) => {
       nationalCode: req.body.nationalCode,
       mobile: req.body.mobile,
       Description: req.body.Description,
+      profilePicture: req.body.profilePicture || 'default-avatar.jpg', // اگر تصویری انتخاب نشده باشد، از تصویر پیش‌فرض استفاده می‌شود
       creatorId: userId
     };
-    console.log(personData);
+    // console.log(personData);
 
     //اعتبار سنجی فرم ورودی - Start
 
@@ -90,21 +83,6 @@ exports.store = async (req, res, next) => {
       return res.redirect('./index');
     }
   } catch (error) {
-    // let errors = [];
-
-    // if (error.name === 'SequelizeValidationError') {
-    //   errors = error.message.split('Validation error:');
-    //   req.flash('errors', errors);
-    //   return res.redirect(`./create`);
-    // }
-
-    // if (error.name === 'SequelizeUniqueConstraintError') {
-    //   console.log(error.message);
-
-    //   errors = error.message.split('SequelizeUniqueConstraintError');
-    //   req.flash('errors', errors);
-    //   return res.redirect(`./create`);
-    // }
     next(error);
   }
 };
@@ -113,10 +91,6 @@ exports.edit = async (req, res, next) => {
   try {
     const personId = req.params.id;
 
-    // const errors = req.flash('errors');
-    // const hasError = errors.length > 0;
-    // const success = req.flash('success');
-    // const removeSuccess = req.flash('removeSuccess');
     const personData = await PersonModel.findOne({
       where: { id: personId },
       include: [
@@ -132,7 +106,7 @@ exports.edit = async (req, res, next) => {
         }
       ],
       raw: true,
-      nest: true,
+      nest: true
     });
 
     if (personData) {
@@ -140,12 +114,21 @@ exports.edit = async (req, res, next) => {
       personData.fa_updatedAt = dateService.toPersianDate(personData.updatedAt);
     }
 
-    // console.log('creator.fullName : ', personData.creator.fullName, 'updater.fullname : ', personData.updater.fullName);
-
     res.adminRender('./admin/person/edit', {
       title: 'مدیریت کاربران سیستم',
       subTitle: 'اصلاح کاربر',
       personData,
+      profilePictures: [
+        { value: 'man1.jpg', label: 'تصویر پروفایل 1' },
+        { value: 'man2.jpg', label: 'تصویر پروفایل 2' },
+        { value: 'man3.jpg', label: 'تصویر پروفایل 3' },
+        { value: 'man4.jpg', label: 'تصویر پروفایل 4' },
+        { value: 'man5.jpg', label: 'تصویر پروفایل 5' },
+        { value: 'woman1.jpg', label: 'تصویر پروفایل 6' },
+        { value: 'woman2.jpg', label: 'تصویر پروفایل 7' },
+        { value: 'woman3.jpg', label: 'تصویر پروفایل 8' },
+        { value: 'woman4.jpg', label: 'تصویر پروفایل 9' }
+      ]
     });
   } catch (error) {
     next(error);
@@ -165,17 +148,27 @@ exports.update = async (req, res, next) => {
       return res.redirect(`../edit/${personId}`);
     }
 
-    const rowsAffected = await PersonModel.update(
-      {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        nationalCode: req.body.nationalCode,
-        mobile: req.body.mobile,
-        Description: req.body.Description,
-        updaterId: req.session?.user?.id ?? 0,
-      },
-      { where: { id: personId }, individualHooks: true }
-    );
+    // let profilePictureData = null;
+    // if (req.body.profilePicture) {
+    //   const imagePath = path.join(__dirname, '../../../public/static/assets/images/avatars', req.body.profilePicture);
+    //   profilePictureData = fs.readFileSync(imagePath);
+    // }
+
+    const updateData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      nationalCode: req.body.nationalCode,
+      mobile: req.body.mobile,
+      profilePicture: req.body.profilePicture,
+      Description: req.body.Description,
+      updaterId: req.session?.user?.id ?? 0
+    };
+
+    // if (profilePictureData) {
+    //   updateData.profilePicture = profilePictureData;
+    // }
+
+    const rowsAffected = await PersonModel.update(updateData, { where: { id: personId }, individualHooks: true });
 
     if (rowsAffected[0] > 0) {
       req.flash('success', 'اطلاعات با موفقیت اصلاح شد.');
@@ -186,22 +179,6 @@ exports.update = async (req, res, next) => {
 
     return res.redirect(`../edit/${personId}`);
   } catch (error) {
-    // const id = await req.params.id;
-
-    // let errors = [];
-
-    // if (error.name === 'SequelizeValidationError') {
-    //   errors = error.message.split('Validation error:');
-    //   req.flash('errors', errors);
-    //   return res.redirect(`../edit/${id}`);
-    // }
-
-    // if (error.name === 'SequelizeUniqueConstraintError') {
-    //   errors = error.message.split('SequelizeUniqueConstraintError');
-    //   req.flash('errors', errors);
-    //   return res.redirect(`../edit/${id}`);
-    // }
-
     next(error);
   }
 };
@@ -218,11 +195,6 @@ exports.delete = async (req, res, next) => {
       return res.redirect('../index');
     }
   } catch (error) {
-    // if (error.name === 'SequelizeForeignKeyConstraintError') {
-    //   req.flash('removeSuccess', 'این اطلاعات در جایی دیگر استفاده شده و امکان حذف آن نیست !!!');
-    //   return res.redirect(`../index`);
-    // }
-
     next(error);
   }
 };
@@ -232,7 +204,8 @@ const formValidation = (req) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     nationalCode: req.body.nationalCode,
-    mobile: req.body.mobile
+    mobile: req.body.mobile,
+    profilePicture: req.body.profilePicture
   };
 
   const schema = Joi.object({
@@ -283,7 +256,11 @@ const formValidation = (req) => {
         'string.min': errMessages['string.min'],
         'string.required': errMessages['any.required'],
         'string.pattern.base': ' فرمت {#label} نادرست می باشد (فرمت درست --------09)'
-      })
+      }),
+
+    profilePicture: Joi.string().allow(null, '').label('تصویر پروفایل').messages({
+      'string.base': '{#label} باید یک رشته متنی باشد'
+    })
   });
 
   return schema.validate(userData, { abortEarly: false });

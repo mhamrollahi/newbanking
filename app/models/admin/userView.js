@@ -26,6 +26,10 @@ module.exports = (sequelize) => {
         type: DataTypes.BOOLEAN,
         allowNull: false, 
         defaultValue: 1
+      },
+      profilePicture: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
       }
     },
     {
@@ -58,9 +62,6 @@ module.exports = (sequelize) => {
 
     UserView.hasMany(models.RolePermissionModel, { foreignKey: 'creatorId' });
     UserView.hasMany(models.RolePermissionModel, { foreignKey: 'updaterId' });
-
-    // UserView.hasMany(models.BankBranchModel, { foreignKey: 'creatorId' });
-    // UserView.hasMany(models.BankBranchModel, { foreignKey: 'updaterId' });
 
 
   };

@@ -1,11 +1,11 @@
-const { DataTypes, } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const BaseModel = require('../baseModel');
 
 class Person extends BaseModel {}
 
 module.exports = (sequelize) => {
-  Person.init({
-    
+  Person.init(
+    {
       firstName: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -46,7 +46,7 @@ module.exports = (sequelize) => {
           return `${this.firstName} ${this.lastName}`;
         }
       },
-      
+
       nationalCode: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -87,24 +87,14 @@ module.exports = (sequelize) => {
           }
         }
       },
-      
+
       profilePicture: {
-        type: DataTypes.BLOB,
+        type: DataTypes.STRING(100),
+        defaultValue: 'default-avatar.jpg',
         validate: {
-          isFileSizeValid(value) {
-            if (value && value.length > 1 * 1024 * 1024) {
-              // 5MB
-              throw new Error('حجم فایل عکس باید بیشتر از 1 مگابایت باشد.');
-            }
-          },
-          isFileTypeValid(value) {
-            if (value) {
-              // بررسی نوع فایل (مثلاً فقط PDF)
-              const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-              if (!allowedTypes.includes(value.type)) {
-                throw new Error('فایل عکس باید از نوع jpeg, png, jpg باشد.');
-              }
-            }
+          len: {
+            args: [0, 100],
+            msg: 'نام فایل تصویر نباید بیشتر از ۱۰۰ کاراکتر باشد.'
           }
         }
       },
@@ -117,24 +107,22 @@ module.exports = (sequelize) => {
             msg: 'توضیحات باید کمتر از ۲۵۵ کاراکتر باشد.'
           }
         }
-      },
-
+      }
     },
     {
       timestamps: true,
       sequelize,
-      validate: {},
+      validate: {}
     }
   );
 
   Person.sequelize = sequelize;
 
-  Person.associate = (models)=>{
-    Person.hasMany(models.UserModel,{foreignKey:'PersonId'})
-    
+  Person.associate = (models) => {
+    Person.hasMany(models.UserModel, { foreignKey: 'PersonId' });
+
     Person.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     Person.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
-
-  }
+  };
   return Person;
 };
