@@ -13,6 +13,20 @@
       "database": "NewBanking",
       "username": "root",
       "password": "904957"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "Daraei",
+      "database": "NewBanking",
+      "username": "root",
+      "password": "904957"
     }
   ]
 }

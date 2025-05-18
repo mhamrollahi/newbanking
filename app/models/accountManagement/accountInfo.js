@@ -1,17 +1,16 @@
 const { DataTypes } = require('sequelize');
 const BaseModel = require('@models/baseModel');
 
-class AccountInfo  extends BaseModel {}
+class AccountInfo extends BaseModel {}
 
 module.exports = (sequelize) => {
   AccountInfo.init(
     {
-
       accountNumber: {
         type: DataTypes.STRING(20),
         allowNull: false,
         validate: {
-          notNull: {  
+          notNull: {
             msg: 'لطفا  شماره حساب را وارد کنید.'
           },
           notEmpty: {
@@ -32,11 +31,11 @@ module.exports = (sequelize) => {
             if (!/^\d+$/.test(convertedValue)) {
               throw new Error('شماره حساب باید فقط شامل اعداد باشد .');
             }
-          } 
+          }
         }
       },
 
-      accountTitle : {
+      accountTitle: {
         type: DataTypes.STRING(200),
         allowNull: false,
         validate: {
@@ -45,8 +44,7 @@ module.exports = (sequelize) => {
           },
           notEmpty: {
             msg: 'لطفا  عنوان حساب را وارد کنید.'
-          },
-          
+          }
         }
       },
 
@@ -70,20 +68,19 @@ module.exports = (sequelize) => {
         onUpdate: 'RESTRICT',
         onDelete: 'RESTRICT'
       },
-      
+
       openDate: {
         type: DataTypes.DATE,
         validate: {
           notNull: {
-            msg: 'لطفا  تاریخ باز شدن حساب را وارد کنید.' 
+            msg: 'لطفا  تاریخ باز شدن حساب را وارد کنید.'
           },
           notEmpty: {
             msg: 'لطفا  تاریخ باز شدن حساب را وارد کنید.'
-          },
-          
+          }
         }
       },
-      
+
       requestLetterDate: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -93,8 +90,7 @@ module.exports = (sequelize) => {
           },
           notEmpty: {
             msg: 'لطفا  تاریخ نامه درخواست حساب را وارد کنید.'
-          },
-          
+          }
         }
       },
 
@@ -107,8 +103,7 @@ module.exports = (sequelize) => {
           },
           notEmpty: {
             msg: 'لطفا  شماره نامه درخواست حساب را وارد کنید.'
-          },
-          
+          }
         }
       },
 
@@ -135,7 +130,17 @@ module.exports = (sequelize) => {
       provinceId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'province',
+          model: 'codingdata',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
+      },
+
+      transferPeriodId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'codingdata',
           key: 'id'
         },
         onUpdate: 'RESTRICT',
@@ -148,20 +153,20 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: false
       },
-      
+
       // وضعیت حساب: باز / بسته
       accountStatus: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
       },
-      
+
       requestObstructNo: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(20)
       },
 
       requestObstructDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE
       },
 
       description: {
@@ -173,17 +178,16 @@ module.exports = (sequelize) => {
           }
         }
       }
-
     },
     {
       timestamps: true,
       sequelize,
       indexes: [
         {
-          name: 'ix_provinceId,nationalCode',
+          name: 'ix_accountNumber',
           unique: true,
-          fields: ['provinceId', 'nationalCode'],
-          msg: 'این شناسه ملی در این استان  تکراری می‌باشد.... '
+          fields: ['accountNumber'],
+          msg: 'این شماره حساب  تکراری می‌باشد.... '
         }
       ],
 
@@ -195,21 +199,15 @@ module.exports = (sequelize) => {
 
   AccountInfo.associate = (models) => {
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'accountTypeId', as: 'accountType' });
-    AccountInfo.belongsTo(models.BankBranchModel , { foreignKey: 'bankBranchId', as: 'bankBranch' });
-    AccountInfo.belongsTo(models.CodeOnlineModel , { foreignKey: 'codeOnlineId', as: 'codeOnline' });
+    AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'provinceId', as: 'province' });
+    AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'transferPeriodId', as: 'transferPeriod' });
+    AccountInfo.belongsTo(models.BankBranchModel, { foreignKey: 'bankBranchId', as: 'bankBranch' });
+    AccountInfo.belongsTo(models.CodeOnlineModel, { foreignKey: 'codeOnlineId', as: 'codeOnline' });
     AccountInfo.belongsTo(models.OrganizationMasterDataModel, { foreignKey: 'organizationId', as: 'organization' });
-    
-    
+
     AccountInfo.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     AccountInfo.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
-
-
-
-    // OrganizationMasterData.hasMany(models.OrganizationMasterDataModel, {
-    //   foreignKey: 'parentOrganizationId',
-    //   as: 'childrenOrganizations'
-    // });
   };
 
-  return  AccountInfo;
+  return AccountInfo;
 };
