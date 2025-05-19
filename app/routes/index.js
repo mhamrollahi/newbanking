@@ -12,6 +12,8 @@ const cityRouter = require('./baseInformation/account/city');
 const bankBranchRouter = require('./baseInformation/account/bankBranch');
 const organizationMasterDataRouter = require('./baseInformation/organization/masterData.js');
 const codeOnlineRouter = require('./baseInformation/account/codeOnline.js');
+const accountOpenRouter = require('./accountManagement/accountOpen.js');
+
 const errorRoute = require('./errors/index');
 
 const authRouter = require('./auth/index');
@@ -30,6 +32,7 @@ module.exports = (app) => {
   });
 
   app.use('/accManagement', [authMiddleware], accManagementRouter);
+  app.use('/accManagement/accountOpen', [authMiddleware], accountOpenRouter);
 
   app.use('/baseInformation', [authMiddleware], codeTableListRouter);
   app.use('/baseInformation', [authMiddleware], codingDataRouter);

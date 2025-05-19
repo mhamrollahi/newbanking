@@ -12,6 +12,7 @@ const bankBranchModel = require('./baseInformation/account/bankBranch');
 const cityModel = require('./baseInformation/account/city');
 const organizationMasterDataModel = require('./baseInformation/organization/masterData');
 const codeOnlineModel = require('./baseInformation/account/codeOnline');
+const accountInfoModel = require('./accountManagement/accountInfo');
 
 const sequelize = new Sequelize({
   username: process.env.MYSQL_USER,
@@ -49,6 +50,7 @@ const models = {
   CityModel: cityModel(sequelize),
   OrganizationMasterDataModel: organizationMasterDataModel(sequelize),
   CodeOnlineModel: codeOnlineModel(sequelize),
+  AccountInfoModel: accountInfoModel(sequelize),
 };
 
 Object.values(models).forEach((model) => {

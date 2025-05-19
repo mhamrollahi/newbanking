@@ -62,7 +62,7 @@ module.exports = (sequelize) => {
       codeOnlineId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'codeOnline',
+          model: 'codeonlines',
           key: 'id'
         },
         onUpdate: 'RESTRICT',
@@ -71,14 +71,6 @@ module.exports = (sequelize) => {
 
       openDate: {
         type: DataTypes.DATE,
-        validate: {
-          notNull: {
-            msg: 'لطفا  تاریخ باز شدن حساب را وارد کنید.'
-          },
-          notEmpty: {
-            msg: 'لطفا  تاریخ باز شدن حساب را وارد کنید.'
-          }
-        }
       },
 
       requestLetterDate: {
@@ -120,7 +112,7 @@ module.exports = (sequelize) => {
       bankBranchId: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'bankBranch',
+          model: 'bankbranches',
           key: 'id'
         },
         onUpdate: 'RESTRICT',
