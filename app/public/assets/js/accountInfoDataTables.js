@@ -1,7 +1,7 @@
 $(document).ready(function () {
   $('#accountInfoListDataTable').DataTable({
     ajax: {
-      url: '/accountInfo/openAccount/api/getData',
+      url: '/accManagement/accountOpen/api/getData',
       dataSrc: ''
     },
     columns: [
@@ -18,7 +18,7 @@ $(document).ready(function () {
       { data: 'accountType.title' },
       { data: 'requestLetterDate' },
       { data: 'requestLetterNo' },
-      { data: 'bankBranch.branchName' / 'bankBranch.branchCode'},
+      { data: 'bankBranch.branchName'},
       { data: 'province.title' },
       { data: 'creator.fullName' },
       {
@@ -28,10 +28,10 @@ $(document).ready(function () {
           return `
           <div class="row-table text-center">
             <div class= "11table-action-buttons"> 
-            <a class="edit button button-box button-xs button-info" href="/accountInfo/openAccount/edit/${row.id}">
+            <a class="edit button button-box button-xs button-info" href="/accountInfo/accountOpen/edit/${row.id}">
               <i class="zmdi zmdi-edit"></i>
             </a>
-            <a class="delete button button-box button-xs button-danger" href="/accountInfo/openAccount/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
+            <a class="delete button button-box button-xs button-danger" href="/accountInfo/accountOpen/delete/${row.id}" onclick="return confirm('آیا از عملیات حذف مطمين هستید؟');" >
               <i class="zmdi zmdi-delete"></i>
             </a>
             </div>

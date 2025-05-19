@@ -58,7 +58,7 @@ exports.getData = async (req, res, next) => {
 // نمایش لیست سازمان‌ها
 exports.index = async (req, res, next) => {
   try {
-    res.adminRender('./accManagement/openAccount/index', {
+    res.adminRender('./accManagement/accountOpen/index', {
       title,
       subTitle
     });
@@ -82,43 +82,50 @@ exports.create = async (req, res, next) => {
       nest: true
     });
 
-    const organizationTypesListData = await CodingDataModel.findAll({
+    const banksListData = await CodingDataModel.findAll({
       attributes: ['id', 'title'],
       include: [
         {
           model: CodeTableListModel,
-          where: { en_TableName: coding.CODING_ORGANIZATION_TYPE }
+          where: { en_TableName: coding.CODING_BANK }
         }
       ],
       raw: true,
       nest: true
     });
 
-    const organizationCategoriesListData = await CodingDataModel.findAll({
+    const bankBranchesListData = await BankBranchModel.findAll({
+      attributes: ['id', 'branchName','branchCode'],
+      raw: true,
+      nest: true
+    });
+
+    const accountTypesListData = await CodingDataModel.findAll({
       attributes: ['id', 'title'],
       include: [
         {
           model: CodeTableListModel,
-          where: { en_TableName: coding.CODING_ORGANIZATION_CATEGORY }
+          where: { en_TableName: coding.CODING_ACCOUNT_TYPE }
         }
       ],
       raw: true,
       nest: true
     });
 
-    const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName','nationalCode'],
+    const organizationListData = await OrganizationMasterDataModel.findAll({
+      attributes: ['id', 'organizationName'],
       raw: true,
       nest: true
     });
 
-    res.adminRender('./accManagement/openAccount/create', {
+    res.adminRender('./accManagement/accountOpen/create', {
       title,
       subTitle,
       provincesListData,
-      organizationTypesListData,
-      organizationCategoriesListData,
-      parentOrganizationsListData
+      banksListData,
+      bankBranchesListData,
+      accountTypesListData,
+      organizationListData
     });
   } catch (error) {
     next(error);
@@ -129,9 +136,6 @@ exports.create = async (req, res, next) => {
 exports.store = async (req, res, next) => {
   try {
     const { nationalCode, organizationName, budgetRow, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
-
-    // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
-    // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : dateService.toEnglishDate(registerDate);
 
     const validationResult = organizationSchema.validate(req.body, {
       abortEarly: false,
@@ -265,7 +269,7 @@ exports.edit = async (req, res, next) => {
       organization.registerDate = dateStr.replace(/-/g, '/');
     }
 
-    res.adminRender('./accManagement/openAccount/edit', {
+    res.adminRender('./accManagement/accountOpen/edit', {
       title,
       subTitle,
       organization,

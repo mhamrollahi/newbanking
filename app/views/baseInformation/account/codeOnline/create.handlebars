@@ -2,6 +2,11 @@
 
 <div class='box-codingdata'></div>
 
+<div id='accountNumberDisplay' class='account-number-display' style='display: none;'>
+  <span>شماره حساب: </span>
+  <span id='generatedAccountNumber'></span>
+</div>
+
 <main class='container myform-section-wrapper my-4 mt-5'>
   <div class='row justify-content-between align-items-center mb-10'>
     <!-- Page Heading Start -->
@@ -33,18 +38,18 @@
         {{/if}}
 
         <div class='form-floating mb-3 position-relative'>
-          <div class="input-group">
-            <input type='text' class='form-control' id='onlineCode' name='onlineCode' minlength='1' maxlength='4'  autocomplete='off'  required />
-            <button type="button" class="btn btn-primary" id="getNextCode">
-              <i class="zmdi zmdi-refresh"></i>
+          <div class='input-group'>
+            <input type='text' class='form-control' id='onlineCode' name='onlineCode' minlength='1' maxlength='4' autocomplete='off' required />
+            <button type='button' class='btn btn-primary' id='getNextCode'>
+              <i class='zmdi zmdi-refresh'></i>
             </button>
           </div>
-          <label for='onlineCode' class='mandatory' id="onlineCodeLabel">
+          <label for='onlineCode' class='mandatory' id='onlineCodeLabel'>
             کد آنلاین
           </label>
         </div>
 
-         <div style='margin:20px 1px 1px 1px; '>
+        <div style='margin:20px 1px 1px 1px; '>
           <label for='cmbOrganization' class='mandatory'>نام دستگاه</label>
           <select id='cmbOrganizationList' name='organizationId' style='position: relative;' data-farsiname='نام دستگاه' required>
             <option value=''>لطفا نام دستگاه را انتخاب کنید</option>
@@ -53,7 +58,6 @@
             {{/each}}
           </select>
         </div>
-
 
         <div class='form-floating mb-3'>
           <input type='text' class='form-control' id='description' name='description' autocomplete='off' placeholder='توضیحات.' />
@@ -78,56 +82,13 @@
 <script src='/static/assets/js/formValidation.js'></script>
 
 <style>
-.input-with-value {
-  font-size: 20px !important;
-  font-weight: bold !important;
-  text-align: center !important;
-}
-
-.label-hidden {
-  display: none !important;
-}
+  .input-with-value { font-size: 20px !important; font-weight: bold !important; text-align: center !important; } .label-hidden { display: none !important; } .account-number-display { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center; font-size: 18px; font-weight: bold; direction: rtl; }
 </style>
 
 <script>
-document.getElementById('getNextCode').addEventListener('click', async function() {
-  try {
-    const response = await fetch('./api/codeOnline/next', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error('خطا در دریافت کد');
-    }
-    
-    const data = await response.json();
-    const input = document.getElementById('onlineCode');
-    const label = document.getElementById('onlineCodeLabel');
-    
-    input.value = data.nextCode;
-    input.classList.add('input-with-value');
-    label.classList.add('label-hidden');
-  } catch (error) {
-    console.error('خطا:', error);
-    alert('خطا در دریافت کد بعدی');
-  }
-});
-
-// برای زمانی که کاربر input را پاک می‌کند
-document.getElementById('onlineCode').addEventListener('input', function() {
-  const label = document.getElementById('onlineCodeLabel');
-  if (this.value === '') {
-    this.classList.remove('input-with-value');
-    label.classList.remove('label-hidden');
-  } else {
-    this.classList.add('input-with-value');
-    label.classList.add('label-hidden');
-  }
-});
+  document.getElementById('getNextCode').addEventListener('click', async function() { try { const response = await fetch('./api/codeOnline/next', { method: 'GET', headers: { 'Content-Type': 'application/json' } }); if (!response.ok) { throw new Error('خطا در دریافت کد'); } const data = await response.json(); const input =
+  document.getElementById('onlineCode'); const label = document.getElementById('onlineCodeLabel'); input.value = data.nextCode; input.classList.add('input-with-value'); label.classList.add('label-hidden'); } catch (error) { console.error('خطا:', error); alert('خطا در دریافت کد بعدی'); } }); // برای زمانی که کاربر input را پاک می‌کند
+  document.getElementById('onlineCode').addEventListener('input', function() { const label = document.getElementById('onlineCodeLabel'); if (this.value === '') { this.classList.remove('input-with-value'); label.classList.remove('label-hidden'); } else { this.classList.add('input-with-value'); label.classList.add('label-hidden'); } }); // Function
+  to generate a 16-digit account number function generateAccountNumber() { let accountNumber = ''; for (let i = 0; i < 16; i++) { accountNumber += Math.floor(Math.random() * 10); } return accountNumber; } // Add click event listeners to all form inputs document.querySelectorAll('input, select').forEach(element => { element.addEventListener('click',
+  function() { const accountNumberDisplay = document.getElementById('accountNumberDisplay'); const generatedAccountNumber = document.getElementById('generatedAccountNumber'); accountNumberDisplay.style.display = 'block'; generatedAccountNumber.textContent = generateAccountNumber(); }); });
 </script>
-
-
-
