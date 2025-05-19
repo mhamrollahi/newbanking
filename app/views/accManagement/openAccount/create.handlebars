@@ -36,41 +36,50 @@
           </select>
         </div>
 
+        <div style='margin:1px; '>
+          <label for='bankBranchId' class='mandatory'>شعبه بانک</label>
+          <select id='cmbBankBranchList' name='bankBranchId' style='position: relative;' data-farsiname='شعبه بانک' required>
+            <option value=''>لطفا شعبه بانک را انتخاب کنید</option>
+            {{#each bankBranchesListData}}
+              <option value='{{this.id}}'>{{this.title}} </option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div style='margin-top:15px; '>
+            <label for='organizationId' >نام دستگاه </label>
+            <select id='cmbOrganizationId' name='organizationId' style='position: relative;' data-farsiname='نام دستگاه' >
+              <option value=''>لطفا نام دستگاه را انتخاب کنید</option>
+              {{#each organizationsListData}}
+                <option value='{{this.id}}'>{{this.organizationName}} -- {{this.nationalCode}} </option>
+              {{/each}}
+            </select>
+          </div>
 
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='organizationName' name='organizationName' placeholder='نام سازمان را وارد کنید.' autocomplete='off' required />
-            <label for='organizationName' class='mandatory'>
-              نام سازمان
+            <input type='text' class='form-control' id='requestLetterNo' name='requestLetterNo' placeholder='شماره حساب را وارد کنید.' autocomplete='off' />
+            <label for='requestLetterNo'>
+               شماره نامه درخواست
             </label>
           </div>
 
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='budgetRow' name='budgetRow' maxlength='8' minlength='8' placeholder='ردیف بودجه را وارد کنید.' autocomplete='off' required />
-            <label for='budgetRow' class='mandatory'>
-              ردیف بودجه
+            <input type='text' class='form-control' id='requestLetterDate' name='requestLetterDate' placeholder='تاریخ ثبت را وارد کنید.' autocomplete='off' />
+            <label for='requestLetterDate'>
+              تاریخ نامه درخواست
             </label>
           </div>
 
-          <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='registerDate' name='registerDate' placeholder='تاریخ ثبت را وارد کنید.' autocomplete='off' />
-            <label for='registerDate'>
-              تاریخ ثبت
-            </label>
+        <div style='margin-top:15px; '>
+            <label for='accountTypeId' >نوع حساب </label>
+            <select id='cmbAccountTypeId' name='accountTypeId' style='position: relative;' data-farsiname='نوع حساب' >
+              <option value=''>لطفا نوع حساب را انتخاب کنید</option>
+              {{#each accountTypesListData}}
+                <option value='{{this.id}}'>{{this.title}} </option>
+              {{/each}}
+            </select>
           </div>
 
-          <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='registerNo' name='registerNo' placeholder='شماره ثبت را وارد کنید.' autocomplete='off' />
-            <label for='registerNo'>
-              شماره ثبت
-            </label>
-          </div>
-
-          <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='postalCode' name='postalCode' placeholder='کد پستی را وارد کنید.' autocomplete='off' />
-            <label for='postalCode'>
-              کد پستی
-            </label>
-          </div>
 
           <div class='form-floating mb-3'>
             <textarea class='form-control' id='address' name='address' placeholder='آدرس را وارد کنید.' autocomplete='off'></textarea>
@@ -79,11 +88,6 @@
             </label>
           </div>
 
-          {{! <div class='mb-3'>
-            <label for='filePathStatute' class='form-label'>اساسنامه سازمان</label>
-            <input type='file' class='form-control' id='filePathStatute' name='filePathStatute' accept='.pdf' />
-            <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
-          </div> }}
         </div>
 
         <!-- ستون سمت راست -->
