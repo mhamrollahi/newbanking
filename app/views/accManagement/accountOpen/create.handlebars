@@ -64,14 +64,19 @@
                 {{/each}}
               </select>
             </div>
-            <div class="col-6">
-              <label for='cmbCodeOnlineList' class='mandatory'>کد آنلاین دستگاه</label>
+            <div class='mb-3 col-6'>
+                <label for='codeOnlineId' class='mandatory'>
+                  کد آنلاین دستگاه
+                </label>
+                <input type='text' class='form-control' id='codeOnlineId' readOnly name='codeOnlineId'  autocomplete='off' />
+
+              {{!-- <label for='cmbCodeOnlineList' class='mandatory'>کد آنلاین دستگاه</label>
               <select id='cmbCodeOnlineList' name='codeOnlineId' style='position: relative;' data-farsiname='کد آنلاین دستگاه' required>
                 <option value=''>لطفا کد آنلاین دستگاه را انتخاب کنید</option>
                 {{#each codeOnlineListData}}
                   <option value='{{this.id}}'>{{this.organizationName}} </option>
                 {{/each}}
-              </select>
+              </select> --}}
             </div>
 
           </div>
@@ -203,76 +208,178 @@
       }
     });
 
+    // کدهای بانک‌ها و الگوهای شماره حساب
+    const bankPatterns = {
+      '360001': { // بانک مرکزی
+        pattern: [4, '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      },
+      '53001': { // بانک ملی
+        pattern: ['', '', '', 2, 1, 7, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '53003': { // بانک سپه
+        pattern: ['', '', '', 5, 1, 5, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360004': { // بانک صادرات
+          pattern: ['', '', '', 2, 1, 9, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360005': { // بانک تجارت
+        pattern: ['', '', '', '', '', '', 7, 8, '', '', '', '', '', '', '', ''],
+      },
+      '360006': { // بانک ملت
+         pattern: ['', '', '', '', '', '', 2, '', '', '', '', '', '', '', '', ''],
+      },
+      '53004': { // بانک مسکن
+        pattern: ['', '', '', 8, 8, 7, 7, 4, '', '', '', '', '', 0, 0, ''],
+      },
+      '360008': { // بانک رفاه
+        pattern: ['', '', '', 2, 1, 3, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '53002': { // بانک کشاورزی
+        pattern: ['', '', '', 2, 1, 6, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360012': { // پست بانک
+         pattern: ['', '', '', '', 2, 2, 1, '', '', '', '', '', '', 0, 0, 1],
+      },
+      '360013': { // بانک توسعه تعاون
+        pattern: ['', '', '', '', '', 9, '', '', '', '', '', '', '', '', '', 1],
+      }
+    };
+
+    // تابع تولید شماره حساب با در نظر گرفتن کد بانک
+    function generateAccountNumber(bankId) {
+      const bankPattern = bankPatterns[bankId] || {
+        pattern: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      };
+
+      return bankPattern.pattern;
+    }
+
+    // Function to create digit boxes
+    function createDigitBoxes(number) {
+      const container = document.getElementById('generatedAccountNumber');
+      container.innerHTML = ''; // Clear previous boxes
+      
+      // ایجاد 16 باکس
+      for (let i = 0; i < 16; i++) {
+        const box = document.createElement('div');
+        box.className = 'digit-box';
+        box.textContent = number[i] || '';
+        container.appendChild(box);
+      }
+    }
+
+    // تابع پیدا کردن اولین شماره حساب خالی
+    async function findNextAvailableAccountNumber(bankId, organizationId) {
+      try {
+        const response = await fetch(`/accManagement/accountOpen/api/getNextAvailableAccountNumber/${bankId}/${organizationId}`);
+        const data = await response.json();
+        return data.nextNumber || '001';
+      } catch (error) {
+        console.error('Error finding next account number:', error);
+        return '001';
+      }
+    }
+
+    // تابع به‌روزرسانی شماره حساب با حفظ کد آنلاین
+    async function updateAccountNumber() {
+      const selectedBankId = $('#cmbBankList').val();
+      const selectedOrgId = $('#cmbOrganizationList').val();
+      const accountNumberDisplay = document.getElementById('accountNumberDisplay');
+      accountNumberDisplay.style.display = 'block';
+      
+      // دریافت الگوی شماره حساب بانک
+      const bankPattern = bankPatterns[selectedBankId] || {
+        pattern: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+      };
+      
+      // ایجاد باکس‌ها با الگوی کامل بانک
+      const container = document.getElementById('generatedAccountNumber');
+      container.innerHTML = ''; // Clear previous boxes
+      
+      // ایجاد 16 باکس با مقادیر الگوی بانک
+      for (let i = 0; i < 16; i++) {
+        const box = document.createElement('div');
+        box.className = 'digit-box';
+        box.textContent = bankPattern.pattern[i] !== undefined ? bankPattern.pattern[i] : '';
+        container.appendChild(box);
+      }
+
+      // اگر دستگاه انتخاب شده است، کد آنلاین را دریافت و اعمال کن
+      if (selectedOrgId) {
+        try {
+          const response = await fetch(`/baseInformation/account/codeOnline/api/getOnlineCodeByOrganizationId/${selectedOrgId}`);
+          const data = await response.json();
+          
+          if (data.code) {
+            const boxes = document.getElementsByClassName('digit-box');
+            const codeOnlineId = document.getElementById('codeOnlineId');
+            codeOnlineId.value = data.code;
+            
+            // قرار دادن کد آنلاین از رقم هفتم به بعد
+            const code = data.code.padStart(4, '0');
+            for (let i = 0; i < 4; i++) {
+              if (boxes[i + 6]) {
+                boxes[i + 6].textContent = code[i];
+              }
+            }
+
+            // برای بانک‌های 13 رقمی، شماره حساب بعدی را پیدا کن
+            if (['53001', '53002', '53003'].includes(selectedBankId)) {
+              const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
+              // قرار دادن شماره حساب بعدی در 3 رقم آخر
+              for (let i = 0; i < 3; i++) {
+                if (boxes[i + 10]) {
+                  boxes[i + 10].textContent = nextNumber[i];
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching online code:', error);
+        }
+      }
+    }
+
+    // Add click event listeners to all form inputs
+    document.querySelectorAll('input, select').forEach(element => {
+      element.addEventListener('click', function() {
+        updateAccountNumber();
+      });
+    });
+
     // اضافه کردن event listener برای تغییر بانک
     $('#cmbBankList').on('change', function() {
       const selectedBankId = $(this).val();
-      const accountNumberDisplay = document.getElementById('accountNumberDisplay');
-      accountNumberDisplay.style.display = 'block';
-      const newAccountNumber = generateAccountNumber(selectedBankId);
-      createDigitBoxes(newAccountNumber);
+      
+      // دریافت شعبه‌های بانک انتخاب شده
+      if (selectedBankId) {
+        fetch(`/baseInformation/account/bankbranch/api/getBranchesByBankId/${selectedBankId}`)
+          .then(response => response.json())
+          .then(branches => {
+            const branchSelect = $('#cmbBankBranchList');
+            branchSelect.empty();
+            branchSelect.append('<option value="">لطفا شعبه بانک را انتخاب کنید</option>');
+            
+            branches.forEach(branch => {
+              branchSelect.append(`<option value="${branch.id}">${branch.branchName} (${branch.branchCode})</option>`);
+            });
+          })
+          .catch(error => {
+            console.error('Error fetching bank branches:', error);
+          });
+      } else {
+        // اگر بانکی انتخاب نشده باشد، لیست شعبه‌ها را خالی می‌کنیم
+        const branchSelect = $('#cmbBankBranchList');
+        branchSelect.empty();
+        branchSelect.append('<option value="">لطفا شعبه بانک را انتخاب کنید</option>');
+      }
+
+      updateAccountNumber();
     });
-  });
 
-  // کدهای بانک‌ها
-  const bankCodes = {
-    53001: '217', // بانک ملی
-    53002: '216', // بانک کشاورزی
-    53003: '515', // بانک سپه
-  };
-
-  // تابع تولید شماره حساب با در نظر گرفتن کد بانک
-  function generateAccountNumber(bankId) {
-    let accountNumber = '';
-    // دو رقم اول شماره حساب
-    accountNumber += '00';
-    
-    // اضافه کردن کد بانک
-    if (bankCodes[bankId]) {
-      accountNumber += bankCodes[bankId];
-    } else {
-      // اگر کد بانک تعریف نشده باشد، سه صفر قرار می‌دهیم
-      accountNumber += '000';
-    }
-    
-    // بقیه ارقام را صفر قرار می‌دهیم
-    for (let i = 0; i < 11; i++) {
-      accountNumber += '0';
-    }
-    
-    return accountNumber;
-  }
-
-  // Function to create digit boxes
-  function createDigitBoxes(number) {
-    const container = document.getElementById('generatedAccountNumber');
-    container.innerHTML = ''; // Clear previous boxes
-    
-    // ایجاد 16 باکس خالی
-    for (let i = 0; i < 16; i++) {
-      const box = document.createElement('div');
-      box.className = 'digit-box';
-      box.textContent = '';
-      container.appendChild(box);
-    }
-
-    // فقط کد بانک را در باکس‌های 4 تا 7 قرار می‌دهیم
-    const bankCode = number.substring(2, 5); // گرفتن کد بانک (3 رقم)
-    const boxes = container.getElementsByClassName('digit-box');
-    
-    // قرار دادن کد بانک در باکس‌های 4 تا 7
-    for (let i = 0; i < 3; i++) {
-      boxes[i + 3].textContent = bankCode[i];
-    }
-  }
-
-  // Add click event listeners to all form inputs
-  document.querySelectorAll('input, select, textarea').forEach(element => {
-    element.addEventListener('click', function() {
-      const accountNumberDisplay = document.getElementById('accountNumberDisplay');
-      accountNumberDisplay.style.display = 'block';
-      const selectedBankId = $('#cmbBankList').val();
-      const newAccountNumber = generateAccountNumber(selectedBankId);
-      createDigitBoxes(newAccountNumber);
+    // اضافه کردن event listener برای تغییر دستگاه
+    $('#cmbOrganizationList').on('change', function() {
+      updateAccountNumber();
     });
   });
 </script>

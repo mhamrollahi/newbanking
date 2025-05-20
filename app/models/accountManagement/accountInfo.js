@@ -180,6 +180,12 @@ module.exports = (sequelize) => {
           unique: true,
           fields: ['accountNumber'],
           msg: 'این شماره حساب  تکراری می‌باشد.... '
+        },
+        {
+          name:'ix_accountNumber_organizationId',
+          unique:true,
+          fields:['accountNumber','organizationId'],
+          msg:'این شماره حساب در برای این دستگاه تکراری می باشد.'
         }
       ],
 

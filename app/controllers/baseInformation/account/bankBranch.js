@@ -1,5 +1,5 @@
 const dateService = require('@services/dateService');
-const { models, } = require('@models/');
+const { models } = require('@models/');
 const { BankBranchModel, UserViewModel, CodingDataModel, CodeTableListModel, CityModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
@@ -32,6 +32,23 @@ exports.getData = async (req, res, next) => {
     // console.log(result);
 
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get bank branches by bank ID
+exports.getBranchesByBankId = async (req, res, next) => {
+  try {
+    const { bankId } = req.params;
+
+    const branches = await BankBranchModel.findAll({
+      where: { bankId },
+      attributes: ['id', 'branchName', 'branchCode'],
+      order: [['branchName', 'ASC']]
+    });
+
+    res.json(branches);
   } catch (error) {
     next(error);
   }
@@ -142,12 +159,12 @@ exports.edit = async (req, res, next) => {
         {
           model: CodingDataModel,
           as: 'bank',
-          attributes: ['id','title']
+          attributes: ['id', 'title']
         },
         {
-          model:CityModel,
+          model: CityModel,
           as: 'city',
-          attributes: ['id','cityName']
+          attributes: ['id', 'cityName']
         }
       ],
       raw: true,
@@ -185,7 +202,7 @@ exports.edit = async (req, res, next) => {
       subTitle,
       bankBranchData,
       banksListData,
-      cityListData,
+      cityListData
     });
   } catch (error) {
     next(error);

@@ -1,5 +1,5 @@
 const { models } = require('@models/');
-const { UserViewModel, CodingDataModel, CodeTableListModel, AccountInfoModel,BankBranchModel,CodeOnlineModel,OrganizationMasterDataModel} = models;
+const { UserViewModel, CodingDataModel, CodeTableListModel, AccountInfoModel, BankBranchModel, CodeOnlineModel, OrganizationMasterDataModel } = models;
 const coding = require('@constants/codingDataTables.js');
 const dateService = require('@services/dateService.js');
 const { organizationSchema } = require('@validators/organization/masterData');
@@ -95,7 +95,7 @@ exports.create = async (req, res, next) => {
     });
 
     const bankBranchesListData = await BankBranchModel.findAll({
-      attributes: ['id', 'branchName','branchCode'],
+      attributes: ['id', 'branchName', 'branchCode'],
       raw: true,
       nest: true
     });
@@ -205,12 +205,12 @@ exports.edit = async (req, res, next) => {
           model: CodingDataModel,
           as: 'organizationCategory',
           attributes: ['id', 'title']
-        }, 
+        },
         {
           model: OrganizationMasterDataModel,
           as: 'parentOrganization',
-          attributes: ['id', 'organizationName','nationalCode']
-        },
+          attributes: ['id', 'organizationName', 'nationalCode']
+        }
       ],
       raw: true,
       nest: true
@@ -257,7 +257,7 @@ exports.edit = async (req, res, next) => {
     });
 
     const parentOrganizationsListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName','nationalCode'],
+      attributes: ['id', 'organizationName', 'nationalCode'],
       raw: true,
       nest: true
     });
@@ -276,7 +276,7 @@ exports.edit = async (req, res, next) => {
       provincesListData,
       organizationTypesListData,
       organizationCategoriesListData,
-      parentOrganizationsListData,
+      parentOrganizationsListData
     });
   } catch (error) {
     next(error);
@@ -352,5 +352,82 @@ exports.delete = async (req, res, next) => {
     }
   } catch (error) {
     next(error);
+  }
+};
+
+// تابع دریافت شماره حساب بعدی موجود
+exports.getNextAvailableAccountNumber = async (req, res) => {
+  try {
+    const { bankId, organizationId } = req.params;
+
+    // دریافت تمام شماره حساب‌های موجود برای این بانک و کد آنلاین
+    const existingAccounts = await AccountInfoModel.findAll({
+      where: {
+        bankId: bankId,
+        organizationId: organizationId
+      },
+      attributes: ['accountNumber']
+    });
+
+    // تبدیل شماره حساب‌ها به آرایه و استخراج 3 رقم آخر
+    const lastThreeDigits = existingAccounts
+      .map((account) => {
+        const accountNumber = account.accountNumber.toString();
+        return parseInt(accountNumber.slice(-3)); // تبدیل به عدد برای مقایسه
+      })
+      .sort((a, b) => a - b); // مرتب‌سازی اعداد
+
+    // اگر هیچ شماره حسابی وجود نداشت
+    if (lastThreeDigits.length === 0) {
+      return res.json({
+        success: true,
+        nextNumber: '001'
+      });
+    }
+
+    // پیدا کردن اولین خالی در دنباله
+    let nextNumber = 1; // از 1 شروع می‌کنیم چون 001 را جداگانه چک می‌کنیم
+    let foundGap = false;
+
+    // اول چک می‌کنیم که 001 موجود هست یا نه
+    if (!lastThreeDigits.includes(1)) {
+      return res.json({
+        success: true,
+        nextNumber: '001'
+      });
+    }
+
+    // جستجوی خالی در دنباله
+    for (let i = 0; i < lastThreeDigits.length - 1; i++) {
+      if (lastThreeDigits[i + 1] - lastThreeDigits[i] > 1) {
+        nextNumber = lastThreeDigits[i] + 1;
+        foundGap = true;
+        break;
+      }
+    }
+
+    // اگر خالی پیدا نشد، از آخرین عدد + 1 استفاده می‌کنیم
+    if (!foundGap) {
+      nextNumber = lastThreeDigits[lastThreeDigits.length - 1] + 1;
+    }
+
+    // اگر به 999 رسیدیم، خطا برگردانیم
+    if (nextNumber > 999) {
+      return res.status(400).json({
+        success: false,
+        message: 'ظرفیت شماره حساب‌های این دستگاه پر شده است'
+      });
+    }
+
+    res.json({
+      success: true,
+      nextNumber: nextNumber.toString().padStart(3, '0')
+    });
+  } catch (error) {
+    console.error('Error in getNextAvailableAccountNumber:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت شماره حساب بعدی'
+    });
   }
 };

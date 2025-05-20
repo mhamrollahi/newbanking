@@ -3,13 +3,15 @@ const accountOpenControllers = require('@controllers/accountManagement/accountOp
 const router = express.Router();
 const accessControlMiddleware = require('@middlewares/accessControlMiddleware');
 
-router.get('/api/getData', [accessControlMiddleware('accountInfo', 'read')], accountOpenControllers.getData);
+router.get('/api/getData', [accessControlMiddleware('accountInfos', 'read')], accountOpenControllers.getData);
 
-router.get('/index', [accessControlMiddleware('accountInfo', 'read')], accountOpenControllers.index);
-router.get('/create', [accessControlMiddleware('accountInfo', 'create')], accountOpenControllers.create);
-// router.post('/store', [accessControlMiddleware('accountInfo', 'create')], accountOpenControllers.store);
-// router.get('/edit/:id', [accessControlMiddleware('accountInfo', 'edit')], accountOpenControllers.edit);
-// router.post('/update/:id', [accessControlMiddleware('accountInfo', 'edit')], accountOpenControllers.update);
-// router.get('/delete/:id', [accessControlMiddleware('accountInfo', 'delete')], accountOpenControllers.delete);
+router.get('/index', [accessControlMiddleware('accountInfos', 'read')], accountOpenControllers.index);
+router.get('/create', [accessControlMiddleware('accountInfos', 'create')], accountOpenControllers.create);
+// router.post('/store', [accessControlMiddleware('accountInfos', 'create')], accountOpenControllers.store);
+// router.get('/edit/:id', [accessControlMiddleware('accountInfos', 'edit')], accountOpenControllers.edit);
+// router.post('/update/:id', [accessControlMiddleware('accountInfos', 'edit')], accountOpenControllers.update);
+// router.get('/delete/:id', [accessControlMiddleware('accountInfos ', 'delete')], accountOpenControllers.delete);
+
+router.get('/api/getNextAvailableAccountNumber/:bankId/:onlineCode', accountOpenControllers.getNextAvailableAccountNumber);
 
 module.exports = router;

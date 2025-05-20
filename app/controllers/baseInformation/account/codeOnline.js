@@ -1,6 +1,6 @@
- const dateService = require('@services/dateService');
+const dateService = require('@services/dateService');
 const { models } = require('@models/');
-const { CodeOnlineModel, UserViewModel, OrganizationMasterDataModel,  } = models;
+const { CodeOnlineModel, UserViewModel, OrganizationMasterDataModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
 
@@ -19,13 +19,29 @@ exports.getData = async (req, res, next) => {
         {
           model: OrganizationMasterDataModel,
           as: 'organization',
-          attributes: ['organizationName','nationalCode']
+          attributes: ['organizationName', 'nationalCode']
         }
       ]
     });
     // console.log(result);
 
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get online code by organization ID
+exports.getOnlineCodeByOrganizationId = async (req, res, next) => {
+  try {
+    const { organizationId } = req.params;
+
+    const codeOnline = await CodeOnlineModel.findOne({
+      where: { organizationId },
+      attributes: ['code']
+    });
+
+    res.json(codeOnline || { code: '0' });
   } catch (error) {
     next(error);
   }
@@ -40,7 +56,7 @@ exports.nextCode = async (req, res, next) => {
     });
 
     // تبدیل به آرایه اعداد
-    const codeNumbers = existingCodes.map(code => parseInt(code.code));
+    const codeNumbers = existingCodes.map((code) => parseInt(code.code));
 
     // اگر هیچ کدی وجود نداشت، از 1 شروع کن
     if (codeNumbers.length === 0) {
@@ -65,8 +81,7 @@ exports.nextCode = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
-}
+};
 
 exports.index = async (req, res, next) => {
   try {
@@ -81,7 +96,7 @@ exports.index = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const  organizationListData  = await OrganizationMasterDataModel.findAll({
+    const organizationListData = await OrganizationMasterDataModel.findAll({
       attributes: ['id', 'organizationName'],
       raw: true,
       nest: true
@@ -155,7 +170,7 @@ exports.edit = async (req, res, next) => {
         {
           model: OrganizationMasterDataModel,
           as: 'organization',
-          attributes: ['id', 'organizationName','nationalCode']
+          attributes: ['id', 'organizationName', 'nationalCode']
         }
       ],
       raw: true,
@@ -164,7 +179,7 @@ exports.edit = async (req, res, next) => {
 
     // Get all provinces for dropdown
     const organizationListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName','nationalCode'],
+      attributes: ['id', 'organizationName', 'nationalCode'],
       raw: true,
       nest: true
     });
@@ -241,7 +256,7 @@ exports.delete = async (req, res, next) => {
 const formValidation = (req) => {
   const codeOnlineData = {
     code: req.body.onlineCode,
-    organizationId: req.body.organizationId,
+    organizationId: req.body.organizationId
   };
 
   const schema = Joi.object({
