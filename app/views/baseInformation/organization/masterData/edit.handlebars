@@ -11,6 +11,7 @@
       </div>
     </div><!-- Page Heading End -->
   </div>
+
   <div class='row organization-form'>
     <div class='col-12 col-sm-12 col-md-12'>
       <form method='POST' name='frmOrganization' id='frmOrganization' action='../update/{{organization.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
@@ -47,7 +48,19 @@
             </label>
           </div>
 
-          <div class='form-floating mb-3'>
+
+          <div style='margin-top:15px; '>
+            <label for='provinceId' >استان</label>
+            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان' >
+              <option value=''>لطفا استان را انتخاب کنید</option>
+              {{#each provincesListData}}
+                <option value='{{this.id}}' {{isSelected id ../organization.province.id}}>{{this.title}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+
+          {{!-- <div class='form-floating mb-3'>
             <input type='text' class='form-control' id='registerDate' name='registerDate' placeholder='تاریخ ثبت را وارد کنید.' value='{{organization.registerDate}}' autocomplete='off' />
             <label for='registerDate'>
               تاریخ ثبت
@@ -73,9 +86,9 @@
             <label for='address'>
               آدرس
             </label>
-          </div>
+          </div> --}}
 
-        <div class='form-floating mb-1'>
+        <div class='form-floating mb-1' style='margin-top:15px; '>
           <input type='text' class='form-control' readonly name='updater' value='{{organization.updater.fullName}}' />
           <label for='updater' class='mandatory'>اصلاح کننده</label>
         </div>
@@ -103,7 +116,7 @@
 
         <!-- ستون سمت راست -->
         <div class='col-md-6'>
-          <div style='margin-top:15px; '>
+          <div style='margin-top:1px; '>
             <label for='parentOrganizationId' >نام دستگاه مادر</label>
             <select id='cmbparentOrganizationId' name='parentOrganizationId' style='position: relative;' data-farsiname='نام دستگاه مادر' >
               <option value=''>لطفا نام دستگاه مادر را انتخاب کنید</option>
@@ -112,17 +125,6 @@
               {{/each}}
             </select>
           </div>
-
-          <div style='margin-top:15px; '>
-            <label for='provinceId' >استان</label>
-            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان' >
-              <option value=''>لطفا استان را انتخاب کنید</option>
-              {{#each provincesListData}}
-                <option value='{{this.id}}' {{isSelected id ../organization.province.id}}>{{this.title}} </option>
-              {{/each}}
-            </select>
-          </div>
-
           <div style='margin-top:15px; '>
             <label for='organizationTypeId' >جنس دستگاه</label>
             <select id='cmbOrganizationType' name='organizationTypeId' style='position: relative;' data-farsiname='حنس دستگاه' >
@@ -234,7 +236,7 @@
     }
   });
 </script> --}}
-<script>
+{{!-- <script>
   $(document).ready(function() {
     $('#registerDate').persianDatepicker({
       format: 'YYYY/MM/DD',
@@ -252,5 +254,5 @@
       }
     });
   });
-</script>
+</script> --}}
 <script src='/static/assets/js/formValidation.js'></script>

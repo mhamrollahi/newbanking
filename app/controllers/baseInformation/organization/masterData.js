@@ -118,7 +118,7 @@ exports.create = async (req, res, next) => {
 // ذخیره دستگاه جدید
 exports.store = async (req, res, next) => {
   try {
-    const { nationalCode, organizationName, budgetRow, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { nationalCode, organizationName, budgetRow, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : dateService.toEnglishDate(registerDate);
@@ -140,10 +140,10 @@ exports.store = async (req, res, next) => {
       nationalCode,
       organizationName,
       budgetRow,
-      registerDate,
-      registerNo: registerNo == '' ? null : registerNo,
-      postalCode: postalCode == '' ? null : postalCode,
-      address: address == '' ? null : address,
+      // registerDate,
+      // registerNo: registerNo == '' ? null : registerNo,
+      // postalCode: postalCode == '' ? null : postalCode,
+      // address: address == '' ? null : address,
       parentOrganizationId: parentOrganizationId == '' ? null : parentOrganizationId,
       provinceId: provinceId == '' ? null : provinceId,
       organizationTypeId: organizationTypeId == '' ? null : organizationTypeId,
@@ -273,7 +273,7 @@ exports.edit = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { nationalCode, organizationName, budgetRow, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { nationalCode, organizationName, budgetRow, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
     const validationResult = organizationSchema.validate(req.body, {
       abortEarly: false,
@@ -298,10 +298,10 @@ exports.update = async (req, res, next) => {
         nationalCode,
         organizationName,
         budgetRow,
-        registerDate,
-        registerNo: registerNo == '' ? null : registerNo,
-        postalCode: postalCode == '' ? null : postalCode,
-        address: address == '' ? null : address,
+        // registerDate,
+        // registerNo: registerNo == '' ? null : registerNo,
+        // postalCode: postalCode == '' ? null : postalCode,
+        // address: address == '' ? null : address,
         parentOrganizationId: parentOrganizationId == '' ? null : parentOrganizationId,
         provinceId: provinceId == '' ? null : provinceId,
         organizationTypeId: organizationTypeId == '' ? null : organizationTypeId,

@@ -1,56 +1,46 @@
-
-<div style="height: 150px;"></div>
+<div style='height: 150px;'></div>
 
 {{#if errors}}
-  <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1">
-    <p class="alert alert-danger w-50 text-center align-self-center">{{errors}}</p>
+  <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1'>
+    <p class='alert alert-danger w-50 text-center align-self-center'>{{errors}}</p>
   </div>
 {{/if}}
 
 {{#if errorFilePath}}
-  <div class="col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column">
-    <p class="alert alert-danger w-50 text-center align-self-center">برخی از ردیفهای فایل خطا داشتند؛ برای مشاهد خطاها لطفا 
-      <a style="font-size: 17px;font-style: italic;color:#01019e" href="/importFiles/downloadErrorFile?filePath={{errorFilePath}}">این فایل </a>
-       را مشاهده نمایید.</p>
+  <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column'>
+    <p class='alert alert-danger w-50 text-center align-self-center'>برخی از ردیفهای فایل خطا داشتند؛ برای مشاهد خطاها لطفا
+      <a style='font-size: 17px;font-style: italic;color:#01019e' href='/importFiles/downloadErrorFile?filePath={{errorFilePath}}'>این فایل </a>
+      را مشاهده نمایید.</p>
 
   </div>
 {{/if}}
 
-
-<div class="import-file-container" >
-  <form
-    action="/importFiles/importCodingData"
-    method="POST" 
-    enctype="multipart/form-data"
-    id="frmImportCodingData"
-    data-frmValidation novalidate
-  >
+<div class='import-file-container'>
+  <form action='/importFiles/importCodingData' method='POST' enctype='multipart/form-data' id='frmImportCodingData' data-frmValidation novalidate>
     <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
-    <div class="mb-3">
-      <input type="file" name = 'excelFile' class="form-control" id="excelFile" accept=".xlsx, .xls" required/>
+    <div class='mb-3'>
+      <label for='tableSelect' class='form-label'>انتخاب جدول دیتابیس:</label>
+      <select class='form-select' id='tableSelect' name='tableName' required>
+        <option value=''>-- لطفا یک جدول انتخاب کنید --</option>
+        {{#each tables}}
+          <option value='{{this}}'>{{this}}</option>
+        {{/each}}
+      </select>
     </div>
-    <div class="text-center">
-      <button class="btn btn-success" type="submit" style="width:120px;text-align: center;">تایید</button>
+
+    <div class='mb-3'>
+      <input type='file' name='excelFile' class='form-control' id='excelFile' accept='.xlsx, .xls' required />
+    </div>
+    <div class='text-center'>
+      <button class='btn btn-success' type='submit' style='width:120px;text-align: center;'>تایید</button>
     </div>
   </form>
 </div>
 
- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
- <script src="/static/assets/js/formValidation.js"></script>
- <script>
-    // دریافت پیام‌های Flash
-    const successMsg = '{{success}}';
-   
-    // نمایش پیام‌ها با Toastr
-    if (successMsg) {
-      toastr.success(successMsg, 'توجه');
-    }
-
-//    if (errorMsg) {
-//      toastr.error(errorMsg, 'خطا');
-//    }
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'></script>
+<script src='/static/assets/js/formValidation.js'></script>
+<script>
+  // دریافت پیام‌های Flash const successMsg = '{{success}}'; // نمایش پیام‌ها با Toastr if (successMsg) { toastr.success(successMsg, 'توجه'); } // if (errorMsg) { // toastr.error(errorMsg, 'خطا'); // }
 
 </script>
-

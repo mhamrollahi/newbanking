@@ -90,30 +90,30 @@ const organizationSchema = Joi.object({
     'any.required': errMessages['any.required']
   }),
 
-  budgetRow: Joi.string().required().length(6).label('ردیف بودجه').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+  budgetRow: Joi.string().required().length(8).label('ردیف بودجه').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
     'string.empty': errMessages['string.empty'],
     'string.length': errMessages['string.length'],
     'any.required': errMessages['any.required'],
     'any.invalid': errMessages['any.invalid']
   }),
 
-  registerDate: Joi.string().allow('', null).custom(validatePersianDate, 'اعتبارسنجی تاریخ').label('تاریخ ثبت').messages({
-    'date.base': 'فرمت تاریخ نامعتبر است. لطفا از فرمت YYYY/MM/DD استفاده کنید (مثال: 1402/12/29)'
-  }),
+  // registerDate: Joi.string().allow('', null).custom(validatePersianDate, 'اعتبارسنجی تاریخ').label('تاریخ ثبت').messages({
+  //   'date.base': 'فرمت تاریخ نامعتبر است. لطفا از فرمت YYYY/MM/DD استفاده کنید (مثال: 1402/12/29)'
+  // }),
 
-  registerNo: Joi.string().allow('').max(10).label('شماره ثبت').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
-    'string.max': errMessages['string.max'],
-    'any.invalid': errMessages['any.invalid']
-  }),
+  // registerNo: Joi.string().allow('').max(10).label('شماره ثبت').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+  //   'string.max': errMessages['string.max'],
+  //   'any.invalid': errMessages['any.invalid']
+  // }),
 
-  postalCode: Joi.string().allow('').length(10).label('کد پستی').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
-    'string.length': errMessages['string.length'],
-    'any.invalid': errMessages['any.invalid']
-  }),
+  // postalCode: Joi.string().allow('').length(10).label('کد پستی').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+  //   'string.length': errMessages['string.length'],
+  //   'any.invalid': errMessages['any.invalid']
+  // }),
 
-  address: Joi.string().allow('').max(200).label('آدرس').messages({
-    'string.max': errMessages['string.max']
-  }),
+  // address: Joi.string().allow('').max(200).label('آدرس').messages({
+  //   'string.max': errMessages['string.max']
+  // }),
 
   provinceId: Joi.number().integer().allow('').label('استان').messages({
     'number.base': errMessages['number.base'],
@@ -131,21 +131,21 @@ const organizationSchema = Joi.object({
     'number.integer': errMessages['number.integer']
   }),
 
-  filePathStatute: Joi.object().allow('').custom(validateFile, 'اعتبارسنجی فایل').messages({
-    'any.invalid': errMessages['any.invalid']
-  }),
+  // filePathStatute: Joi.object().allow('').custom(validateFile, 'اعتبارسنجی فایل').messages({
+  //   'any.invalid': errMessages['any.invalid']
+  // }),
 
-  filePathFinancial: Joi.object().allow('').custom(validateFile, 'اعتبارسنجی فایل').messages({
-    'any.invalid': errMessages['any.invalid']
-  }),
+  // filePathFinancial: Joi.object().allow('').custom(validateFile, 'اعتبارسنجی فایل').messages({
+  //   'any.invalid': errMessages['any.invalid']
+  // }),
 
-  filePathFoundationAd: Joi.object().allow('').custom(validateFile, 'اعتبارسنجی فایل').messages({
-    'any.invalid': errMessages['any.invalid']
-  }),
+  // filePathFoundationAd: Joi.object().allow('').custom(validateFile, 'اعتبارسنجی فایل').messages({
+  //   'any.invalid': errMessages['any.invalid']
+  // }),
 
-  isConfirmed: Joi.boolean().allow('').messages({
-    'boolean.base': errMessages['boolean.base']
-  }),
+  // isConfirmed: Joi.boolean().allow('').messages({
+  //   'boolean.base': errMessages['boolean.base']
+  // }),
 
   description: Joi.string().allow('').max(255).label('توضیحات').messages({
     'string.max': errMessages['string.max']

@@ -30,14 +30,14 @@
           <div class='form-floating mb-3'>
             <input type='text' class='form-control' id='nationalCode' name='nationalCode' maxlength='11' minlength='11' placeholder='شناسه ملی را وارد کنید.' autocomplete='off' required />
             <label for='nationalCode' class='mandatory'>
-              شناسه ملی
+                شناسه ملی دستگاه
             </label>
           </div>
 
           <div class='form-floating mb-3'>
             <input type='text' class='form-control' id='organizationName' name='organizationName' placeholder='نام سازمان را وارد کنید.' autocomplete='off' required />
             <label for='organizationName' class='mandatory'>
-              نام سازمان
+              نام دستگاه
             </label>
           </div>
 
@@ -48,7 +48,18 @@
             </label>
           </div>
 
-          <div class='form-floating mb-3'>
+          <div style='margin-top:10px; '>
+            <label for='provinceId' >استان</label>
+            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان'>
+              <option value=''>لطفا استان را انتخاب کنید</option>
+              {{#each provincesListData}}
+                <option value='{{this.id}}'>{{this.title}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+
+          {{!-- <div class='form-floating mb-3'>
             <input type='text' class='form-control' id='registerDate' name='registerDate' placeholder='تاریخ ثبت را وارد کنید.' autocomplete='off' />
             <label for='registerDate'>
               تاریخ ثبت
@@ -74,7 +85,7 @@
             <label for='address'>
               آدرس
             </label>
-          </div>
+          </div> --}}
 
           {{! <div class='mb-3'>
             <label for='filePathStatute' class='form-label'>اساسنامه سازمان</label>
@@ -85,17 +96,8 @@
 
         <!-- ستون سمت راست -->
         <div class='col-md-6'>
-          <div style='margin-top:10px; '>
-            <label for='provinceId' >استان</label>
-            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان'>
-              <option value=''>لطفا استان را انتخاب کنید</option>
-              {{#each provincesListData}}
-                <option value='{{this.id}}'>{{this.title}} </option>
-              {{/each}}
-            </select>
-          </div>
-
-          <div style='margin-top:15px; '>
+          
+          <div style='margin-top:1px; '>
             <label for='parentOrganizationId' >نام دستگاه مادر</label>
             <select id='cmbparentOrganizationId' name='parentOrganizationId' style='position: relative;' data-farsiname='نام دستگاه مادر' >
               <option value=''>لطفا نام دستگاه مادر را انتخاب کنید</option>
@@ -105,8 +107,9 @@
             </select>
           </div>
 
+
           <div style='margin-top:15px;'>
-            <label for='organizationTypeId' >جنس سازمان</label>
+            <label for='organizationTypeId' >جنس دستگاه</label>
             <select id='cmbOrganizationType' name='organizationTypeId' style='position: relative;' accept='.pdf' data-farsiname='جنس سازمان'>
               <option value=''>لطفا جنس سازمان را انتخاب کنید</option>
               {{#each organizationTypesListData}}
@@ -116,7 +119,7 @@
           </div>
 
           <div style='margin-top:15px; '>
-            <label for='organizationCategoryId' >نوع سازمان</label>
+            <label for='organizationCategoryId' >نوع دستگاه</label>
             <select id='cmbOrganizationCategory' name='organizationCategoryId' style='position: relative;' accept='.pdf' data-farsiname='نوع سازمان'>
               <option value=''>لطفا نوع سازمان را انتخاب کنید</option>
               {{#each organizationCategoriesListData}}

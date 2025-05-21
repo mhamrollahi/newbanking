@@ -153,14 +153,12 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-//    tableName: 'codingData',
-//    freezeTableName: true,
 
       indexes: [
         {
           name: 'ix_CodeTableListId_Title',
           unique: true,
-          fields: ['CodeTableListId', 'title'],
+          fields: ['codeTableListId', 'title'],
           msg: 'این عنوان در این کدینگ  تکراری می‌باشد.... '
         }
       ],
@@ -175,7 +173,7 @@ module.exports = (sequelize) => {
                 where: { codeTableListId: record.codeTableListId },
                 order: [['id', 'desc']]
               });
-              const lastId = lastRecord ? lastRecord.id : record.codeTableListId * 1000;
+              const lastId = lastRecord ? lastRecord.id : record.codeTableListId * 10000;
               record.id = lastId + 1;
               console.log('Generated ID:', record.id);
             }

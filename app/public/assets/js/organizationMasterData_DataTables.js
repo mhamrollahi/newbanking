@@ -14,8 +14,8 @@ $(document).ready(function () {
       { data: 'nationalCode' },
       { data: 'organizationName' },
       { data: 'budgetRow' },
-      { data: 'registerDate' },
-      { data: 'registerNo' },
+      // { data: 'registerDate' },
+      // { data: 'registerNo' },
       { data: 'province.title' },
       { data: 'organizationType.title' },
       { data: 'organizationCategory.title' },
@@ -48,8 +48,8 @@ $(document).ready(function () {
       { target: 5, className: 'text-center' },
       { target: 6, className: 'text-center' },
       { target: 7, className: 'text-center' },
-      { target: 8, className: 'text-center' },
-      { target: 9, className: 'text-center' },
+      // { target: 8, className: 'text-center' },
+      // { target: 9, className: 'text-center' },
     ],
     order: [[0, 'desc']], // مرتب‌سازی پیش‌فرض بر اساس ردیف به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
