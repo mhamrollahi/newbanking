@@ -2,7 +2,10 @@ const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
 const moment = require('jalali-moment');
-const sequelize = require('@models/sequelize');
+const { sequelize, models } = require('@models/');
+
+// Store import progress
+const importProgress = new Map();
 
 exports.importCodingData = async (req, res, next) => {
   try {
@@ -11,14 +14,13 @@ exports.importCodingData = async (req, res, next) => {
     const errorFilePath = req.flash('errorFilePath');
 
     // Get all tables from database
-    const [tables] = await sequelize.query('SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()');
+    const [tables] = await sequelize.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();');
 
-    const tableNames = tables.map((table) => table.table_name);
+    console.log('Database tables:', tables);
+    const tableNames = tables.map((t) => ({ name: t.TABLE_NAME }));
+    console.log('Mapped table names:', tableNames);
 
     res.adminRender('./importFiles/importCodingData', {
-      // layout: "main",
-      // success,
-      // errors,
       errorFilePath,
       tables: tableNames
     });
@@ -27,28 +29,91 @@ exports.importCodingData = async (req, res, next) => {
   }
 };
 
+// New endpoint to get import progress
+exports.getImportProgress = async (req, res) => {
+  const importId = req.query.importId;
+  console.log('Getting progress for importId:', importId);
+  const progress = importProgress.get(importId) || { total: 0, current: 0, status: 'idle' };
+  console.log('Current progress state:', {
+    importId,
+    total: progress.total,
+    current: progress.current,
+    status: progress.status,
+    message: progress.message
+  });
+  res.json(progress);
+};
+
 exports.importCodingData_Save = async (req, res, next) => {
-  const validateExcelFileResult = await validateExcelFile(req.file);
-  if (validateExcelFileResult) {
-    req.flash('errors', validateExcelFileResult.errors);
-    const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
-    deleteUploadedFile(filePath);
+  const importId = Date.now().toString();
+  console.log('Starting import with importId:', importId);
+  importProgress.set(importId, { total: 0, current: 0, status: 'processing' });
+  console.log('Initial progress state set:', importProgress.get(importId));
 
-    return res.redirect('/importFiles/importCodingData');
-  }
+  try {
+    const validateExcelFileResult = await validateExcelFile(req.file);
+    if (validateExcelFileResult) {
+      console.log('Excel validation failed:', validateExcelFileResult);
+      req.flash('errors', validateExcelFileResult.errors);
+      const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
+      deleteUploadedFile(filePath);
+      importProgress.set(importId, { total: 0, current: 0, status: 'error', message: validateExcelFileResult.errors });
+      return res.redirect('/importFiles/importCodingData');
+    }
 
-  const workbook = xlsx.readFile(req.file.path);
-  const sheetName = workbook.SheetNames[0];
-  const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-  const fileName = req.file.originalname;
-  let errorSheet = null;
-  let errorRows = [];
+    const workbook = xlsx.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    console.log('Total rows to process:', sheetData.length);
 
-  for (const [index, row] of sheetData.entries()) {
-    const validationResult = validationRow(row, index);
+    // Update total count
+    importProgress.set(importId, {
+      total: sheetData.length,
+      current: 0,
+      status: 'processing'
+    });
+    console.log('Updated progress with total rows:', {
+      importId,
+      total: sheetData.length,
+      current: 0,
+      status: 'processing'
+    });
 
-    if (validationResult) {
-      errorRows.push(validationResult);
+    const fileName = req.file.originalname;
+    let errorSheet = null;
+    let errorRows = [];
+
+    // Get the selected table name
+    const tableName = req.body.tableName;
+
+    // Get table structure from database
+    const [columns] = await sequelize.query(
+      `SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_KEY 
+       FROM INFORMATION_SCHEMA.COLUMNS 
+       WHERE TABLE_SCHEMA = DATABASE() 
+       AND TABLE_NAME = ?`,
+      {
+        replacements: [tableName]
+      }
+    );
+
+    // Validate each row based on table structure
+    for (const [index, row] of sheetData.entries()) {
+      const validationResult = await validateRow(row, index, columns);
+      if (validationResult) {
+        errorRows.push(validationResult);
+      }
+      // Update progress
+      const currentProgress = {
+        total: sheetData.length,
+        current: index + 1,
+        status: 'processing'
+      };
+      importProgress.set(importId, currentProgress);
+      console.log('Progress update during validation:', {
+        importId,
+        ...currentProgress
+      });
     }
 
     if (errorRows.length > 0) {
@@ -58,39 +123,94 @@ exports.importCodingData_Save = async (req, res, next) => {
         ...row.OriginalData
       }));
     }
-  }
 
-  if (errorSheet) {
-    const errorFilePath = createErrorSheet(errorSheet, fileName);
-    req.flash('errorFilePath', errorFilePath);
-    const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
-    deleteUploadedFile(filePath);
-    return res.redirect('/importFiles/importCodingData');
-  }
+    if (errorSheet) {
+      const errorFilePath = createErrorSheet(errorSheet, fileName);
+      req.flash('errorFilePath', errorFilePath);
+      const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
+      deleteUploadedFile(filePath);
+      importProgress.set(importId, {
+        total: sheetData.length,
+        current: sheetData.length,
+        status: 'error',
+        message: 'Validation errors found'
+      });
+      return res.redirect('/importFiles/importCodingData');
+    }
 
-  try {
-    // Get the selected table name
-    const tableName = req.body.tableName;
+    // Find the model by matching table name with model's table name
+    const Model = Object.values(models).find((model) => {
+      const modelTableName = model.getTableName();
+      console.log('Model Table Name:', modelTableName);
+      return modelTableName.toLowerCase() === tableName.toLowerCase();
+    });
+
+    if (!Model) {
+      throw new Error(`Model for table ${tableName} not found. Available models: ${Object.keys(models).join(', ')}`);
+    }
 
     // Insert data into the selected table
-    for (const row of sheetData) {
-      await sequelize.query(`INSERT INTO ${tableName} SET ?`, {
-        replacements: {
-          ...row,
-          createdAt: new Date(),
-          creatorId: req.session?.user?.id ?? 0
+    for (const [index, row] of sheetData.entries()) {
+      if (Model.name === 'OrganizationMasterData') {
+        if (row.parentOrganizationId) {
+          const parentExists = await Model.findOne({
+            where: { id: row.parentOrganizationId }
+          });
+
+          if (!parentExists) {
+            row.parentOrganizationId = null;
+          }
         }
+      }
+
+      await Model.create({
+        ...row,
+        createdAt: new Date(),
+        creatorId: req.session?.user?.id ?? 0
+      });
+
+      // Update progress
+      const currentProgress = {
+        total: sheetData.length,
+        current: index + 1,
+        status: 'processing'
+      };
+      importProgress.set(importId, currentProgress);
+      console.log('Progress update during data insertion:', {
+        importId,
+        ...currentProgress
       });
     }
 
-    req.flash('success', 'اطلاعات با موفقیت در سامانه ذخیره شد.');
-  } catch (error) {
-    req.flash('errors', 'خطا در ذخیره‌سازی اطلاعات: ' + error.message);
-  }
+    importProgress.set(importId, {
+      total: sheetData.length,
+      current: sheetData.length,
+      status: 'completed'
+    });
 
-  const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
-  deleteUploadedFile(filePath);
-  return res.redirect('/importFiles/importCodingData');
+    req.flash('success', 'اطلاعات با موفقیت در سامانه ذخیره شد.');
+
+    const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
+    deleteUploadedFile(filePath);
+    res.json({
+      success: true,
+      message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
+      importId: importId
+    });
+  } catch (error) {
+    console.log('error = ', error);
+    importProgress.set(importId, {
+      total: 0,
+      current: 0,
+      status: 'error',
+      message: error.message
+    });
+    res.json({
+      success: false,
+      message: 'خطا در ذخیره‌سازی اطلاعات: ' + error.message,
+      importId: importId
+    });
+  }
 };
 
 const validateExcelFile = async (file) => {
@@ -136,27 +256,65 @@ const createErrorSheet = (_errorSheet, _filename) => {
   return errorFilePath;
 };
 
-const validationRow = (row, index) => {
+const validateRow = async (row, index, columns) => {
   const errors = [];
-  if (!row.CodeTableListId) errors.push('کد پدر وارد نشده است');
-  if (row.CodeTableListId && isNaN(row.CodeTableListId)) errors.push('کد پدر باید عدد باشد');
-  if (!row.title) errors.push('عنوان وارد نشده است.');
-  if (!row.sortId) errors.push('ترتیب وارد نشده است.');
-  if (row.sortId && isNaN(row.sortId)) errors.push('ترتیب باید عدد باشد.');
-  // if (!row.createdAt){
-  //   errors.push('تاریخ ایجاد وارد نشده است')
-  // }else{
-  //   const dateError = validateDate(row.createdAt)
-  //   if(dateError) errors.push(dateError)
-  // }
 
-  // if (errors.length > 0) {
-  //   return {
-  //     Row: index + 1,
-  //     Errors: errors.join(", "),
-  //     OriginalData: row,
-  //   };
-  // }
+  for (const column of columns) {
+    const columnName = column.COLUMN_NAME;
+    const value = row[columnName];
+
+    // Skip validation for auto-generated columns
+    if (['id', 'createdAt', 'updatedAt', 'creatorId', 'updaterId'].includes(columnName)) {
+      continue;
+    }
+
+    // Check required fields
+    if (column.IS_NULLABLE === 'NO' && !value) {
+      errors.push(`فیلد ${columnName} الزامی است`);
+      continue;
+    }
+
+    // Validate data types
+    if (value) {
+      switch (column.DATA_TYPE) {
+        case 'int':
+        case 'bigint':
+        case 'tinyint':
+          if (isNaN(value)) {
+            errors.push(`فیلد ${columnName} باید عددی باشد`);
+          }
+          break;
+
+        case 'text':
+        case 'varchar':
+          // Accept any value for text and varchar fields
+          break;
+
+        case 'datetime':
+        case 'timestamp':
+          const dateError = validateDate(value);
+          if (dateError) {
+            errors.push(`فیلد ${columnName}: ${dateError}`);
+          }
+          break;
+        case 'decimal':
+        case 'float':
+        case 'double':
+          if (isNaN(parseFloat(value))) {
+            errors.push(`فیلد ${columnName} باید عدد اعشاری باشد`);
+          }
+          break;
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      Row: index + 1,
+      Errors: errors.join(', '),
+      OriginalData: row
+    };
+  }
 
   return null;
 };

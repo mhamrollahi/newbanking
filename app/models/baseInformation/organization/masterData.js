@@ -7,33 +7,38 @@ class OrganizationMasterData extends BaseModel {}
 module.exports = (sequelize) => {
   OrganizationMasterData.init(
     {
-
       nationalCode: {
         type: DataTypes.STRING(11),
-        allowNull: false,
+        allowNull: true,
         validate: {
-          notNull: {
-            msg: 'لطفا  شناسه ملی را وارد کنید.'
-          },
-          notEmpty: {
-            msg: 'لطفا  شناسه ملی را وارد کنید.'
-          },
+          // notNull: {
+          //   msg: 'لطفا  شناسه ملی را وارد کنید.'
+          // },
+          // notEmpty: {
+          //   msg: 'لطفا  شناسه ملی را وارد کنید.'
+          // },
           len: {
             args: [11, 11],
-            msg: ' شناسه ملی باید بین 0 تا ۲۰ حرف باشد.'
+            msg: ' شناسه ملی باید بین 11 حرف باشد.'
           },
           isNumericOrPersian(value) {
+            // اگر مقدار null یا undefined باشد، اجازه می‌دهیم
+            if (!value) return;
+
+            // تبدیل به string برای اطمینان
+            let convertedValue = String(value);
+
             // تبدیل اعداد فارسی به انگلیسی
             const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
             const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            let convertedValue = value;
+
             for (let i = 0; i < 10; i++) {
               convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
             }
 
             // بررسی اینکه آیا همه کاراکترها عدد هستند
             if (!/^\d+$/.test(convertedValue)) {
-              throw new Error('شناسه ملی  باید فقط شامل اعداد باشد 111.');
+              throw new Error('شناسه ملی باید فقط شامل اعداد باشد.');
             }
           }
         }
@@ -57,7 +62,7 @@ module.exports = (sequelize) => {
       },
 
       budgetRow: {
-        type: DataTypes.STRING(8),
+        type: DataTypes.STRING(100),
         allowNull: false,
         validate: {
           notNull: {
@@ -67,22 +72,28 @@ module.exports = (sequelize) => {
             msg: 'لطفا  ردیف بودجه را وارد کنید.'
           },
           len: {
-            args: [8, 8],
-            msg: 'ردیف بودجه باید 8 رقم باشد.'
+            args: [0, 100],
+            msg: 'ردیف بودجه باید 6 تا 8 رقم باشد.'
           },
           isNumericOrPersian(value) {
+            // اگر مقدار null یا undefined باشد، اجازه می‌دهیم
+            if (!value) return;
+
+            // تبدیل به string برای اطمینان
+            let convertedValue = String(value);
+
             // تبدیل اعداد فارسی به انگلیسی
             const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
             const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            let convertedValue = value;
+
             for (let i = 0; i < 10; i++) {
               convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
             }
 
             // بررسی اینکه آیا همه کاراکترها عدد هستند
-            if (!/^\d+$/.test(convertedValue)) {
-              throw new Error('شناسه ملی  باید فقط شامل اعداد باشد 111.');
-            }
+            // if (!/^\d+$/.test(convertedValue)) {
+            //   throw new Error('ردیف بودجه باید فقط شامل اعداد باشد.');
+            // }
           }
         }
       },
@@ -289,12 +300,12 @@ module.exports = (sequelize) => {
       timestamps: true,
       sequelize,
       indexes: [
-        {
-          name: 'ix_provinceId,nationalCode',
-          unique: true,
-          fields: ['provinceId', 'nationalCode'],
-          msg: 'این شناسه ملی در این استان  تکراری می‌باشد.... '
-        }
+        // {
+        //   name: 'ix_provinceId,nationalCode',
+        //   unique: true,
+        //   fields: ['provinceId', 'nationalCode'],
+        //   msg: 'این شناسه ملی در این استان  تکراری می‌باشد.... '
+        // }
       ],
 
       validate: {}
@@ -308,12 +319,9 @@ module.exports = (sequelize) => {
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'organizationTypeId', as: 'organizationType' });
     OrganizationMasterData.belongsTo(models.CodingDataModel, { foreignKey: 'organizationCategoryId', as: 'organizationCategory' });
     OrganizationMasterData.belongsTo(models.OrganizationMasterDataModel, { foreignKey: 'parentOrganizationId', as: 'parentOrganization' });
-    
-    
+
     OrganizationMasterData.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     OrganizationMasterData.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
-
-
 
     // OrganizationMasterData.hasMany(models.OrganizationMasterDataModel, {
     //   foreignKey: 'parentOrganizationId',
