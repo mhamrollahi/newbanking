@@ -1,7 +1,7 @@
 let progressInterval = null;
 
 // تست لود شدن فایل
-console.log('importData_Progressbar.js loaded');
+console.log('importData_Progressbar.js loaded - Test mishavd ...');
 
 function startProgressTracking(importId) {
   console.log('Starting progress tracking for importId:', importId);
@@ -23,9 +23,13 @@ function startProgressTracking(importId) {
     try {
       console.log('Checking progress for importId:', importId);
       const response = await fetch(`/importFiles/getImportProgress?importId=${importId}`);
+      
+      console.log('Fetch response:', response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      console.log('after fetch .....  Checking progress for importId:', importId);
 
       const data = await response.json();
       console.log('Progress data received:', data);
