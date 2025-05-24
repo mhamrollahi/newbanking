@@ -170,6 +170,11 @@ exports.importCodingData_Save = async (req, res, next) => {
         }
       }
 
+      // Add 20 second delay for debugging
+      console.log(`Processing row ${index + 1} of ${sheetData.length}...`);
+      await new Promise((resolve) => setTimeout(resolve, 10000)); // 10 seconds delay
+      console.log(`Finished processing row ${index + 1}`);
+
       await Model.create({
         ...row,
         createdAt: new Date(),
@@ -199,11 +204,24 @@ exports.importCodingData_Save = async (req, res, next) => {
 
     const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
     deleteUploadedFile(filePath);
-    res.json({
-      success: true,
-      message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
-      importId: importId
+
+    // Send initial response immediately
+    res.writeHead(200, {
+      'Content-Type': 'application/json',
+      'Transfer-Encoding': 'chunked'
     });
+
+    // Send the response
+    res.write(
+      JSON.stringify({
+        success: true,
+        message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
+        importId: importId
+      })
+    );
+
+    // End the response
+    res.end();
   } catch (error) {
     console.log('error = ', error);
     importProgress.set(importId, {

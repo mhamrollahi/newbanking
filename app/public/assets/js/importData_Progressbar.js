@@ -63,43 +63,75 @@ function startProgressTracking(importId) {
 
 // اضافه کردن event listener به فرم
 document.addEventListener('DOMContentLoaded', function () {
+  console.log('DOM Content Loaded - Checking form...');
   const form = document.getElementById('frmImportCodingData');
   if (!form) {
-    console.error('Form not found!');
+    console.error('Form not found! Make sure the form has id="frmImportCodingData"');
     return;
   }
 
-  console.log('Form found, adding submit listener');
+  console.log('Form found:', form);
+  console.log('Form elements:', {
+    tableName: form.querySelector('[name="tableName"]'),
+    excelFile: form.querySelector('[name="excelFile"]')
+  });
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    console.log('Form submitted');
+    console.log('Form submitted - Starting validation...');
 
     const formData = new FormData(this);
     const tableName = formData.get('tableName');
     const excelFile = formData.get('excelFile');
-    console.log('Submitting form with:', { tableName, excelFile });
+
+    if (!tableName) {
+      console.error('Table name is required!');
+      toastr.error('لطفا جدول را انتخاب کنید', 'خطا');
+      return;
+    }
+
+    if (!excelFile || excelFile.size === 0) {
+      console.error('Excel file is required!');
+      toastr.error('لطفا فایل اکسل را انتخاب کنید', 'خطا');
+      return;
+    }
+
+    console.log('Form validation passed:', { tableName, excelFile });
 
     try {
+      console.log('Starting form submission...');
       const response = await fetch('/importFiles/importCodingData', {
         method: 'POST',
         body: formData
       });
 
+      console.log('Response received:', response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
-      console.log('Server response:', result);
+      // Read the response as text first
+      const responseText = await response.text();
+      console.log('Raw response:', responseText);
+
+      // Parse the JSON response
+      let result;
+      try {
+        result = JSON.parse(responseText);
+        console.log('Server response parsed:', result);
+      } catch (e) {
+        console.error('Error parsing JSON response:', e);
+        throw new Error('Invalid JSON response from server');
+      }
 
       if (result.success) {
-        console.log('Starting progress tracking with importId:', result.importId);
+        console.log('Server returned success, importId:', result.importId);
         startProgressTracking(result.importId);
       } else {
-        console.error('Server returned error:', result.message);
+        console.log('Server returned error:', result);
         toastr.error(result.message, 'خطا');
         if (result.errorFilePath) {
-          // If there's an error file, show a download link
+          console.log('Error file path found:', result.errorFilePath);
           const downloadLink = document.createElement('a');
           downloadLink.href = `/importFiles/downloadErrorFile?filePath=${result.errorFilePath}`;
           downloadLink.textContent = 'دانلود فایل خطاها';
@@ -108,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error in form submission:', error);
       toastr.error('خطا در ارسال فرم', 'خطا');
     }
   });
