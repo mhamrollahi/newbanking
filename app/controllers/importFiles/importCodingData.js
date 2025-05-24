@@ -54,11 +54,14 @@ exports.importCodingData_Save = async (req, res, next) => {
     const validateExcelFileResult = await validateExcelFile(req.file);
     if (validateExcelFileResult) {
       console.log('Excel validation failed:', validateExcelFileResult);
-      req.flash('errors', validateExcelFileResult.errors);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
       importProgress.set(importId, { total: 0, current: 0, status: 'error', message: validateExcelFileResult.errors });
-      return res.redirect('/importFiles/importCodingData');
+      return res.json({
+        success: false,
+        message: validateExcelFileResult.errors,
+        importId: importId
+      });
     }
 
     const workbook = xlsx.readFile(req.file.path);
@@ -126,7 +129,6 @@ exports.importCodingData_Save = async (req, res, next) => {
 
     if (errorSheet) {
       const errorFilePath = createErrorSheet(errorSheet, fileName);
-      req.flash('errorFilePath', errorFilePath);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
       importProgress.set(importId, {
@@ -135,7 +137,12 @@ exports.importCodingData_Save = async (req, res, next) => {
         status: 'error',
         message: 'Validation errors found'
       });
-      return res.redirect('/importFiles/importCodingData');
+      return res.json({
+        success: false,
+        message: 'Validation errors found',
+        errorFilePath: errorFilePath,
+        importId: importId
+      });
     }
 
     // Find the model by matching table name with model's table name

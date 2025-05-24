@@ -23,12 +23,12 @@ function startProgressTracking(importId) {
     try {
       console.log('Checking progress for importId:', importId);
       const response = await fetch(`/importFiles/getImportProgress?importId=${importId}`);
-      
+
       console.log('Fetch response:', response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       console.log('after fetch .....  Checking progress for importId:', importId);
 
       const data = await response.json();
@@ -98,6 +98,14 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         console.error('Server returned error:', result.message);
         toastr.error(result.message, 'خطا');
+        if (result.errorFilePath) {
+          // If there's an error file, show a download link
+          const downloadLink = document.createElement('a');
+          downloadLink.href = `/importFiles/downloadErrorFile?filePath=${result.errorFilePath}`;
+          downloadLink.textContent = 'دانلود فایل خطاها';
+          downloadLink.className = 'btn btn-warning mt-2';
+          document.getElementById('progress-text').appendChild(downloadLink);
+        }
       }
     } catch (error) {
       console.error('Error submitting form:', error);
