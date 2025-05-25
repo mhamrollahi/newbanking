@@ -39,11 +39,37 @@
 
 <div id='progress-text' style='display: none; text-align: center; margin-top: 20px; font-size: 18px; color: #01019e;'></div>
 
+<!-- Load CSS first -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<!-- Load JavaScript libraries -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'></script>
 <script src='/static/assets/js/formValidation.js'></script>
 <script src='/static/assets/js/importData_Progressbar.js'></script>
 
 <script>
-  // تنظیمات toastr toastr.options = { "closeButton": true, "progressBar": true, "positionClass": "toast-top-right", "timeOut": "3000" }; // تست لود شدن اسکریپت‌ها console.log('Scripts loaded successfully'); document.addEventListener('DOMContentLoaded', function() { console.log('DOM fully loaded'); const form =
-  document.getElementById('frmImportCodingData'); if (form) { console.log('Form found'); } else { console.error('Form not found!'); } });
+  // تنظیمات toastr
+  toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-top-right",
+    "timeOut": "3000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  };
+
+  // تست لود شدن اسکریپت‌ها
+  console.log('Scripts loaded successfully');
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded');
+    const form = document.getElementById('frmImportCodingData');
+    if (form) {
+      console.log('Form found');
+    } else {
+      console.error('Form not found!');
+    }
+  });
 </script>
