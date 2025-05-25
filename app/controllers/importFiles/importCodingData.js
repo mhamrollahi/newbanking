@@ -206,22 +206,27 @@ exports.importCodingData_Save = async (req, res, next) => {
     deleteUploadedFile(filePath);
 
     // Send initial response immediately
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Transfer-Encoding': 'chunked'
+    // res.writeHead(200, {
+    //   'Content-Type': 'application/json',
+    //   'Transfer-Encoding': 'chunked'
+    // });
+
+    // // Send the response
+    // res.write(
+    //   JSON.stringify({
+    //     success: true,
+    //     message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
+    //     importId: importId
+    //   })
+    // );
+
+    // // End the response
+    // res.end();
+    return res.json({
+      success: true,
+      message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
+      importId: importId
     });
-
-    // Send the response
-    res.write(
-      JSON.stringify({
-        success: true,
-        message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
-        importId: importId
-      })
-    );
-
-    // End the response
-    res.end();
   } catch (error) {
     console.log('error = ', error);
     importProgress.set(importId, {

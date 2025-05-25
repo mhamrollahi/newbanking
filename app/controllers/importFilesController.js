@@ -27,7 +27,7 @@ async function processAndSaveRecord(record, tableName) {
         throw error;
     }
 }
-
+const { v4: uuidv4 } = require('uuid');
 // تابع برای شروع فرآیند import
 exports.initImport = async (req, res) => {
     try {
