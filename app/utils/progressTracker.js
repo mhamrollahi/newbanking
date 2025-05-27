@@ -9,7 +9,7 @@ class ProgressTracker {
         ProgressTracker.instance = this;
         
         this.current = 0;
-        this.total = 1000;
+        this.total = 100;
         this.status = 'idle';
         this.interval = null;
     }
@@ -23,10 +23,10 @@ class ProgressTracker {
             console.log('Clearing existing interval');
             clearInterval(this.interval);
         }
-
+        
         // ریست کردن وضعیت پیشرفت
         this.current = 0;
-        this.total = 1000;
+        this.total = 100;
         this.status = 'processing';
         console.log('Progress reset to:', this.getProgress());
 

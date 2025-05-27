@@ -3,9 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('jalali-moment');
 const { sequelize, models } = require('@models/');
-
-// Store import progress
-const importProgress = new Map();
+const progressTracker = require('../../utils/progressTracker');
 
 exports.importCodingData = async (req, res, next) => {
   try {
@@ -31,36 +29,38 @@ exports.importCodingData = async (req, res, next) => {
 
 // New endpoint to get import progress
 exports.getImportProgress = async (req, res) => {
-  const importId = req.query.importId;
-  console.log('Getting progress for importId:', importId);
-  const progress = importProgress.get(importId) || { total: 0, current: 0, status: 'idle' };
-  console.log('Current progress state:', {
-    importId,
-    total: progress.total,
-    current: progress.current,
-    status: progress.status,
-    message: progress.message
-  });
-  res.json(progress);
+  console.log('=== Controller: getImportProgress called ===');
+  try {
+    const progress = progressTracker.getProgress();
+    console.log('Current progress from tracker:', progress);
+    
+    return res.json({
+      success: true,
+      current: progress.current,
+      total: progress.total,
+      status: progress.status
+    });
+  } catch (error) {
+    console.error('Error in getProgress:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت وضعیت پیشرفت'
+    });
+  }
 };
 
-exports.importCodingData_Save = async (req, res, next) => {
-  const importId = Date.now().toString();
-  console.log('Starting import with importId:', importId);
-  importProgress.set(importId, { total: 0, current: 0, status: 'processing' });
-  console.log('Initial progress state set:', importProgress.get(importId));
-
+exports.importCodingData_Save = async (req, res) => {
+  console.log('=== Starting import process ===');
+  
   try {
     const validateExcelFileResult = await validateExcelFile(req.file);
     if (validateExcelFileResult) {
       console.log('Excel validation failed:', validateExcelFileResult);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
-      importProgress.set(importId, { total: 0, current: 0, status: 'error', message: validateExcelFileResult.errors });
       return res.json({
         success: false,
-        message: validateExcelFileResult.errors,
-        importId: importId
+        message: validateExcelFileResult.errors
       });
     }
 
@@ -69,18 +69,9 @@ exports.importCodingData_Save = async (req, res, next) => {
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
     console.log('Total rows to process:', sheetData.length);
 
-    // Update total count
-    importProgress.set(importId, {
-      total: sheetData.length,
-      current: 0,
-      status: 'processing'
-    });
-    console.log('Updated progress with total rows:', {
-      importId,
-      total: sheetData.length,
-      current: 0,
-      status: 'processing'
-    });
+    // شروع progress tracker
+    console.log('Starting progress tracker...');
+    progressTracker.startProgress();
 
     const fileName = req.file.originalname;
     let errorSheet = null;
@@ -106,17 +97,7 @@ exports.importCodingData_Save = async (req, res, next) => {
       if (validationResult) {
         errorRows.push(validationResult);
       }
-      // Update progress
-      const currentProgress = {
-        total: sheetData.length,
-        current: index + 1,
-        status: 'processing'
-      };
-      importProgress.set(importId, currentProgress);
-      console.log('Progress update during validation:', {
-        importId,
-        ...currentProgress
-      });
+      console.log(`Validation progress: ${index + 1} of ${sheetData.length}`);
     }
 
     if (errorRows.length > 0) {
@@ -131,17 +112,10 @@ exports.importCodingData_Save = async (req, res, next) => {
       const errorFilePath = createErrorSheet(errorSheet, fileName);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
-      importProgress.set(importId, {
-        total: sheetData.length,
-        current: sheetData.length,
-        status: 'error',
-        message: 'Validation errors found'
-      });
       return res.json({
         success: false,
         message: 'Validation errors found',
-        errorFilePath: errorFilePath,
-        importId: importId
+        errorFilePath: errorFilePath
       });
     }
 
@@ -170,9 +144,9 @@ exports.importCodingData_Save = async (req, res, next) => {
         }
       }
 
-      // Add 20 second delay for debugging
+      // Add delay for testing progress
       console.log(`Processing row ${index + 1} of ${sheetData.length}...`);
-      await new Promise((resolve) => setTimeout(resolve, 10000)); // 10 seconds delay
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
       console.log(`Finished processing row ${index + 1}`);
 
       await Model.create({
@@ -180,65 +154,22 @@ exports.importCodingData_Save = async (req, res, next) => {
         createdAt: new Date(),
         creatorId: req.session?.user?.id ?? 0
       });
-
-      // Update progress
-      const currentProgress = {
-        total: sheetData.length,
-        current: index + 1,
-        status: 'processing'
-      };
-      importProgress.set(importId, currentProgress);
-      console.log('Progress update during data insertion:', {
-        importId,
-        ...currentProgress
-      });
     }
-
-    importProgress.set(importId, {
-      total: sheetData.length,
-      current: sheetData.length,
-      status: 'completed'
-    });
 
     req.flash('success', 'اطلاعات با موفقیت در سامانه ذخیره شد.');
 
     const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
     deleteUploadedFile(filePath);
 
-    // Send initial response immediately
-    // res.writeHead(200, {
-    //   'Content-Type': 'application/json',
-    //   'Transfer-Encoding': 'chunked'
-    // });
-
-    // // Send the response
-    // res.write(
-    //   JSON.stringify({
-    //     success: true,
-    //     message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
-    //     importId: importId
-    //   })
-    // );
-
-    // // End the response
-    // res.end();
     return res.json({
       success: true,
-      message: 'اطلاعات با موفقیت در سامانه ذخیره شد.',
-      importId: importId
+      message: 'اطلاعات با موفقیت در سامانه ذخیره شد.'
     });
   } catch (error) {
     console.log('error = ', error);
-    importProgress.set(importId, {
-      total: 0,
-      current: 0,
-      status: 'error',
-      message: error.message
-    });
     res.json({
       success: false,
-      message: 'خطا در ذخیره‌سازی اطلاعات: ' + error.message,
-      importId: importId
+      message: 'خطا در ذخیره‌سازی اطلاعات: ' + error.message
     });
   }
 };
@@ -321,12 +252,13 @@ const validateRow = async (row, index, columns) => {
           break;
 
         case 'datetime':
-        case 'timestamp':
+        case 'timestamp': {
           const dateError = validateDate(value);
           if (dateError) {
             errors.push(`فیلد ${columnName}: ${dateError}`);
           }
           break;
+        }
         case 'decimal':
         case 'float':
         case 'double':

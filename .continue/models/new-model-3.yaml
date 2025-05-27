@@ -7,7 +7,7 @@ models:
     model: deepseek-r1
   - name: qwen 2.5 coder:1.5b
     provider: ollama
-    model: qwen-2.5-coder-1.5b
+    model: qwen2.5-coder:1.5b
     roles:
       - autocomplete
 
