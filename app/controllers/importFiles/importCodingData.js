@@ -163,7 +163,7 @@ exports.importCodingData_Save = async (req, res) => {
         // به‌روزرسانی پیشرفت
         progressTracker.updateProgress(i + 1, sheetData.length);
 
-        اضافه کردن تاخیر برای نمایش بهتر نوار پیشرفت
+        // اضافه کردن تاخیر برای نمایش بهتر نوار پیشرفت
         const delay = sheetData.length < 100 ? 700 : 200;
         await new Promise(resolve => setTimeout(resolve, delay));
     }
