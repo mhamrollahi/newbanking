@@ -9,7 +9,6 @@ console.log('importData_Progressbar.js loaded');
 function startProgressTracking(importId) {  
     currentImportId = importId || null; // اگر importId داده شده باشد، آن را ذخیره می‌کند
 
-
     console.log('Starting progress tracking');
     const progressText = document.getElementById('progress-text');
     if (!progressText) {
@@ -34,7 +33,6 @@ function startProgressTracking(importId) {
 
 async function checkProgress(progressText) {
     try {
-        // const response = await fetch('/importFiles/getImportProgress');
         const response = await fetch(`/importFiles/getImportProgress?importId=${currentImportId}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -66,56 +64,6 @@ async function checkProgress(progressText) {
 }
 
 // اضافه کردن event listener به فرم
-// document.addEventListener('DOMContentLoaded', function () {
-//     console.log('DOM Content Loaded - Checking form...');
-//     const form = document.getElementById('frmImportCodingData');
-//     if (!form) {
-//         console.error('Form not found! Make sure the form has id="frmImportCodingData"');
-//         return;
-//     }
-
-//     form.addEventListener('submit', async function (e) {
-//         e.preventDefault();
-//         console.log('Form submitted');
-
-//         const formData = new FormData(this);
-//         const tableName = formData.get('tableName');
-//         const excelFile = formData.get('excelFile');
-
-//         if (!tableName) {
-//             alert('لطفا جدول را انتخاب کنید');
-//             return;
-//         }
-
-//         if (!excelFile || excelFile.size === 0) {
-//             alert('لطفا فایل اکسل را انتخاب کنید');
-//             return;
-//         }
-
-//         // شروع نمایش پیشرفت
-//         startProgressTracking();
-
-//         try {
-//             const response = await fetch('/importFiles/importCodingData', {
-//                 method: 'POST',
-//                 body: formData
-//             });
-
-//             if (!response.ok) {
-//                 throw new Error(`HTTP error! status: ${response.status}`);
-//             }
-
-//             const result = await response.json();
-//             if (!result.success) {
-//                 throw new Error(result.message);
-//             }
-//         } catch (error) {
-//             console.error('Error in form submission:', error);
-//             alert('خطا در ارسال فرم');
-//         }
-//     });
-// });
-
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM Content Loaded - Checking form...');
     const form = document.getElementById('frmImportCodingData');

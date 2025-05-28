@@ -14,9 +14,9 @@ exports.importCodingData = async (req, res, next) => {
     // Get all tables from database
     const [tables] = await sequelize.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();');
 
-    console.log('Database tables:', tables);
+    // console.log('Database tables:', tables);
     const tableNames = tables.map((t) => ({ name: t.TABLE_NAME }));
-    console.log('Mapped table names:', tableNames);
+    // console.log('Mapped table names:', tableNames);
 
     res.adminRender('./importFiles/importCodingData', {
       errorFilePath,
@@ -32,7 +32,7 @@ exports.getImportProgress = async (req, res) => {
   console.log('=== Controller: getImportProgress called ===');
   try {
     const progress = progressTracker.getProgress();
-    console.log('Current progress from tracker:', progress);
+    // console.log('Current progress from tracker:', progress);
     
     return res.json({
       success: true,
@@ -67,11 +67,12 @@ exports.importCodingData_Save = async (req, res) => {
     const workbook = xlsx.readFile(req.file.path);
     const sheetName = workbook.SheetNames[0];
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    console.log('Total rows to process:', sheetData.length);
+    console.log('=== STARTING DATA INSERTION ===');
+    console.log('Total records to process:', sheetData.length);
 
-    // شروع progress tracker
-    console.log('Starting progress tracker...');
+    // شروع progress tracker با تعداد کل رکوردها
     progressTracker.startProgress();
+    progressTracker.updateProgress(0, sheetData.length);
 
     const fileName = req.file.originalname;
     let errorSheet = null;
@@ -97,7 +98,6 @@ exports.importCodingData_Save = async (req, res) => {
       if (validationResult) {
         errorRows.push(validationResult);
       }
-      console.log(`Validation progress: ${index + 1} of ${sheetData.length}`);
     }
 
     if (errorRows.length > 0) {
@@ -121,40 +121,56 @@ exports.importCodingData_Save = async (req, res) => {
 
     // Find the model by matching table name with model's table name
     const Model = Object.values(models).find((model) => {
-      const modelTableName = model.getTableName();
-      console.log('Model Table Name:', modelTableName);
-      return modelTableName.toLowerCase() === tableName.toLowerCase();
+        const modelTableName = model.getTableName();
+        return modelTableName.toLowerCase() === tableName.toLowerCase();
     });
 
     if (!Model) {
-      throw new Error(`Model for table ${tableName} not found. Available models: ${Object.keys(models).join(', ')}`);
+        throw new Error(`Model for table ${tableName} not found. Available models: ${Object.keys(models).join(', ')}`);
     }
+
+    console.log('Model found:', Model.name);
 
     // Insert data into the selected table
-    for (const [index, row] of sheetData.entries()) {
-      if (Model.name === 'OrganizationMasterData') {
-        if (row.parentOrganizationId) {
-          const parentExists = await Model.findOne({
-            where: { id: row.parentOrganizationId }
-          });
+    console.log('\n=== STARTING INSERT LOOP ===');
+    
+    for (let i = 0; i < sheetData.length; i++) {
+        const row = sheetData[i];
+        console.log(`\n=== LOOP ITERATION ${i} ===`);
+        console.log('Current index:', i);
+        console.log('Current row:', row);
+        
+        if (Model.name === 'OrganizationMasterData') {
+            if (row.parentOrganizationId) {
+                const parentExists = await Model.findOne({
+                    where: { id: row.parentOrganizationId }
+                });
 
-          if (!parentExists) {
-            row.parentOrganizationId = null;
-          }
+                if (!parentExists) {
+                    row.parentOrganizationId = null;
+                }
+            }
         }
-      }
+        
+        console.log('About to create record...');
+        const createdRecord = await Model.create({
+            ...row,
+            createdAt: new Date(),
+            creatorId: req.session?.user?.id ?? 0
+        });
+        console.log('Record created with ID:', createdRecord.id);
 
-      // Add delay for testing progress
-      console.log(`Processing row ${index + 1} of ${sheetData.length}...`);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second delay
-      console.log(`Finished processing row ${index + 1}`);
+        // به‌روزرسانی پیشرفت
+        progressTracker.updateProgress(i + 1, sheetData.length);
 
-      await Model.create({
-        ...row,
-        createdAt: new Date(),
-        creatorId: req.session?.user?.id ?? 0
-      });
+        اضافه کردن تاخیر برای نمایش بهتر نوار پیشرفت
+        const delay = sheetData.length < 100 ? 700 : 200;
+        await new Promise(resolve => setTimeout(resolve, delay));
     }
+
+    console.log('=== INSERT LOOP COMPLETED ===');
+    // تکمیل پیشرفت
+    progressTracker.completeProgress();
 
     req.flash('success', 'اطلاعات با موفقیت در سامانه ذخیره شد.');
 
@@ -167,6 +183,8 @@ exports.importCodingData_Save = async (req, res) => {
     });
   } catch (error) {
     console.log('error = ', error);
+    // در صورت خطا، وضعیت پیشرفت را به حالت خطا تغییر می‌دهیم
+    progressTracker.setError();
     res.json({
       success: false,
       message: 'خطا در ذخیره‌سازی اطلاعات: ' + error.message
