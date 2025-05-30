@@ -1,14 +1,19 @@
 <div style='height: 200px;'></div>
 
-{{#if errors}}
+<!-- Debug Info -->
+<div style='display: none;'>
+  Debug Info: errorMessage: "{{errorMessage}}" errorFilePath: "{{errorFilePath}}"
+</div>
+
+{{#if errorMessage}}
   <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1'>
-    <p class='alert alert-danger w-50 text-center align-self-center'>{{errors}}</p>
+    <p class='alert alert-danger w-50 text-center align-self-center'>{{errorMessage}}</p>
   </div>
 {{/if}}
 
 {{#if errorFilePath}}
   <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column'>
-    <p class='alert alert-danger w-50 text-center align-self-center'>برخی از ردیفهای فایل خطا داشتند؛ برای مشاهد خطاها لطفا
+    <p class='alert alert-danger w-50 text-center align-self-center'>{{errorMessage}}
       <a style='font-size: 17px;font-style: italic;color:#01019e' href='/importFiles/downloadErrorFile?filePath={{errorFilePath}}'>این فایل </a>
       را مشاهده نمایید.</p>
   </div>
@@ -38,20 +43,16 @@
 </div>
 
 <!-- نوار پیشرفت -->
-<div class="progress mb-3" style="display: none;">
-    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
-         role="progressbar" style="width: 0%" 
-         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+<div class='progress mb-3' style='display: none;'>
+  <div id='progress-bar' class='progress-bar progress-bar-striped progress-bar-animated' role='progressbar' style='width: 0%' aria-valuenow='0' aria-valuemin='0' aria-valuemax='100'>0%</div>
 </div>
-<div id="progress-text" class="text-center mb-3" style="display: none;">
-    منتظر شروع پردازش...
+<div id='progress-text' class='text-center mb-3' style='display: none;'>
+  منتظر شروع پردازش...
 </div>
 
 <!-- Load CSS first -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<link href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css' rel='stylesheet' />
 <!-- Load JavaScript libraries -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'></script>
 <script src='/static/assets/js/formValidation.js'></script>
 <script src='/static/assets/js/importData_Progressbar.js'></script>
-
-

@@ -7,19 +7,20 @@ const progressTracker = require('../../utils/progressTracker');
 
 exports.importCodingData = async (req, res, next) => {
   try {
-    // const success = req.flash("success");
-    // const errors = req.flash("errors");
+    console.log('=== Starting importCodingData ===');
     const errorFilePath = req.flash('errorFilePath');
+    const errorMessage = req.flash('errorMessage');
 
-    // Get all tables from database
+    console.log('Flash values:', { errorFilePath, errorMessage });
+
     const [tables] = await sequelize.query('SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = DATABASE();');
-
-    // console.log('Database tables:', tables);
     const tableNames = tables.map((t) => ({ name: t.TABLE_NAME }));
-    // console.log('Mapped table names:', tableNames);
+
+    console.log('About to render with:', { errorFilePath, errorMessage });
 
     res.adminRender('./importFiles/importCodingData', {
       errorFilePath,
+      errorMessage,
       tables: tableNames
     });
   } catch (error) {
@@ -33,7 +34,7 @@ exports.getImportProgress = async (req, res) => {
   try {
     const progress = progressTracker.getProgress();
     // console.log('Current progress from tracker:', progress);
-    
+
     return res.json({
       success: true,
       current: progress.current,
@@ -51,31 +52,26 @@ exports.getImportProgress = async (req, res) => {
 
 exports.importCodingData_Save = async (req, res) => {
   console.log('=== Starting import process ===');
-  
+
   try {
     const validateExcelFileResult = await validateExcelFile(req.file);
     if (validateExcelFileResult) {
       console.log('Excel validation failed:', validateExcelFileResult);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
-      return res.json({
-        success: false,
-        message: validateExcelFileResult.errors
-      });
+
+      console.log('Setting flash for validation error');
+      req.flash('errorMessage', validateExcelFileResult.errors);
+      return res.redirect('/importFiles/importCodingData');
     }
 
     const workbook = xlsx.readFile(req.file.path);
     const sheetName = workbook.SheetNames[0];
     const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    console.log('=== STARTING DATA INSERTION ===');
+    console.log('=== STARTING DATA VALIDATION ===');
     console.log('Total records to process:', sheetData.length);
 
-    // شروع progress tracker با تعداد کل رکوردها
-    progressTracker.startProgress();
-    progressTracker.updateProgress(0, sheetData.length);
-
     const fileName = req.file.originalname;
-    let errorSheet = null;
     let errorRows = [];
 
     // Get the selected table name
@@ -93,86 +89,80 @@ exports.importCodingData_Save = async (req, res) => {
     );
 
     // Validate each row based on table structure
+    console.log('Starting row validation...');
     for (const [index, row] of sheetData.entries()) {
       const validationResult = await validateRow(row, index, columns);
       if (validationResult) {
+        console.log(`Row ${index + 1} has errors:`, validationResult);
         errorRows.push(validationResult);
       }
     }
 
     if (errorRows.length > 0) {
-      errorSheet = errorRows.map((row) => ({
-        Row: row.Row,
-        Errors: row.Errors,
-        ...row.OriginalData
-      }));
-    }
-
-    if (errorSheet) {
-      const errorFilePath = createErrorSheet(errorSheet, fileName);
+      console.log(`Found ${errorRows.length} rows with errors`);
+      const errorFilePath = createErrorSheet(errorRows, fileName);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
-      return res.json({
-        success: false,
-        message: 'Validation errors found',
-        errorFilePath: errorFilePath
-      });
+
+      console.log('Setting flash messages for row errors');
+      // اول پیام خطا را ست می‌کنیم
+      await req.flash('errorMessage', `تعداد ${errorRows.length} سطر دارای خطا می‌باشد`);
+      // بعد مسیر فایل را ست می‌کنیم
+      await req.flash('errorFilePath', errorFilePath);
+
+      console.log('Flash messages set, redirecting...');
+      return res.redirect('/importFiles/importCodingData');
     }
+
+    // اگر خطایی نبود، شروع عملیات درج در دیتابیس
+    progressTracker.startProgress();
+    progressTracker.updateProgress(0, sheetData.length);
 
     // Find the model by matching table name with model's table name
     const Model = Object.values(models).find((model) => {
-        const modelTableName = model.getTableName();
-        return modelTableName.toLowerCase() === tableName.toLowerCase();
+      const modelTableName = model.getTableName();
+      return modelTableName.toLowerCase() === tableName.toLowerCase();
     });
 
     if (!Model) {
-        throw new Error(`Model for table ${tableName} not found. Available models: ${Object.keys(models).join(', ')}`);
+      throw new Error(`Model for table ${tableName} not found. Available models: ${Object.keys(models).join(', ')}`);
     }
 
     console.log('Model found:', Model.name);
 
     // Insert data into the selected table
     console.log('\n=== STARTING INSERT LOOP ===');
-    
+
     for (let i = 0; i < sheetData.length; i++) {
-        const row = sheetData[i];
-        console.log(`\n=== LOOP ITERATION ${i} ===`);
-        console.log('Current index:', i);
-        console.log('Current row:', row);
-        
-        if (Model.name === 'OrganizationMasterData') {
-            if (row.parentOrganizationId) {
-                const parentExists = await Model.findOne({
-                    where: { id: row.parentOrganizationId }
-                });
+      const row = sheetData[i];
+      console.log(`\n=== LOOP ITERATION ${i} ===`);
 
-                if (!parentExists) {
-                    row.parentOrganizationId = null;
-                }
-            }
+      if (Model.name === 'OrganizationMasterData') {
+        if (row.parentOrganizationId) {
+          const parentExists = await Model.findOne({
+            where: { id: row.parentOrganizationId }
+          });
+
+          if (!parentExists) {
+            row.parentOrganizationId = null;
+          }
         }
-        
-        console.log('About to create record...');
-        const createdRecord = await Model.create({
-            ...row,
-            createdAt: new Date(),
-            creatorId: req.session?.user?.id ?? 0
-        });
-        console.log('Record created with ID:', createdRecord.id);
+      }
 
-        // به‌روزرسانی پیشرفت
-        progressTracker.updateProgress(i + 1, sheetData.length);
+      console.log('About to create record...');
+      const createdRecord = await Model.create({
+        ...row,
+        createdAt: new Date(),
+        creatorId: req.session?.user?.id ?? 0
+      });
+      console.log('Record created with ID:', createdRecord.id);
 
-        // اضافه کردن تاخیر برای نمایش بهتر نوار پیشرفت
-        const delay = sheetData.length < 100 ? 700 : 200;
-        await new Promise(resolve => setTimeout(resolve, delay));
+      // به‌روزرسانی پیشرفت
+      progressTracker.updateProgress(i + 1, sheetData.length);
     }
 
     console.log('=== INSERT LOOP COMPLETED ===');
-    // تکمیل پیشرفت
     progressTracker.completeProgress();
-
-    req.flash('success', 'اطلاعات با موفقیت در سامانه ذخیره شد.');
 
     const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
     deleteUploadedFile(filePath);
@@ -183,12 +173,10 @@ exports.importCodingData_Save = async (req, res) => {
     });
   } catch (error) {
     console.log('error = ', error);
-    // در صورت خطا، وضعیت پیشرفت را به حالت خطا تغییر می‌دهیم
     progressTracker.setError();
-    res.json({
-      success: false,
-      message: 'خطا در ذخیره‌سازی اطلاعات: ' + error.message
-    });
+
+    req.flash('errorMessage', 'خطا در پردازش فایل: ' + error.message);
+    return res.redirect('/importFiles/importCodingData');
   }
 };
 
@@ -226,13 +214,31 @@ exports.downloadErrorFile = async (req, res, next) => {
 };
 
 const createErrorSheet = (_errorSheet, _filename) => {
-  const errorWorkbook = xlsx.utils.book_new();
-  const errorWorksheet = xlsx.utils.json_to_sheet(_errorSheet);
-  xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, 'Errors');
+  try {
+    console.log('Creating error sheet with data:', JSON.stringify(_errorSheet, null, 2));
 
-  const errorFilePath = `uploads/errors/errors_${_filename.split('.')[0]}_${Date.now()}.xlsx`;
-  xlsx.writeFile(errorWorkbook, errorFilePath);
-  return errorFilePath;
+    // Make sure the errors directory exists
+    const errorDir = path.join(__dirname, '../../../uploads/errors');
+    if (!fs.existsSync(errorDir)) {
+      fs.mkdirSync(errorDir, { recursive: true });
+    }
+
+    const errorWorkbook = xlsx.utils.book_new();
+    const errorWorksheet = xlsx.utils.json_to_sheet(_errorSheet);
+    xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, 'Errors');
+
+    const errorFilePath = path.join(errorDir, `errors_${_filename.split('.')[0]}_${Date.now()}.xlsx`);
+    console.log('Writing error file to:', errorFilePath);
+
+    xlsx.writeFile(errorWorkbook, errorFilePath);
+    console.log('Error file created successfully');
+
+    // Return relative path for the response
+    return `uploads/errors/errors_${_filename.split('.')[0]}_${Date.now()}.xlsx`;
+  } catch (error) {
+    console.error('Error creating error sheet:', error);
+    throw error;
+  }
 };
 
 const validateRow = async (row, index, columns) => {
