@@ -92,8 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // نمایش اولیه پیشرفت
         const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+
         if (progressText) {
             progressText.style.display = 'block';
+            progressBar.style.display = 'block';
             progressText.textContent = 'در حال شروع پردازش...';
         }
 
