@@ -1,6 +1,7 @@
 /* global toastr */
 let progressInterval = null;
 let currentImportId = null;
+let isImportCompleted = false;
 // این فایل برای مدیریت پیشرفت بارگذاری داده‌ها در فرم importCodingData استفاده می‌شود
 // این فایل باید در صفحه importCodingData.html لود شود
 
@@ -8,92 +9,161 @@ let currentImportId = null;
 console.log('importData_Progressbar.js loaded');
 
 function startProgressTracking(importId) {
-  currentImportId = importId || null; // اگر importId داده شده باشد، آن را ذخیره می‌کند
-
+  currentImportId = importId || null;
+  isImportCompleted = false;
   console.log('Starting progress tracking');
+
   const progressText = document.getElementById('progress-text');
-  if (!progressText) {
-    console.error('Progress text element not found!');
+  const progressBar = document.querySelector('.progress');
+  const progressBarInner = document.querySelector('#progress-bar');
+
+  if (!progressText || !progressBar || !progressBarInner) {
+    console.error('Progress elements not found!');
     return;
   }
 
+  // نمایش و تنظیم اولیه نوار پیشرفت
+  progressBar.style.display = 'block';
   progressText.style.display = 'block';
   progressText.textContent = 'در حال شروع پردازش...';
+  progressText.style.color = '#0056b3';
 
-  if (progressInterval) {
-    clearInterval(progressInterval);
-  }
+  // تنظیم مقدار اولیه progress bar
+  progressBarInner.style.width = '0%';
+  progressBarInner.setAttribute('aria-valuenow', 0);
+  progressBarInner.textContent = '0%';
+  progressBarInner.style.transition = 'width 0.5s ease-in-out';
+  progressBarInner.style.backgroundColor = '#0056b3';
+
+  // پاکسازی interval قبلی اگر وجود داشته باشد
+  stopProgressTracking();
+
+  let failedAttempts = 0;
+  const maxFailedAttempts = 5;
 
   // شروع چک کردن وضعیت پیشرفت
   checkProgress(progressText);
+  progressInterval = setInterval(async () => {
+    if (isImportCompleted) {
+      console.log('Import is completed, stopping interval');
+      stopProgressTracking();
+      return;
+    }
 
-  progressInterval = setInterval(() => {
-    checkProgress(progressText);
+    try {
+      await checkProgress(progressText);
+    } catch (error) {
+      console.error('Error in progress check:', error);
+      failedAttempts++;
+
+      if (failedAttempts >= maxFailedAttempts) {
+        console.log('Max failed attempts reached, stopping progress tracking');
+        stopProgressTracking();
+        progressText.textContent = 'خطا در دریافت وضعیت پردازش';
+        progressText.style.color = '#dc3545';
+
+        // فعال کردن مجدد دکمه submit
+        const submitButton = document.querySelector('button[type="submit"]');
+        enableSubmitButton(submitButton);
+      }
+    }
   }, 500);
 }
 
+// تابع جدید برای توقف پیگیری پیشرفت
+function stopProgressTracking() {
+  if (progressInterval) {
+    console.log('Clearing progress interval');
+    clearInterval(progressInterval);
+    progressInterval = null;
+  }
+}
+
 async function checkProgress(progressText) {
-  try {
-    const response = await fetch(`/importFiles/getImportProgress?importId=${currentImportId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  // اگر عملیات قبلاً تکمیل شده، درخواست جدید نفرست
+  if (isImportCompleted) {
+    console.log('Import already completed, skipping progress check');
+    return;
+  }
+
+  const response = await fetch(`/importFiles/getImportProgress?importId=${currentImportId}`);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log('Progress data received:', data);
+
+  // اگر عملیات تکمیل شده، همه چیز را متوقف کن
+  if (data.isCompleted || data.status === 'completed') {
+    console.log('Server reported completion, stopping progress tracking');
+    isImportCompleted = true;
+    stopProgressTracking();
+
+    const progressBar = document.querySelector('#progress-bar');
+    if (progressBar) {
+      progressBar.style.width = '100%';
+      progressBar.setAttribute('aria-valuenow', 100);
+      progressBar.textContent = '100%';
+      progressBar.style.backgroundColor = '#28a745';
     }
 
-    const data = await response.json();
-    console.log('Progress data received:', data);
+    progressText.textContent = `عملیات با موفقیت انجام شد (${data.current} از ${data.total} رکورد)`;
+    progressText.style.color = '#28a745';
 
-    if (data.status === 'completed') {
-      console.log('Import completed');
-      clearInterval(progressInterval);
-      const percent = Math.round((data.current / data.total) * 100);
-      progressText.textContent = `پردازش با موفقیت انجام شد (${percent}% - ${data.current} از ${data.total} رکورد)`;
+    // نمایش پیام موفقیت
+    toastr.success('عملیات با موفقیت انجام شد', 'موفق');
 
-      // به جای ریفرش کردن صفحه، فقط نوار پیشرفت رو مخفی می‌کنیم
-      setTimeout(() => {
-        const progressBar = document.querySelector('.progress');
-        if (progressBar) progressBar.style.display = 'none';
-        progressText.style.display = 'none';
-      }, 3000);
-    } else if (data.status === 'error') {
-      console.log('Import error');
-      clearInterval(progressInterval);
+    // فعال کردن مجدد دکمه submit
+    const submitButton = document.querySelector('button[type="submit"]');
+    enableSubmitButton(submitButton);
+
+    return;
+  }
+
+  // به‌روزرسانی progress bar
+  const progressBar = document.querySelector('#progress-bar');
+  if (progressBar && data.total > 0) {
+    const percent = Math.round((data.current / data.total) * 100);
+    progressBar.style.width = `${percent}%`;
+    progressBar.setAttribute('aria-valuenow', percent);
+    progressBar.textContent = `${percent}%`;
+
+    // تنظیم رنگ progress bar بر اساس وضعیت
+    if (data.status === 'error') {
+      progressBar.style.backgroundColor = '#dc3545'; // قرمز
+    } else if (data.phase === 'validating') {
+      progressBar.style.backgroundColor = '#17a2b8'; // آبی روشن
+    } else {
+      progressBar.style.backgroundColor = '#0056b3'; // آبی تیره
+    }
+  }
+
+  // نمایش پیام متناسب با مرحله
+  if (data.phase === 'validating') {
+    progressText.textContent = `در حال اعتبارسنجی داده‌ها... (${data.current} از ${data.total} رکورد)`;
+    progressText.style.color = '#0056b3';
+  } else if (data.phase === 'importing') {
+    if (data.status === 'error') {
+      console.log('Import error, stopping progress tracking');
+      isImportCompleted = true;
+      stopProgressTracking();
+
       progressText.textContent = 'خطا در پردازش فایل';
+      progressText.style.color = '#dc3545';
 
-      // نمایش پیام خطا اگر وجود داشته باشد
-      if (data.errorMessage) {
-        const existingError = document.querySelector('.import-error-message');
-        if (existingError) {
-          existingError.remove();
-        }
+      // نمایش پیام خطا
+      toastr.error('خطا در پردازش فایل', 'خطا');
 
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column import-error-message';
-        errorDiv.innerHTML = `
-          <p class='alert alert-danger w-50 text-center align-self-center'>
-            ${data.errorMessage}
-            ${
-              data.errorFilePath
-                ? `
-              <br/>
-              <a style='font-size: 17px;font-style: italic;color:#01019e' 
-                 href='/importFiles/downloadErrorFile?filePath=${data.errorFilePath}'>
-                دانلود فایل خطاها
-              </a>
-            `
-                : ''
-            }
-          </p>
-        `;
+      // فعال کردن مجدد دکمه submit
+      const submitButton = document.querySelector('button[type="submit"]');
+      enableSubmitButton(submitButton);
 
-        const importContainer = document.querySelector('.import-file-container');
-        importContainer.insertAdjacentElement('beforebegin', errorDiv);
-      }
-    } else if (data.total > 0) {
-      const percent = Math.round((data.current / data.total) * 100);
-      progressText.textContent = `در حال پردازش... ${percent}% (${data.current} از ${data.total} رکورد)`;
+      return;
+    } else {
+      progressText.textContent = `در حال ذخیره‌سازی... (${data.current} از ${data.total} رکورد)`;
+      progressText.style.color = '#0056b3';
     }
-  } catch (error) {
-    console.error('Error checking progress:', error);
   }
 }
 
@@ -116,17 +186,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Form submitted');
 
+    // غیرفعال کردن دکمه submit
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>در حال پردازش...';
+    }
+
     const formData = new FormData(this);
     const tableName = formData.get('tableName');
     const excelFile = formData.get('excelFile');
 
     if (!tableName) {
       alert('لطفا جدول را انتخاب کنید');
+      enableSubmitButton(submitButton);
       return false;
     }
 
     if (!excelFile || excelFile.size === 0) {
       alert('لطفا فایل اکسل را انتخاب کنید');
+      enableSubmitButton(submitButton);
       return false;
     }
 
@@ -209,6 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (response.status === 500) {
           toastr.error(result.message, 'خطا');
         }
+        enableSubmitButton(submitButton);
         return false;
       }
 
@@ -216,9 +296,6 @@ document.addEventListener('DOMContentLoaded', function () {
       if (result.success) {
         // شروع پیگیری پیشرفت
         startProgressTracking();
-
-        // نمایش پیام موفقیت
-        toastr.success(result.message, 'موفق');
       }
     } catch (error) {
       console.error('Error in form submission:', error);
@@ -228,9 +305,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // نمایش خطای کلی
       toastr.error('خطا در ارتباط با سرور', 'خطا');
+      enableSubmitButton(submitButton);
     }
 
-    // جلوگیری از submit شدن فرم
     return false;
   });
 });
+
+// تابع فعال کردن مجدد دکمه submit
+function enableSubmitButton(button) {
+  if (button) {
+    button.disabled = false;
+    button.innerHTML = 'تایید';
+  }
+}
