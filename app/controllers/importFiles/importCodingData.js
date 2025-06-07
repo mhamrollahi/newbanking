@@ -42,7 +42,8 @@ exports.getImportProgress = async (req, res) => {
         total: progress.total,
         status: 'completed',
         isCompleted: true,
-        phase: progress.phase
+        phase: progress.phase,
+        percent: 100
       });
     }
 
@@ -52,7 +53,8 @@ exports.getImportProgress = async (req, res) => {
       total: progress.total,
       status: progress.status,
       isCompleted: progress.isCompleted,
-      phase: progress.phase
+      phase: progress.phase,
+      percent: progress.percent
     });
   } catch (error) {
     console.error('Error in getProgress:', error);
@@ -67,9 +69,13 @@ exports.importCodingData_Save = async (req, res) => {
   console.log('=== Starting import process ===');
 
   try {
-    // شروع عملیات با وضعیت "در حال اعتبارسنجی"
-    progressTracker.startProgress('validating');
-    progressTracker.updateProgress(0, 100);
+    const workbook = xlsx.readFile(req.file.path);
+    const sheetName = workbook.SheetNames[0];
+    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    console.log('Total records to process:', sheetData.length);
+
+    // شروع عملیات با وضعیت "در حال اعتبارسنجی" و تعداد کل رکوردها
+    progressTracker.startProgress('validating', sheetData.length);
 
     const validateExcelFileResult = await validateExcelFile(req.file);
     if (validateExcelFileResult) {
@@ -83,15 +89,6 @@ exports.importCodingData_Save = async (req, res) => {
         message: validateExcelFileResult.errors
       });
     }
-
-    const workbook = xlsx.readFile(req.file.path);
-    const sheetName = workbook.SheetNames[0];
-    const sheetData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
-    console.log('=== STARTING DATA VALIDATION ===');
-    console.log('Total records to process:', sheetData.length);
-
-    const fileName = req.file.originalname;
-    let errorRows = [];
 
     // Get the selected table name
     const tableName = req.body.tableName;
@@ -110,20 +107,19 @@ exports.importCodingData_Save = async (req, res) => {
 
     // Validate each row based on table structure
     console.log('Starting row validation...');
+    let errorRows = [];
     for (const [index, row] of sheetData.entries()) {
       const validationResult = await validateRow(row, index, columns);
       if (validationResult) {
         console.log(`Row ${index + 1} has errors:`, validationResult);
         errorRows.push(validationResult);
       }
-      // به‌روزرسانی درصد اعتبارسنجی - با تأخیر کوتاه
-      await new Promise((resolve) => setTimeout(resolve, 10));
       progressTracker.updateProgress(index + 1, sheetData.length);
     }
 
     if (errorRows.length > 0) {
       console.log(`Found ${errorRows.length} rows with errors`);
-      const errorFilePath = createErrorSheet(errorRows, fileName);
+      const errorFilePath = createErrorSheet(errorRows, req.file.originalname);
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
 
@@ -136,7 +132,7 @@ exports.importCodingData_Save = async (req, res) => {
       });
     }
 
-    // Find the model by matching table name with model's table name
+    // Find the model by matching table name
     const Model = Object.values(models).find((model) => {
       const modelTableName = model.getTableName();
       return modelTableName.toLowerCase() === tableName.toLowerCase();
@@ -144,84 +140,59 @@ exports.importCodingData_Save = async (req, res) => {
 
     if (!Model) {
       progressTracker.setError();
-      throw new Error(`Model for table ${tableName} not found. Available models: ${Object.keys(models).join(', ')}`);
+      throw new Error(`Model for table ${tableName} not found`);
     }
 
     console.log('Model found:', Model.name);
 
-    // شروع عملیات درج در دیتابیس
-    progressTracker.startProgress('importing');
-    progressTracker.updateProgress(0, sheetData.length);
+    // شروع عملیات درج با همان تعداد کل رکوردها
+    progressTracker.startProgress('importing', sheetData.length);
 
-    // تنظیم سایز دسته و تأخیر بر اساس تعداد رکوردها
-    const batchSize = sheetData.length <= 500 ? 1 : 50; // افزایش سایز دسته برای فایل‌های بزرگ
-    const insertDelay = sheetData.length <= 500 ? 100 : 0; // تأخیر فقط برای فایل‌های کوچک
-    const batchDelay = sheetData.length <= 500 ? 0 : 50; // تأخیر کوچک بین دسته‌ها برای فایل‌های بزرگ
+    // تنظیم سایز دسته
+    const batchSize = sheetData.length <= 500 ? 1 : 50;
+    const batchDelay = sheetData.length <= 500 ? 0 : 50;
     const batches = [];
 
     for (let i = 0; i < sheetData.length; i += batchSize) {
       batches.push(sheetData.slice(i, i + batchSize));
     }
 
-    console.log(`Divided data into ${batches.length} batches. Using delay: ${insertDelay}ms, batch delay: ${batchDelay}ms`);
+    console.log(`Divided data into ${batches.length} batches. Using batch delay: ${batchDelay}ms`);
 
-    // پردازش هر دسته با تأخیر
     let totalProcessed = 0;
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
-      const batchPromises = [];
-
-      // پردازش رکوردهای این دسته
-      for (const row of batch) {
-        const processRow = async () => {
+      const batchPromises = batch.map((row) => {
+        return async () => {
           if (Model.name === 'OrganizationMasterData' && row.parentOrganizationId) {
             const parentExists = await Model.findOne({
               where: { id: row.parentOrganizationId }
             });
-
             if (!parentExists) {
               row.parentOrganizationId = null;
             }
           }
-
           await Model.create({
             ...row,
             createdAt: new Date(),
             creatorId: req.session?.user?.id ?? 0
           });
         };
+      });
 
-        batchPromises.push(processRow());
-      }
-
-      // انتظار برای تکمیل تمام عملیات‌های این دسته
-      await Promise.all(batchPromises);
+      await Promise.all(batchPromises.map((fn) => fn()));
 
       totalProcessed += batch.length;
-      // به‌روزرسانی پیشرفت برای کل دسته
       progressTracker.updateProgress(totalProcessed, sheetData.length);
 
-      // اعمال تأخیر مناسب
-      if (i < batches.length - 1) {
-        // برای آخرین دسته تأخیر نداریم
-        if (insertDelay > 0) {
-          await new Promise((resolve) => setTimeout(resolve, insertDelay));
-        } else if (batchDelay > 0) {
-          await new Promise((resolve) => setTimeout(resolve, batchDelay));
-        }
-      }
-
-      // لاگ پیشرفت برای دسته‌های بزرگ
-      if (sheetData.length > 1000 && i % 10 === 0) {
-        console.log(`Processed ${totalProcessed} of ${sheetData.length} records (${Math.round((totalProcessed / sheetData.length) * 100)}%)`);
+      if (i < batches.length - 1 && batchDelay > 0) {
+        await new Promise((resolve) => setTimeout(resolve, batchDelay));
       }
     }
 
-    // حذف فایل و ارسال پاسخ
     const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
     deleteUploadedFile(filePath);
 
-    // تکمیل عملیات
     progressTracker.completeProgress();
 
     return res.json({

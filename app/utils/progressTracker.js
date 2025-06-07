@@ -18,21 +18,21 @@ class ProgressTracker {
     this.lastUpdateTime = Date.now();
     this.smoothProgress = 0;
     this.isCompleted = false;
+    this.percent = 0;
   }
 
-  startProgress(phase = 'importing') {
-    // console.log('=== startProgress called ===');
-    // console.log('Current state before reset:', this.getProgress());
-
+  startProgress(phase = 'importing', totalRecords = 0) {
+    console.log('=== startProgress called with total records:', totalRecords);
     this.reset();
     this.status = 'processing';
     this.phase = phase;
+    this.total = totalRecords;
     this.lastUpdateTime = Date.now();
-    // console.log('Progress started:', this.getProgress());
+    console.log('Progress started:', this.getProgress());
   }
 
   updateProgress(current, total) {
-    if (this.isCompleted) return; // اگر عملیات تمام شده، دیگر آپدیت نکن
+    if (this.isCompleted) return;
 
     this.current = Math.min(current, total);
     this.total = total;
@@ -60,7 +60,12 @@ class ProgressTracker {
 
     this.status = current >= total ? 'completed' : 'processing';
     this.lastUpdateTime = now;
-    // console.log('Progress updated:', this.getProgress());
+
+    // محاسبه درصد پیشرفت
+    this.percent = this.total > 0 ? Math.round((this.current / this.total) * 100) : 0;
+
+    // لاگ کردن وضعیت پیشرفت
+    console.log(`Progress update - Records: ${this.current}/${this.total}, Percent: ${this.percent}%, Phase: ${this.phase}`);
   }
 
   completeProgress() {
@@ -68,23 +73,30 @@ class ProgressTracker {
     this.status = 'completed';
     this.isCompleted = true;
     this.smoothProgress = this.total;
-    // console.log('Progress completed:', this.getProgress());
+    this.percent = 100;
+    console.log('Progress completed:', this.getProgress());
   }
 
   setError() {
     this.status = 'error';
     this.isCompleted = true;
-    // console.log('Progress error:', this.getProgress());
+    console.log('Progress error:', this.getProgress());
   }
 
   getProgress() {
-    return {
+    const progress = {
       current: this.current,
       total: this.total,
       status: this.status,
       phase: this.phase,
-      isCompleted: this.isCompleted
+      isCompleted: this.isCompleted,
+      percent: this.percent
     };
+
+    // لاگ کردن اطلاعات ارسالی به فرانت‌اند
+    console.log('Sending progress to frontend:', progress);
+
+    return progress;
   }
 }
 
@@ -92,7 +104,7 @@ class ProgressTracker {
 const progressTracker = new ProgressTracker();
 
 module.exports = {
-  startProgress: (phase) => progressTracker.startProgress(phase),
+  startProgress: (phase, totalRecords) => progressTracker.startProgress(phase, totalRecords),
   getProgress: () => progressTracker.getProgress(),
   updateProgress: (current, total) => progressTracker.updateProgress(current, total),
   completeProgress: () => progressTracker.completeProgress(),
