@@ -1,26 +1,7 @@
 <div style='height: 200px;'></div>
 
-<!-- Debug Info -->
-<div style='display: none;'>
-  Debug Info: errorMessage: "{{errorMessage}}" errorFilePath: "{{errorFilePath}}"
-</div>
-
-{{#if errorMessage}}
-  <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1'>
-    <p class='alert alert-danger w-50 text-center align-self-center'>{{errorMessage}}</p>
-  </div>
-{{/if}}
-
-{{#if errorFilePath}}
-  <div class='col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column'>
-    <p class='alert alert-danger w-50 text-center align-self-center'>{{errorMessage}}
-      <a style='font-size: 17px;font-style: italic;color:#01019e' href='/importFiles/downloadErrorFile?filePath={{errorFilePath}}'>این فایل </a>
-      را مشاهده نمایید.</p>
-  </div>
-{{/if}}
-
 <div class='import-file-container'>
-  <form id='frmImportCodingData' data-frmValidation novalidate enctype='multipart/form-data'>
+  <form id='frmImportCodingData' onsubmit='return false;' novalidate enctype='multipart/form-data'>
     <h3>لطفا فایل مورد نظر را بارگذاری کنید.</h3>
 
     <div class='mb-3'>
@@ -50,9 +31,15 @@
   منتظر شروع پردازش...
 </div>
 
-<!-- Load CSS first -->
+<!-- Load CSS -->
 <link href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css' rel='stylesheet' />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css' rel='stylesheet' />
+
 <!-- Load JavaScript libraries -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js'></script>
 <script src='/static/assets/js/formValidation.js'></script>
 <script src='/static/assets/js/importData_Progressbar.js'></script>
+
+<style>
+  .alert-danger { background-color: #dc3545; color: white; border: none; } .btn-outline-light:hover { background-color: white; color: #dc3545; }
+</style>

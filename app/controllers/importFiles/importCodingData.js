@@ -8,8 +8,8 @@ const progressTracker = require('../../utils/progressTracker');
 exports.importCodingData = async (req, res, next) => {
   try {
     console.log('=== Starting importCodingData ===');
-    const errorFilePath = req.flash('errorFilePath');
-    const errorMessage = req.flash('errorMessage');
+    const errorFilePath = req.flash('errorFilePath')[0];
+    const errorMessage = req.flash('errorMessage')[0];
 
     console.log('Flash values:', { errorFilePath, errorMessage });
 
@@ -60,9 +60,10 @@ exports.importCodingData_Save = async (req, res) => {
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
 
-      console.log('Setting flash for validation error');
-      req.flash('errorMessage', validateExcelFileResult.errors);
-      return res.redirect('/importFiles/importCodingData');
+      return res.status(400).json({
+        success: false,
+        message: validateExcelFileResult.errors
+      });
     }
 
     const workbook = xlsx.readFile(req.file.path);
@@ -76,6 +77,7 @@ exports.importCodingData_Save = async (req, res) => {
 
     // Get the selected table name
     const tableName = req.body.tableName;
+    console.log('Selected table:', tableName);
 
     // Get table structure from database
     const [columns] = await sequelize.query(
@@ -104,14 +106,19 @@ exports.importCodingData_Save = async (req, res) => {
       const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
       deleteUploadedFile(filePath);
 
-      console.log('Setting flash messages for row errors');
-      // اول پیام خطا را ست می‌کنیم
-      await req.flash('errorMessage', `تعداد ${errorRows.length} سطر دارای خطا می‌باشد`);
-      // بعد مسیر فایل را ست می‌کنیم
-      await req.flash('errorFilePath', errorFilePath);
+      console.log('Sending error response:', {
+        success: false,
+        message: `تعداد ${errorRows.length} سطر دارای خطا می‌باشد`,
+        errorFilePath: errorFilePath,
+        errors: errorRows
+      });
 
-      console.log('Flash messages set, redirecting...');
-      return res.redirect('/importFiles/importCodingData');
+      return res.status(400).json({
+        success: false,
+        message: `تعداد ${errorRows.length} سطر دارای خطا می‌باشد`,
+        errorFilePath: errorFilePath,
+        errors: errorRows
+      });
     }
 
     // اگر خطایی نبود، شروع عملیات درج در دیتابیس
@@ -175,8 +182,10 @@ exports.importCodingData_Save = async (req, res) => {
     console.log('error = ', error);
     progressTracker.setError();
 
-    req.flash('errorMessage', 'خطا در پردازش فایل: ' + error.message);
-    return res.redirect('/importFiles/importCodingData');
+    return res.status(500).json({
+      success: false,
+      message: 'خطا در پردازش فایل: ' + error.message
+    });
   }
 };
 
@@ -227,14 +236,19 @@ const createErrorSheet = (_errorSheet, _filename) => {
     const errorWorksheet = xlsx.utils.json_to_sheet(_errorSheet);
     xlsx.utils.book_append_sheet(errorWorkbook, errorWorksheet, 'Errors');
 
-    const errorFilePath = path.join(errorDir, `errors_${_filename.split('.')[0]}_${Date.now()}.xlsx`);
+    // ایجاد نام فایل با فرمت: errors_[نام-فایل-اصلی]_[تاریخ].xlsx
+    const timestamp = moment().format('YYYYMMDD_HHmmss');
+    const sanitizedFileName = _filename.split('.')[0].replace(/[^a-zA-Z0-9]/g, '-');
+    const errorFileName = `errors_${sanitizedFileName}_${timestamp}.xlsx`;
+    const errorFilePath = path.join(errorDir, errorFileName);
+
     console.log('Writing error file to:', errorFilePath);
 
     xlsx.writeFile(errorWorkbook, errorFilePath);
     console.log('Error file created successfully');
 
-    // Return relative path for the response
-    return `uploads/errors/errors_${_filename.split('.')[0]}_${Date.now()}.xlsx`;
+    // Return relative path for the response (using forward slashes for URLs)
+    return `uploads/errors/${errorFileName}`;
   } catch (error) {
     console.error('Error creating error sheet:', error);
     throw error;

@@ -1,3 +1,4 @@
+/* global toastr */
 let progressInterval = null;
 let currentImportId = null;
 // این فایل برای مدیریت پیشرفت بارگذاری داده‌ها در فرم importCodingData استفاده می‌شود
@@ -105,8 +106,14 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  // اضافه کردن ویژگی novalidate به فرم
+  form.setAttribute('novalidate', '');
+
   form.addEventListener('submit', async function (e) {
+    // جلوگیری از رفتار پیش‌فرض فرم
     e.preventDefault();
+    e.stopPropagation();
+
     console.log('Form submitted');
 
     const formData = new FormData(this);
@@ -115,12 +122,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!tableName) {
       alert('لطفا جدول را انتخاب کنید');
-      return;
+      return false;
     }
 
     if (!excelFile || excelFile.size === 0) {
       alert('لطفا فایل اکسل را انتخاب کنید');
-      return;
+      return false;
     }
 
     // حذف پیام خطای قبلی اگر وجود داشت
@@ -140,88 +147,90 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     try {
+      console.log('Sending request to server...');
       const response = await fetch('/importFiles/importCodingData', {
         method: 'POST',
         body: formData
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
       const result = await response.json();
       console.log('Server response:', result);
 
-      // اگر فایل خطا وجود دارد
-      if (!result.success && result.errorFilePath) {
+      if (!result.success) {
+        console.log('Error occurred. Displaying error message...');
         // پنهان کردن نوار پیشرفت
         if (progressBar) progressBar.style.display = 'none';
         if (progressText) progressText.style.display = 'none';
 
-        // نمایش پیام خطا و لینک دانلود
+        // نمایش پیام خطا
         const errorDiv = document.createElement('div');
         errorDiv.className = 'col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column import-error-message';
-        errorDiv.innerHTML = `
-          <p class='alert alert-danger w-50 text-center align-self-center'>
-            ${result.errorMessage || result.message}
-            <br/>
-            <a style='font-size: 17px;font-style: italic;color:#01019e' 
-               href='/importFiles/downloadErrorFile?filePath=${result.errorFilePath}'>
-              دانلود فایل خطاها
-            </a>
-          </p>
+
+        let errorHtml = `
+          <div class='alert alert-danger w-100 text-center' style='font-size: 18px;color:#01019e;'>
+            <div class="mb-3">
+              <i class="fas fa-exclamation-triangle me-1"></i>
+              ${result.message}
+            </div>
         `;
 
+        // اگر فایل خطا وجود دارد، لینک دانلود را اضافه کن
+        if (result.errorFilePath) {
+          console.log('Adding error file download link:', result.errorFilePath);
+          errorHtml += `
+            <div>
+              <p class="mb-2">جهت مشاهده جزئیات خطاها، فایل زیر را دانلود کنید:</p>
+              <a class='btn btn-outline-light btn-sm' 
+                 href='/importFiles/downloadErrorFile?filePath=${encodeURIComponent(result.errorFilePath)}'>
+                <i class="fas fa-download me-1"></i>
+                دانلود فایل خطاها
+              </a>
+            </div>
+          `;
+        }
+
+        errorHtml += `</div>`;
+        errorDiv.innerHTML = errorHtml;
+
+        // حذف پیام‌های خطای قبلی
+        const existingErrors = document.querySelectorAll('.import-error-message');
+        existingErrors.forEach((el) => el.remove());
+
+        // اضافه کردن پیام خطای جدید
         const importContainer = document.querySelector('.import-file-container');
         if (importContainer) {
+          console.log('Inserting error message before import container');
           importContainer.insertAdjacentElement('beforebegin', errorDiv);
+        } else {
+          console.error('Import container not found!');
         }
-        return;
+
+        // اگر خطای سرور بود، پیام را با toastr نمایش بده
+        if (response.status === 500) {
+          toastr.error(result.message, 'خطا');
+        }
+        return false;
       }
 
-      // اگر عملیات موفق بود
+      // در صورت موفقیت
       if (result.success) {
-        startProgressTracking(result.importId);
-      } else {
-        // در صورت خطای دیگر
-        if (progressText) {
-          progressText.style.display = 'none';
-        }
-        if (progressBar) {
-          progressBar.style.display = 'none';
-        }
+        // شروع پیگیری پیشرفت
+        startProgressTracking();
 
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column import-error-message';
-        errorDiv.innerHTML = `
-          <p class='alert alert-danger w-50 text-center align-self-center'>
-            ${result.message || 'خطا در عملیات'}
-          </p>
-        `;
-
-        const importContainer = document.querySelector('.import-file-container');
-        if (importContainer) {
-          importContainer.insertAdjacentElement('beforebegin', errorDiv);
-        }
+        // نمایش پیام موفقیت
+        toastr.success(result.message, 'موفق');
       }
     } catch (error) {
       console.error('Error in form submission:', error);
-      // نمایش خطا
-      if (progressText) progressText.style.display = 'none';
+      // پنهان کردن نوار پیشرفت
       if (progressBar) progressBar.style.display = 'none';
+      if (progressText) progressText.style.display = 'none';
 
-      const errorDiv = document.createElement('div');
-      errorDiv.className = 'col-12 w-100 d-flex justify-content-center mt-1 mb-1 flex-column import-error-message';
-      errorDiv.innerHTML = `
-        <p class='alert alert-danger w-50 text-center align-self-center'>
-          خطا در ارسال فرم: ${error.message}
-        </p>
-      `;
-
-      const importContainer = document.querySelector('.import-file-container');
-      if (importContainer) {
-        importContainer.insertAdjacentElement('beforebegin', errorDiv);
-      }
+      // نمایش خطای کلی
+      toastr.error('خطا در ارتباط با سرور', 'خطا');
     }
+
+    // جلوگیری از submit شدن فرم
+    return false;
   });
 });
