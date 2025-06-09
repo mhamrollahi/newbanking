@@ -2,7 +2,7 @@ const { models } = require('@models/');
 const { UserViewModel, CodingDataModel, CodeTableListModel, OrganizationMasterDataModel } = models;
 const coding = require('@constants/codingDataTables.js');
 const dateService = require('@services/dateService.js');
-const { organizationSchema } = require('@validators/organization/masterData');
+const {  organizationInsertSchema,organizationUpdateSchema } = require('@validators/organization/masterData');
 const title = 'مدیریت اطلاعات پایه ';
 const subTitle = 'فهرست دستگاه ها ';
 
@@ -123,7 +123,7 @@ exports.store = async (req, res, next) => {
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : registerDate;
     // const cleanRegisterDate = !registerDate || registerDate.trim() === '' ? null : dateService.toEnglishDate(registerDate);
 
-    const validationResult = organizationSchema.validate(req.body, {
+    const validationResult = organizationInsertSchema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true
     });
@@ -275,7 +275,7 @@ exports.update = async (req, res, next) => {
     const { id } = req.params;
     const { nationalCode, organizationName, budgetRow, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
 
-    const validationResult = organizationSchema.validate(req.body, {
+    const validationResult = organizationUpdateSchema.validate(req.body, {
       abortEarly: false,
       stripUnknown: true
     });

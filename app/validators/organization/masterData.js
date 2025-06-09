@@ -75,8 +75,8 @@ const validatePersianDate = (value, helpers) => {
   return trimmedValue; // برگرداندن مقدار اصلی با اعداد فارسی
 };
 
-const organizationSchema = Joi.object({
-  nationalCode: Joi.string().required().length(11).label('شناسه ملی').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+const organizationInsertSchema = Joi.object({
+  nationalCode: Joi.string().length(11).required().label('شناسه ملی').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
     'string.empty': errMessages['string.empty'],
     'string.length': errMessages['string.length'],
     'any.required': errMessages['any.required'],
@@ -90,9 +90,10 @@ const organizationSchema = Joi.object({
     'any.required': errMessages['any.required']
   }),
 
-  budgetRow: Joi.string().required().length(8).label('ردیف بودجه').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+  budgetRow: Joi.string().required().min(6).max(10).label('ردیف بودجه').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
     'string.empty': errMessages['string.empty'],
-    'string.length': errMessages['string.length'],
+    'string.min': errMessages['string.min'],
+    'string.max': errMessages['string.max'],
     'any.required': errMessages['any.required'],
     'any.invalid': errMessages['any.invalid']
   }),
@@ -152,6 +153,48 @@ const organizationSchema = Joi.object({
   })
 });
 
+const organizationUpdateSchema = Joi.object({
+  nationalCode: Joi.string().allow('').label('شناسه ملی').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+    // 'string.length': errMessages['string.length'],
+    // 'any.invalid': errMessages['any.invalid']
+  }),
+
+  organizationName: Joi.string().required().min(1).max(200).label('نام دستگاه').messages({
+    'string.empty': errMessages['string.empty'],
+    'string.min': errMessages['string.min'],
+    'string.max': errMessages['string.max'],
+    'any.required': errMessages['any.required']
+  }),
+
+  budgetRow: Joi.string().required().min(1).max(10).label('ردیف بودجه').custom(validateNumbers, 'اعتبارسنجی اعداد').messages({
+    'string.empty': errMessages['string.empty'],
+    'string.min': errMessages['string.min'],
+    'string.max': errMessages['string.max'],
+    'any.required': errMessages['any.required'],
+    'any.invalid': errMessages['any.invalid']
+  }),
+
+  provinceId: Joi.number().integer().allow('').label('استان').messages({
+    'number.base': errMessages['number.base'],
+    'number.integer': errMessages['number.integer']
+  }),
+
+  organizationTypeId: Joi.number().integer().allow('').label('نوع دستگاه').messages({
+    'number.base': errMessages['number.base'],
+    'number.integer': errMessages['number.integer']
+  }),
+
+  organizationCategoryId: Joi.number().integer().allow('').label('دسته بندی دستگاه').messages({
+    'number.base': errMessages['number.base'],
+    'number.integer': errMessages['number.integer']
+  }),
+
+  description: Joi.string().allow('').max(255).label('توضیحات').messages({
+    'string.max': errMessages['string.max']
+  })
+});
+
 module.exports = {
-  organizationSchema
+  organizationInsertSchema,
+  organizationUpdateSchema
 };

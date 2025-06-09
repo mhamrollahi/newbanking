@@ -28,7 +28,7 @@
         <!-- ستون سمت چپ -->
         <div class='col-md-6'>
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='nationalCode' name='nationalCode' maxlength='11' minlength='11' placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' required />
+            <input type='text' class='form-control' id='nationalCode' name='nationalCode'  placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' />
             <label for='nationalCode' class='mandatory'>
               شناسه ملی
             </label>
@@ -42,7 +42,7 @@
           </div>
 
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='budgetRow' name='budgetRow' maxlength='8' minlength='8' placeholder='ردیف بودجه را وارد کنید.' value='{{organization.budgetRow}}' autocomplete='off' required />
+            <input type='text' class='form-control' id='budgetRow' name='budgetRow' maxlength='10' minlength='6' placeholder='ردیف بودجه را وارد کنید.' value='{{organization.budgetRow}}' autocomplete='off' required />
             <label for='budgetRow' class='mandatory'>
               ردیف بودجه
             </label>

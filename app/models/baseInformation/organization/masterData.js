@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const BaseModel = require('@models/baseModel');
-const dateService = require('@services/dateService');
 
 class OrganizationMasterData extends BaseModel {}
 
@@ -11,19 +10,14 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING(11),
         allowNull: true,
         validate: {
-          // notNull: {
-          //   msg: 'لطفا  شناسه ملی را وارد کنید.'
-          // },
-          // notEmpty: {
-          //   msg: 'لطفا  شناسه ملی را وارد کنید.'
-          // },
-          len: {
-            args: [11, 11],
-            msg: ' شناسه ملی باید بین 11 حرف باشد.'
-          },
-          isNumericOrPersian(value) {
-            // اگر مقدار null یا undefined باشد، اجازه می‌دهیم
-            if (!value) return;
+          customValidator(value) {
+            // اگر مقدار خالی باشد، validation را انجام نده
+            if (!value || value.trim() === '') return;
+
+            // اگر مقدار وجود داشت، طول آن را بررسی کن
+            if (value.length !== 11) {
+              throw new Error('شناسه ملی باید 11 رقم باشد.');
+            }
 
             // تبدیل به string برای اطمینان
             let convertedValue = String(value);
@@ -72,8 +66,8 @@ module.exports = (sequelize) => {
             msg: 'لطفا  ردیف بودجه را وارد کنید.'
           },
           len: {
-            args: [0, 100],
-            msg: 'ردیف بودجه باید 6 تا 8 رقم باشد.'
+            args: [0, 10],
+            msg: 'ردیف بودجه باید 0 تا 10 رقم باشد.'
           },
           isNumericOrPersian(value) {
             // اگر مقدار null یا undefined باشد، اجازه می‌دهیم
