@@ -11,27 +11,28 @@ module.exports = (sequelize) => {
         allowNull: true,
         validate: {
           customValidator(value) {
-            // اگر مقدار خالی باشد، validation را انجام نده
-            if (!value || value.trim() === '') return;
+            // اگر مقدار خالی باشد یا undefined باشد، validation را انجام نده
+            if (!value) return;
+
+            // تبدیل value به string
+            let strValue = String(value);
+            if (strValue.trim() === '') return;
 
             // اگر مقدار وجود داشت، طول آن را بررسی کن
-            if (value.length !== 11) {
+            if (strValue.length !== 11) {
               throw new Error('شناسه ملی باید 11 رقم باشد.');
             }
-
-            // تبدیل به string برای اطمینان
-            let convertedValue = String(value);
 
             // تبدیل اعداد فارسی به انگلیسی
             const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
             const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
             for (let i = 0; i < 10; i++) {
-              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+              strValue = strValue.replace(persianNumbers[i], englishNumbers[i]);
             }
 
             // بررسی اینکه آیا همه کاراکترها عدد هستند
-            if (!/^\d+$/.test(convertedValue)) {
+            if (!/^\d+$/.test(strValue)) {
               throw new Error('شناسه ملی باید فقط شامل اعداد باشد.');
             }
           }

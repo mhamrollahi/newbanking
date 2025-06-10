@@ -28,7 +28,7 @@
         <!-- ستون سمت چپ -->
         <div class='col-md-6'>
           <div class='form-floating mb-3'>
-            <input type='text' class='form-control' id='nationalCode' name='nationalCode'  placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' />
+            <input type='text' class='form-control' id='nationalCode' name='nationalCode' maxlength='11' minlength='0'  placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' />
             <label for='nationalCode' class='mandatory'>
               شناسه ملی
             </label>
