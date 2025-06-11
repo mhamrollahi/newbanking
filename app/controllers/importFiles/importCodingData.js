@@ -164,6 +164,19 @@ exports.importCodingData_Save = async (req, res) => {
       const batch = batches[i];
       const batchPromises = batch.map((row) => {
         return async () => {
+          // Special handling for codeonlies table
+          if (Model.name === 'CodeOnline' && row.orgStructure) {
+            // Find the corresponding organization by budgetRow
+            const organization = await models.OrganizationMasterDataModel.findOne({
+              where: { budgetRow: row.orgStructure }
+            });
+            
+            if (organization) {
+              row.organizationId = organization.id;
+            }
+            // If organization not found, we'll still create the record but with null organizationId
+          }
+
           if (Model.name === 'OrganizationMasterData' && row.parentOrganizationId) {
             const parentExists = await Model.findOne({
               where: { id: row.parentOrganizationId }
