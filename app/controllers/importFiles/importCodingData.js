@@ -160,47 +160,108 @@ exports.importCodingData_Save = async (req, res) => {
     console.log(`Divided data into ${batches.length} batches. Using batch delay: ${batchDelay}ms`);
 
     let totalProcessed = 0;
+    let dbErrors = []; // برای ذخیره خطاهای دیتابیس
+
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
-      const batchPromises = batch.map((row) => {
+      const batchPromises = batch.map((row, idx) => {
         return async () => {
-          // Special handling for codeonlies table
-          if (Model.name === 'CodeOnline' && row.orgStructure) {
-            // Find the corresponding organization by budgetRow
-            const organization = await models.OrganizationMasterDataModel.findOne({
-              where: { budgetRow: row.orgStructure }
-            });
-            
-            if (organization) {
-              row.organizationId = organization.id;
-            }
-            // If organization not found, we'll still create the record but with null organizationId
-          }
+          try {
+            let processedRow = { ...row }; // کپی از داده‌ها برای پردازش
 
-          if (Model.name === 'OrganizationMasterData' && row.parentOrganizationId) {
-            const parentExists = await Model.findOne({
-              where: { id: row.parentOrganizationId }
-            });
-            if (!parentExists) {
-              row.parentOrganizationId = null;
+            // Special handling for codeonlies table
+            if (Model.name === 'CodeOnline' && processedRow.orgStructure) {
+              // Find the corresponding organization by budgetRow
+              const organization = await models.OrganizationMasterDataModel.findOne({
+                where: { budgetRow: processedRow.orgStructure }
+              });
+
+              if (organization) {
+                processedRow.organizationId = organization.id;
+              }
+              // Remove orgStructure field from row object
+              delete processedRow.orgStructure;
+              // If organization not found, we'll still create the record but with null organizationId
             }
+
+            // Convert numeric strings to actual numbers for specific fields
+            if (Model.name === 'CodeOnline') {
+              console.log('Before conversion row = ', JSON.stringify(processedRow, null, 2));
+              // Convert potential numeric string values to numbers
+              if (processedRow.value !== undefined) processedRow.value = Number(processedRow.value);
+              if (processedRow.organizationId !== undefined) processedRow.organizationId = Number(processedRow.organizationId);
+              // Convert code to string if it exists
+              if (processedRow.code !== undefined) processedRow.code = String(processedRow.code);
+              console.log('After conversion row = ', JSON.stringify(processedRow, null, 2));
+            }
+
+            if (Model.name === 'OrganizationMasterData' && processedRow.parentOrganizationId) {
+              const parentExists = await Model.findOne({
+                where: { id: processedRow.parentOrganizationId }
+              });
+              if (!parentExists) {
+                processedRow.parentOrganizationId = null;
+              }
+            }
+            console.log('row = ', processedRow);
+
+            await Model.create({
+              ...processedRow,
+              createdAt: new Date(),
+              creatorId: req.session?.user?.id ?? 0
+            });
+          } catch (error) {
+            console.error('Error creating record:', error);
+            let errorMessage = 'خطای نامشخص در ذخیره‌سازی';
+
+            if (error.name === 'SequelizeUniqueConstraintError') {
+              const field = error.errors[0]?.path || 'نامشخص';
+              errorMessage = `خطای یکتایی: مقدار تکراری برای فیلد ${field}`;
+            } else if (error.name === 'SequelizeValidationError') {
+              errorMessage = error.errors.map((e) => e.message).join(', ');
+            }
+
+            // اضافه کردن شماره سطر اصلی از فایل اکسل و داده‌های اصلی
+            const originalRowIndex = i * batchSize + idx + 1;
+            const originalData = { ...row }; // کپی از داده‌های اصلی قبل از هرگونه تغییر
+
+            // حذف فیلدهای اضافی که ممکن است در طول پردازش اضافه شده باشند
+            delete originalData.createdAt;
+            delete originalData.updatedAt;
+            delete originalData.creatorId;
+            delete originalData.updaterId;
+
+            console.log('Original Data for error file:', originalData); // برای دیباگ
+
+            dbErrors.push({
+              Row: originalRowIndex,
+              Errors: `خطای دیتابیس: ${errorMessage}`,
+              OriginalData: originalData,
+              ErrorType: 'Database Error'
+            });
           }
-          await Model.create({
-            ...row,
-            createdAt: new Date(),
-            creatorId: req.session?.user?.id ?? 0
-          });
         };
       });
 
       await Promise.all(batchPromises.map((fn) => fn()));
-
       totalProcessed += batch.length;
       progressTracker.updateProgress(totalProcessed, sheetData.length);
 
       if (i < batches.length - 1 && batchDelay > 0) {
         await new Promise((resolve) => setTimeout(resolve, batchDelay));
       }
+    }
+
+    // اگر خطای دیتابیس وجود داشت، فایل خطا ایجاد کن
+    if (dbErrors.length > 0) {
+      const errorFilePath = createErrorSheet(dbErrors, req.file.originalname);
+      progressTracker.completeProgress();
+      return res.status(400).json({
+        success: false,
+        message: `تعداد ${dbErrors.length} سطر به دلیل خطای دیتابیس ذخیره نشدند`,
+        errorFilePath: errorFilePath,
+        errors: dbErrors
+      });
     }
 
     const filePath = path.join(__dirname, '../../../uploads', req.file.filename);
