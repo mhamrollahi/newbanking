@@ -49,6 +49,8 @@ exports.getOnlineCodeByOrganizationId = async (req, res, next) => {
 
 exports.nextCode = async (req, res, next) => {
   try {
+    console.log('nextCode');
+    
     // دریافت همه کدهای موجود
     const existingCodes = await CodeOnlineModel.findAll({
       attributes: ['code'],

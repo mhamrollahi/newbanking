@@ -5,6 +5,7 @@ const accessControlMiddleware = require('@middlewares/accessControlMiddleware');
 
 router.get('/api/getData', [accessControlMiddleware('codeonlines', 'read')], codeOnlineControllers.getData);
 router.get('/api/getOnlineCodeByOrganizationId/:organizationId', [accessControlMiddleware('codeonlines', 'read')], codeOnlineControllers.getOnlineCodeByOrganizationId);
+router.get('/api/next', [accessControlMiddleware('codeonlines', 'read')], codeOnlineControllers.nextCode);
 
 router.get('/index', [accessControlMiddleware('codeonlines', 'read')], codeOnlineControllers.index);
 router.get('/create', [accessControlMiddleware('codeonlines', 'create')], codeOnlineControllers.create);
