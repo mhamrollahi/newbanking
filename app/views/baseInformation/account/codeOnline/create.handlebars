@@ -16,8 +16,7 @@
       </div>
     </div><!-- Page Heading End -->
   </div>
-  <button id='getNextCode1'>Get Next Code1111</button>
-
+  
   <div class='row login-form'>
     <div class='col-12 col-sm-12 col-md-12'>
       <form method='POST' name='frmCodeOnline' id='frmCodeOnline' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
@@ -48,9 +47,10 @@
           <label for='onlineCode' class='mandatory' id='onlineCodeLabel'>
             کد آنلاین
           </label>
+          <small style="margin: 5px 2px;position: absolute;font-size:12px; color:#036b6b">برای دریافت کد آنلاین لطفا دکمه رفرش را کلیک کنید.</small>
         </div>
 
-        <div style='margin:20px 1px 1px 1px; '>
+        <div style='margin:27px 1px 1px 1px; '>
           <label for='cmbOrganization' class='mandatory'>نام دستگاه</label>
           <select id='cmbOrganizationList' name='organizationId' style='position: relative;' data-farsiname='نام دستگاه' required>
             <option value=''>لطفا نام دستگاه را انتخاب کنید</option>
@@ -87,10 +87,51 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-   const getNextCodeButton = document.getElementById('getNextCode1'); 
-    getNextCodeButton.addEventListener('click', function() { 
-    console.log('Clicking getNextCode11111 button...'); 
-    alert('دکمه 2 کلیک شد'); 
+   const getNextCodeButton = document.getElementById('getNextCode'); 
+    getNextCodeButton.addEventListener('click', async function() { 
+    console.log('Clicking getNextCode button...'); 
+    {{!-- alert('دکمه 2 کلیک شد');  --}}
+
+    try { 
+      const response = await fetch('/baseInformation/account/codeOnline/api/next', { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+      if (!response.ok) { 
+        throw new Error('خطا در دریافت کد'); 
+      } 
+      const data = await response.json(); 
+      const input = document.getElementById('onlineCode'); 
+      const label = document.getElementById('onlineCodeLabel'); 
+      input.value = data.nextCode; 
+      input.classList.add('input-with-value'); 
+      label.classList.add('label-hidden'); 
+    } catch (error) { 
+      console.error('خطا:', error); 
+      alert('خطا در دریافت کد آنلاین بعدی'); 
+    };
+    document.getElementById('onlineCode1').addEventListener('input', function() { 
+      const label = document.getElementById('onlineCodeLabel'); 
+      if (this.value === '') { 
+        this.classList.remove('input-with-value'); 
+        label.classList.remove('label-hidden'); 
+      } else { 
+        this.classList.add('input-with-value'); 
+        label.classList.add('label-hidden'); 
+      } }); 
+      // Function  to generate a 16-digit account number 
+      function generateAccountNumber() { 
+        let accountNumber = ''; 
+        for (let i = 0; i < 16; i++) { 
+          accountNumber += Math.floor(Math.random() * 10); 
+        } 
+        return accountNumber; 
+      } 
+      // Add click event listeners to all form inputs 
+      document.querySelectorAll('input, select').forEach(element => { element.addEventListener('click', function() { 
+        const accountNumberDisplay = document.getElementById('accountNumberDisplay'); 
+        const generatedAccountNumber = document.getElementById('generatedAccountNumber'); 
+        accountNumberDisplay.style.display = 'block'; 
+        generatedAccountNumber.textContent = generateAccountNumber(); 
+      }); 
+    });
     });
   });
 </script>
