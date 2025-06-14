@@ -139,6 +139,16 @@ module.exports = (sequelize) => {
         onDelete: 'RESTRICT'
       },
 
+      paymentTypeId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'codingdata',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
+      },
+
       // وضعیت حساب: مسدود / غیرمسدود
       obstructStatus: {
         type: DataTypes.BOOLEAN,
@@ -199,6 +209,7 @@ module.exports = (sequelize) => {
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'accountTypeId', as: 'accountType' });
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'provinceId', as: 'province' });
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'transferPeriodId', as: 'transferPeriod' });
+    AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'paymentTypeId', as: 'paymentType' });
     AccountInfo.belongsTo(models.BankBranchModel, { foreignKey: 'bankBranchId', as: 'bankBranch' });
     AccountInfo.belongsTo(models.CodeOnlineModel, { foreignKey: 'codeOnlineId', as: 'codeOnline' });
     AccountInfo.belongsTo(models.OrganizationMasterDataModel, { foreignKey: 'organizationId', as: 'organization' });

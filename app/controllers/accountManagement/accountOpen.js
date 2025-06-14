@@ -113,7 +113,7 @@ exports.create = async (req, res, next) => {
     });
 
     const organizationListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName'],
+      attributes: ['id', 'organizationName','nationalCode','budgetRow'],
       raw: true,
       nest: true
     });

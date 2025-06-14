@@ -30,7 +30,7 @@ module.exports = (sequelize) => {
       },
 
       title: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(100),
         allowNull: false,
         unique: {
           name: 'ix_CodeTableListId_Title',
@@ -45,8 +45,8 @@ module.exports = (sequelize) => {
             msg: 'لطفا نام کدینگ جدول را وارد کنید.'
           },
           len: {
-            args: [2, 50],
-            msg: 'نام کدینگ جدول  باید کلمه‌ای بین 2 تا 50 کاراکتر باشد.'
+            args: [1, 100],
+            msg: 'نام کدینگ جدول  باید کلمه‌ای بین 1 تا 100 کاراکتر باشد.'
           }
         }
       },
@@ -82,12 +82,12 @@ module.exports = (sequelize) => {
             msg: 'کد فقط باید عدد باشد.'
           },
           min: {
-            args: 1,
-            msg: 'مرتبه کدینگ عددی بین 1 تا 99 می باشد.'
+            args: 0,
+            msg: 'مرتبه کدینگ عددی بین 0 تا 9999 می باشد.'
           },
           max: {
-            args: 99,
-            msg: 'مرتبه کدینگ عددی بین 1 تا 99 می باشد.'
+            args: 9999,
+            msg: 'مرتبه کدینگ عددی بین 0 تا 9999 می باشد.'
           }
         }
       },
