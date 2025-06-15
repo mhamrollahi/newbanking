@@ -29,6 +29,7 @@
           <div class="account-number-header">
             <span>شماره حساب: </span>
             <button type="button" id="btnNextAccount" class="btn btn-sm btn-primary">شماره حساب بعدی</button>
+            <button type="button" id="btnCheckDigit" class="btn btn-sm btn-info">محاسبه کد دیجیت</button>
           </div>
           <div id="generatedAccountNumber" class="account-number-boxes"></div>
         </div>
@@ -171,7 +172,7 @@
   margin-bottom: 10px;
 }
 
-#btnNextAccount {
+#btnNextAccount, #btnCheckDigit {
   font-size: 14px;
   padding: 5px 10px;
 }
@@ -201,7 +202,7 @@
 }
 
 .digit-box:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 </style>
@@ -314,17 +315,8 @@
         pattern: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
       };
       
-      // ایجاد باکس‌ها با الگوی کامل بانک
-      const container = document.getElementById('generatedAccountNumber');
-      container.innerHTML = ''; // Clear previous boxes
-      
-      // ایجاد 16 باکس با مقادیر الگوی بانک
-      for (let i = 0; i < 16; i++) {
-        const box = document.createElement('div');
-        box.className = 'digit-box';
-        box.textContent = bankPattern.pattern[i] !== undefined ? bankPattern.pattern[i] : '';
-        container.appendChild(box);
-      }
+      // ایجاد باکس‌ها با استفاده از تابع createDigitBoxes
+      createDigitBoxes(bankPattern.pattern);
 
       // اگر دستگاه انتخاب شده است، کد آنلاین را دریافت و اعمال کن
       if (selectedOrgId) {
@@ -362,13 +354,6 @@
       }
     }
 
-    // Add click event listeners to all form inputs
-    document.querySelectorAll('input, select').forEach(element => {
-      element.addEventListener('click', function() {
-        updateAccountNumber();
-      });
-    });
-
     // اضافه کردن event listener برای تغییر بانک
     $('#cmbBankList').on('change', function() {
       const selectedBankId = $(this).val();
@@ -396,12 +381,20 @@
         branchSelect.append('<option value="">لطفا شعبه بانک را انتخاب کنید</option>');
       }
 
+      // فراخوانی تابع به‌روزرسانی شماره حساب
       updateAccountNumber();
     });
 
     // اضافه کردن event listener برای تغییر دستگاه
     $('#cmbOrganizationList').on('change', function() {
       updateAccountNumber();
+    });
+
+    // Add click event listeners to all form inputs
+    document.querySelectorAll('input, select').forEach(element => {
+      element.addEventListener('click', function() {
+        updateAccountNumber();
+      });
     });
 
     // Add click event listener for the next account button
@@ -427,6 +420,255 @@
       } catch (error) {
         console.error('Error getting next account number:', error);
         alert('خطا در دریافت شماره حساب بعدی');
+      }
+    });
+
+    // تابع محاسبه کد دیجیت
+    function calculateCheckDigit(bankId) {
+      const boxes = document.getElementsByClassName('digit-box');
+      let checkDigit = 0;
+
+      switch(bankId) {
+        case '360008': // رفاه
+          let r = (parseInt(boxes[3].textContent) * 13) + 
+                 (parseInt(boxes[4].textContent) * 12) + 
+                 (parseInt(boxes[5].textContent) * 11) + 
+                 (parseInt(boxes[6].textContent) * 10) + 
+                 (parseInt(boxes[7].textContent) * 9) + 
+                 (parseInt(boxes[8].textContent) * 8) + 
+                 (parseInt(boxes[9].textContent) * 7) + 
+                 (parseInt(boxes[10].textContent) * 6) + 
+                 (parseInt(boxes[11].textContent) * 5) + 
+                 (parseInt(boxes[12].textContent) * 4) + 
+                 (parseInt(boxes[13].textContent) * 3) + 
+                 (parseInt(boxes[14].textContent) * 2);
+          
+          if (r < 10) checkDigit = r;
+          else if (r === 10 || r === 11) checkDigit = 0;
+          else {
+            r = r % 11;
+            checkDigit = r === 10 ? 0 : r;
+          }
+          break;
+
+        case '360003': // سپه
+          let s = (parseInt(boxes[3].textContent) * 41) + 
+                 (parseInt(boxes[4].textContent) * 37) + 
+                 (parseInt(boxes[5].textContent) * 31) + 
+                 (parseInt(boxes[6].textContent) * 29) + 
+                 (parseInt(boxes[7].textContent) * 23) + 
+                 (parseInt(boxes[8].textContent) * 19) + 
+                 (parseInt(boxes[9].textContent) * 17) + 
+                 (parseInt(boxes[10].textContent) * 13) + 
+                 (parseInt(boxes[11].textContent) * 7) + 
+                 (parseInt(boxes[12].textContent) * 5) + 
+                 (parseInt(boxes[13].textContent) * 3);
+          
+          let s1 = s;
+          s = s % 14;
+          
+          if (s > 0 && s < 13) {
+            if (s.toString().length === 2) {
+              boxes[14].textContent = s.toString().substring(0, 1);
+              checkDigit = parseInt(s.toString().substring(1, 1));
+            } else {
+              boxes[14].textContent = "0";
+              checkDigit = s;
+            }
+          } else if (s === 0 || s === 13) {
+            s = (s1 % 11) + 1;
+            if (s.toString().length === 2) {
+              boxes[14].textContent = s.toString().substring(0, 1);
+              checkDigit = parseInt(s.toString().substring(1, 1));
+            } else {
+              boxes[14].textContent = "0";
+              checkDigit = s;
+            }
+          }
+          break;
+
+        case '360009': // کشاورزی
+          let tempNo = 0;
+          let mult2 = 1;
+          let s = boxes[3].textContent + boxes[4].textContent + boxes[5].textContent + 
+                 boxes[6].textContent + boxes[7].textContent + boxes[8].textContent + 
+                 boxes[9].textContent + boxes[10].textContent + boxes[11].textContent + 
+                 boxes[12].textContent + boxes[13].textContent + boxes[14].textContent;
+          
+          for (let i = s.length - 1; i >= 0; i--) {
+            tempNo += (parseInt(s.substring(i, 1)) * mult2) % 11;
+            mult2 *= 2;
+          }
+          checkDigit = tempNo % 10;
+          break;
+
+        case '360002': // ملی
+          let x = (parseInt(boxes[3].textContent) * 47) + 
+                 (parseInt(boxes[4].textContent) * 43) + 
+                 (parseInt(boxes[5].textContent) * 41) + 
+                 (parseInt(boxes[6].textContent) * 37) + 
+                 (parseInt(boxes[7].textContent) * 31) + 
+                 (parseInt(boxes[8].textContent) * 29) + 
+                 (parseInt(boxes[9].textContent) * 23) + 
+                 (parseInt(boxes[10].textContent) * 19) + 
+                 (parseInt(boxes[11].textContent) * 17) + 
+                 (parseInt(boxes[12].textContent) * 13) + 
+                 (parseInt(boxes[13].textContent) * 7) + 
+                 (parseInt(boxes[14].textContent) * 5);
+          
+          x = x % 11;
+          if (x) x = 11 - x;
+          if (x.toString().length > 1) {
+            alert('شماره سریال معتبر نمی باشد');
+            return null;
+          }
+          checkDigit = x;
+          break;
+
+        case '360004': // صادرات
+          let a = (parseInt(boxes[3].textContent) * 47) + 
+                 (parseInt(boxes[4].textContent) * 43) + 
+                 (parseInt(boxes[5].textContent) * 41) + 
+                 (parseInt(boxes[6].textContent) * 37) + 
+                 (parseInt(boxes[7].textContent) * 31) + 
+                 (parseInt(boxes[8].textContent) * 29) + 
+                 (parseInt(boxes[9].textContent) * 23) + 
+                 (parseInt(boxes[10].textContent) * 19) + 
+                 (parseInt(boxes[11].textContent) * 17) + 
+                 (parseInt(boxes[12].textContent) * 13) + 
+                 (parseInt(boxes[13].textContent) * 7) + 
+                 (parseInt(boxes[14].textContent) * 5);
+          
+          a = a % 11;
+          if (a > 1) a = 11 - a;
+          checkDigit = a;
+          break;
+
+        case '360007': // مسکن
+          let x = (parseInt(boxes[3].textContent) * 43) + 
+                 (parseInt(boxes[4].textContent) * 41) + 
+                 (parseInt(boxes[5].textContent) * 37) + 
+                 (parseInt(boxes[6].textContent) * 31) + 
+                 (parseInt(boxes[7].textContent) * 29) + 
+                 (parseInt(boxes[8].textContent) * 23) + 
+                 (parseInt(boxes[9].textContent) * 19) + 
+                 (parseInt(boxes[10].textContent) * 17) + 
+                 (parseInt(boxes[11].textContent) * 13) + 
+                 (parseInt(boxes[12].textContent) * 11) + 
+                 (parseInt(boxes[13].textContent) * 7) + 
+                 (parseInt(boxes[14].textContent) * 3);
+          
+          let m = x;
+          while (m > 9) {
+            let n = 0;
+            let s = m.toString();
+            for (let i = 0; i < s.length; i++) {
+              n += parseInt(s.substring(i, 1));
+            }
+            m = n;
+          }
+          checkDigit = m;
+          break;
+
+        case '360006': // ملت
+          let x = (parseInt(boxes[6].textContent) * 3) + 
+                 (parseInt(boxes[7].textContent) * 7) + 
+                 (parseInt(boxes[8].textContent) * 3) + 
+                 (parseInt(boxes[9].textContent) * 7) + 
+                 (parseInt(boxes[10].textContent) * 3) + 
+                 (parseInt(boxes[11].textContent) * 7) + 
+                 (parseInt(boxes[12].textContent) * 3) + 
+                 (parseInt(boxes[13].textContent) * 7);
+          
+          x = (x + 101) % 97;
+          if (x.toString().length > 1) {
+            boxes[14].textContent = x.toString().substring(0, 1);
+            checkDigit = parseInt(x.toString().substring(1, 1));
+          } else {
+            boxes[14].textContent = "0";
+            checkDigit = parseInt(x.toString().substring(0, 1));
+          }
+          break;
+
+        case '360005': // تجارت
+          let t = (parseInt(boxes[6].textContent) * 4) + 
+                 (parseInt(boxes[7].textContent) * 3) + 
+                 (parseInt(boxes[8].textContent) * 2) + 
+                 (parseInt(boxes[9].textContent) * 7) + 
+                 (parseInt(boxes[10].textContent) * 6) + 
+                 (parseInt(boxes[11].textContent) * 5) + 
+                 (parseInt(boxes[12].textContent) * 4) + 
+                 (parseInt(boxes[13].textContent) * 3) + 
+                 (parseInt(boxes[14].textContent) * 2);
+          
+          t = t % 11;
+          checkDigit = t === 0 ? 0 : 10 - t;
+          break;
+
+        case '360001': // مرکزی
+          let ss = 0;
+          let h, k, b;
+
+          // محاسبه برای ارقام فرد
+          for (let i = 0; i < 8; i++) {
+            h = parseInt(boxes[i * 2].textContent) * 2;
+            k = Math.floor(h / 10);
+            b = h % 10;
+            ss += k + b;
+          }
+
+          // اضافه کردن ارقام زوج
+          for (let i = 1; i < 8; i++) {
+            ss += parseInt(boxes[i * 2 - 1].textContent);
+          }
+
+          while (ss > 10) {
+            ss = ss % 10;
+          }
+
+          checkDigit = ss === 0 ? 0 : 10 - ss;
+          break;
+
+        default:
+          alert('بانک انتخاب شده پشتیبانی نمی‌شود');
+          return null;
+      }
+
+      return checkDigit;
+    }
+
+    // Add click event listener for the check digit button
+    $('#btnCheckDigit').on('click', function() {
+      const selectedBankId = $('#cmbBankList').val();
+      if (!selectedBankId) {
+        alert('لطفا ابتدا بانک را انتخاب کنید');
+        return;
+      }
+
+      const boxes = document.getElementsByClassName('digit-box');
+      if (boxes.length === 0) {
+        alert('شماره حساب موجود نیست');
+        return;
+      }
+
+      // بررسی اینکه آیا همه ارقام به جز آخرین رقم پر شده‌اند
+      let allFilled = true;
+      for (let i = 0; i < boxes.length - 1; i++) {
+        if (!boxes[i].textContent) {
+          allFilled = false;
+          break;
+        }
+      }
+
+      if (!allFilled) {
+        alert('لطفا ابتدا تمام ارقام شماره حساب را به جز رقم آخر پر کنید');
+        return;
+      }
+
+      // محاسبه و قرار دادن کد دیجیت در آخرین باکس
+      const checkDigit = calculateCheckDigit(selectedBankId);
+      if (checkDigit !== null) {
+        boxes[boxes.length - 1].textContent = checkDigit;
       }
     });
   });
