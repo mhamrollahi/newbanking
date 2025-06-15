@@ -26,7 +26,10 @@
         {{/if}}
 
         <div id="accountNumberDisplay" class="account-number-display" style="display: block;">
-          <span>شماره حساب: </span>
+          <div class="account-number-header">
+            <span>شماره حساب: </span>
+            <button type="button" id="btnNextAccount" class="btn btn-sm btn-primary">شماره حساب بعدی</button>
+          </div>
           <div id="generatedAccountNumber" class="account-number-boxes"></div>
         </div>
 
@@ -158,6 +161,19 @@
   direction: rtl;
   color: #380101;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.account-number-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#btnNextAccount {
+  font-size: 14px;
+  padding: 5px 10px;
 }
 
 .account-number-boxes {
@@ -330,7 +346,7 @@
             }
 
             // برای بانک‌های 13 رقمی، شماره حساب بعدی را پیدا کن
-            if (['53001', '53002', '53003'].includes(selectedBankId)) {
+            if (['360002', '360003', '360009'].includes(selectedBankId)) {
               const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
               // قرار دادن شماره حساب بعدی در 3 رقم آخر
               for (let i = 0; i < 3; i++) {
@@ -386,6 +402,32 @@
     // اضافه کردن event listener برای تغییر دستگاه
     $('#cmbOrganizationList').on('change', function() {
       updateAccountNumber();
+    });
+
+    // Add click event listener for the next account button
+    $('#btnNextAccount').on('click', async function() {
+      const selectedBankId = $('#cmbBankList').val();
+      const selectedOrgId = $('#cmbOrganizationList').val();
+
+      if (!selectedBankId || !selectedOrgId) {
+        alert('لطفا ابتدا بانک و دستگاه را انتخاب کنید');
+        return;
+      }
+
+      try {
+        const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
+        const boxes = document.getElementsByClassName('digit-box');
+        
+        // قرار دادن شماره حساب بعدی در 3 رقم آخر
+        for (let i = 0; i < 3; i++) {
+          if (boxes[i + 10]) {
+            boxes[i + 10].textContent = nextNumber[i];
+          }
+        }
+      } catch (error) {
+        console.error('Error getting next account number:', error);
+        alert('خطا در دریافت شماره حساب بعدی');
+      }
     });
   });
 </script>
