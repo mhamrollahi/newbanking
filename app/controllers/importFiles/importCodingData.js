@@ -169,6 +169,22 @@ exports.importCodingData_Save = async (req, res) => {
           try {
             let processedRow = { ...row }; // کپی از داده‌ها برای پردازش
 
+            // Special handling for bankbranch table
+            if (Model.name === 'BankBranch' && processedRow.cityName) {
+              // Find the corresponding organization by budgetRow
+              const city = await models.CityModel.findOne({
+                where: { cityName: processedRow.cityName }
+              });
+
+              if (city) {
+                processedRow.cityId = city.id;
+              }else{
+                processedRow.cityId = 663 // یه شهر نامشخص
+              }
+
+            }
+
+
             // Special handling for codeonlies table
             if (Model.name === 'CodeOnline' && processedRow.orgStructure) {
               // Find the corresponding organization by budgetRow
@@ -195,6 +211,14 @@ exports.importCodingData_Save = async (req, res) => {
               console.log('After conversion row = ', JSON.stringify(processedRow, null, 2));
             }
 
+            // Convert numeric strings to actual numbers for specific fields
+            if (Model.name === 'BankBranch') {
+
+              if (processedRow.cityId !== undefined) processedRow.cityId = Number(processedRow.cityId);
+              if (processedRow.contactTel !== undefined) processedRow.contactTel = String(processedRow.contactTel);
+              if (processedRow.branchCode !== undefined) processedRow.branchCode = String(processedRow.branchCode);
+            }
+
             if (Model.name === 'OrganizationMasterData' && processedRow.parentOrganizationId) {
               const parentExists = await Model.findOne({
                 where: { id: processedRow.parentOrganizationId }
@@ -210,6 +234,7 @@ exports.importCodingData_Save = async (req, res) => {
               createdAt: new Date(),
               creatorId: req.session?.user?.id ?? 0
             });
+
           } catch (error) {
             console.error('Error creating record:', error);
             let errorMessage = 'خطای نامشخص در ذخیره‌سازی';

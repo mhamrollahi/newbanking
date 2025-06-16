@@ -17,8 +17,8 @@ module.exports = (sequelize) => {
             msg: 'لطفا نام شعبه را وارد کنید.'
           },
           len: {
-            args: [2, 50],
-            msg: 'نام شعبه باید بین ۲ تا ۵۰ حرف باشد.'
+            args: [1, 50],
+            msg: 'نام شعبه باید بین ۱ تا ۵۰ حرف باشد.'
           }
         }
       },
@@ -37,20 +37,20 @@ module.exports = (sequelize) => {
             args: [1, 10],
             msg: 'کد شعبه باید بین 1 تا 10 عدد باشد.'
           },
-          isNumericOrPersian(value) {
-            // تبدیل اعداد فارسی به انگلیسی
-            const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
-            const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            let convertedValue = value;
-            for (let i = 0; i < 10; i++) {
-              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
-            }
+          // isNumericOrPersian(value) {
+          //   // تبدیل اعداد فارسی به انگلیسی
+          //   const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+          //   const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+          //   let convertedValue = value;
+          //   for (let i = 0; i < 10; i++) {
+          //     convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+          //   }
 
-            // بررسی اینکه آیا همه کاراکترها عدد هستند
-            if (!/^\d+$/.test(convertedValue)) {
-              throw new Error('کد شعبه  باید فقط شامل اعداد باشد 111.');
-            }
-          }
+          //   // بررسی اینکه آیا همه کاراکترها عدد هستند
+          //   if (!/^\d+$/.test(convertedValue)) {
+          //     throw new Error('کد شعبه  باید فقط شامل اعداد باشد 111.');
+          //   }
+          // }
         }
       },
 
@@ -78,27 +78,27 @@ module.exports = (sequelize) => {
 
       contactTel: {
         type: DataTypes.STRING(20),
-        validate: {
-          len: {
-            args: [0, 20],
-            msg: 'شماره تلفن باید بین 0 تا 20 حرف باشد.'
-          },
-          isNumericOrPersian(value) {
-            if (!value || value.trim() === '') return; // اگر مقدار خالی باشد، اجازه می‌دهیم
-            // تبدیل اعداد فارسی به انگلیسی
-            const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
-            const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-            let convertedValue = value;
-            for (let i = 0; i < 10; i++) {
-              convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
-            }
+          // validate: {
+          // len: {
+          //   args: [0, 20],
+          //   msg: 'شماره تلفن باید بین 0 تا 20 حرف باشد.'
+          // },
+          // isNumericOrPersian(value) {
+          //   if (!value || value.trim() === '') return; // اگر مقدار خالی باشد، اجازه می‌دهیم
+          //   // تبدیل اعداد فارسی به انگلیسی
+          //   const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+          //   const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+          //   let convertedValue = value;
+          //   for (let i = 0; i < 10; i++) {
+          //     convertedValue = convertedValue.replace(persianNumbers[i], englishNumbers[i]);
+          //   }
 
-            // بررسی اینکه آیا همه کاراکترها عدد هستند
-            if (!/^\d+$/.test(convertedValue)) {
-              throw new Error('شماره تلفن باید فقط شامل اعداد باشد.');
-            }
-          }
-        }
+          //   // بررسی اینکه آیا همه کاراکترها عدد هستند
+          //   if (!/^\d+$/.test(convertedValue)) {
+          //     throw new Error('شماره تلفن باید فقط شامل اعداد باشد.');
+          //   }
+          // }
+        // }
       },
 
       address: {
