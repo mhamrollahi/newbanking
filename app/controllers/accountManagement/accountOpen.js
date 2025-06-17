@@ -55,7 +55,7 @@ exports.getData = async (req, res, next) => {
   }
 };
 
-// نمایش لیست سازمان‌ها
+// نمایش لیست حساب‌ها
 exports.index = async (req, res, next) => {
   try {
     res.adminRender('./accManagement/accountOpen/index', {
@@ -358,13 +358,13 @@ exports.delete = async (req, res, next) => {
 // تابع دریافت شماره حساب بعدی موجود
 exports.getNextAvailableAccountNumber = async (req, res) => {
   try {
-    const { bankId, organizationId } = req.params;
+    const { bankId, onlineCode } = req.params;
 
     // دریافت تمام شماره حساب‌های موجود برای این بانک و کد آنلاین
     const existingAccounts = await AccountInfoModel.findAll({
       where: {
         bankId: bankId,
-        organizationId: organizationId
+        organizationId: onlineCode
       },
       attributes: ['accountNumber']
     });
@@ -373,9 +373,10 @@ exports.getNextAvailableAccountNumber = async (req, res) => {
     const lastThreeDigits = existingAccounts
       .map((account) => {
         const accountNumber = account.accountNumber.toString();
-        return parseInt(accountNumber.slice(-3)); // تبدیل به عدد برای مقایسه
+        return parseInt(accountNumber.substr(7,3)); // تبدیل به عدد برای مقایسه
+        //return parseInt(accountNumber.slice(-7)); // تبدیل به عدد برای مقایسه
       })
-      .sort((a, b) => a - b); // مرتب‌سازی اعداد
+      //.sort((a, b) => a - b); // مرتب‌سازی اعداد
 
     // اگر هیچ شماره حسابی وجود نداشت
     if (lastThreeDigits.length === 0) {

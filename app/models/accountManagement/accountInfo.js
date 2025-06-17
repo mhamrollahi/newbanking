@@ -99,6 +99,16 @@ module.exports = (sequelize) => {
         }
       },
 
+      bankId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'codingdata',
+          key: 'id'
+        },
+        onUpdate: 'RESTRICT',
+        onDelete: 'RESTRICT'
+      },
+      
       accountTypeId: {
         type: DataTypes.INTEGER,
         references: {
@@ -206,6 +216,7 @@ module.exports = (sequelize) => {
   AccountInfo.sequelize = sequelize;
 
   AccountInfo.associate = (models) => {
+    AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'bankId', as: 'bank' });
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'accountTypeId', as: 'accountType' });
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'provinceId', as: 'province' });
     AccountInfo.belongsTo(models.CodingDataModel, { foreignKey: 'transferPeriodId', as: 'transferPeriod' });
