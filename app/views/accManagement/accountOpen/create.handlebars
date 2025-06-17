@@ -26,11 +26,14 @@
         {{/if}}
 
         <div id="accountNumberDisplay" class="account-number-display" style="display: block;">
-          <div class="account-number-header">
+          {{!-- <div class="account-number-header"> 
             <span>شماره حساب: </span>
             <button type="button" id="btnNextAccount" class="btn btn-sm btn-primary">شماره حساب بعدی</button>
             <button type="button" id="btnCheckDigit" class="btn btn-sm btn-info">محاسبه کد دیجیت</button>
           </div>
+          <div id="generatedAccountNumber" class="account-number-boxes"></div>--}}
+
+          <span>شماره حساب: </span>
           <div id="generatedAccountNumber" class="account-number-boxes"></div>
         </div>
 
@@ -225,6 +228,8 @@
       }
     });
 
+    console.log('test 1 ')
+    
     // کدهای بانک‌ها و الگوهای شماره حساب
     const bankPatterns = {
       '360001': { // بانک مرکزی
@@ -309,7 +314,18 @@
       const selectedOrgId = $('#cmbOrganizationList').val();
       const accountNumberDisplay = document.getElementById('accountNumberDisplay');
       accountNumberDisplay.style.display = 'block';
+       // ایجاد باکس‌ها با الگوی کامل بانک
+      const container = document.getElementById('generatedAccountNumber');
+      container.innerHTML = ''; // Clear previous boxes
       
+      // ایجاد 16 باکس با مقادیر الگوی بانک
+      for (let i = 0; i < 16; i++) {
+        const box = document.createElement('div');
+        box.className = 'digit-box';
+        box.textContent = bankPattern.pattern[i] !== undefined ? bankPattern.pattern[i] : '';
+        container.appendChild(box);
+      }
+
       // دریافت الگوی شماره حساب بانک
       const bankPattern = bankPatterns[selectedBankId] || {
         pattern: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
@@ -357,6 +373,8 @@
     // اضافه کردن event listener برای تغییر بانک
     $('#cmbBankList').on('change', function() {
       const selectedBankId = $(this).val();
+      
+      console.log('test ', selectedBankId )
       
       // دریافت شعبه‌های بانک انتخاب شده
       if (selectedBankId) {
