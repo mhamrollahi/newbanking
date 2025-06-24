@@ -1,4 +1,4 @@
-<link rel='stylesheet' href='/static/assets/css/style.css' />
+  <link rel='stylesheet' href='/static/assets/css/style.css' />
 
 
 <main class='container myform-section-wrapper my-4 mt-5'>
@@ -11,7 +11,7 @@
     </div><!-- Page Heading End -->
   </div>
 
-  <div class='row organization-form'>
+  <div class='row accountInfo-form'>
     <div class='col-12 col-sm-12 col-md-12'>
       <form method='POST' name='frmOpenAccount' id='frmOpenAccount' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
 
@@ -34,6 +34,7 @@
           <div id="generatedAccountNumber" class="account-number-boxes"></div>
 
           <div id="generatedAccountNumber" class="account-number-boxes"></div>
+          <input type="hidden" name="accountNumber" id="accountNo">
         </div>
 
         <div class="col-12">
@@ -107,27 +108,35 @@
           </div>
         </div>  
 
-
-
-        <div style='margin-top:15px; '>
-            <label for='accountTypeId' >نوع حساب </label>
-            <select id='cmbAccountTypeList' name='accountTypeId' style='position: relative;' data-farsiname='نوع حساب' >
+        <div class='form-floating mb-3' style='margin-top:15px; '>
+          <input type='text' class='form-control' id='accountTitle' name='accountTitle' placeholder='عنوان حساب را وارد کنید.' autocomplete='off' required/>
+          <label for='accountTitle' class='mandatory'>
+             عنوان حساب
+          </label>
+        </div>  
+        
+        <div class="col-12" >
+          <div class="row" style='margin-top:5px;'>
+            <div class='mb-3 col-6'>
+             <label for='accountTypeId'  class='mandatory'>نوع حساب </label>
+            <select id='cmbAccountTypeList' name='accountTypeId' style='position: relative;' data-farsiname='نوع حساب' required>
               <option value=''>لطفا نوع حساب را انتخاب کنید</option>
               {{#each accountTypesListData}}
                 <option value='{{this.id}}'>{{this.title}} </option>
               {{/each}}
             </select>
-          </div>
-
-          <div style='margin-top:15px; '>
-            <label for='provinceId' >استان</label>
-            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان'>
+            </div>  
+            <div class='mb-3 col-6'>
+               <label for='provinceId'  class='mandatory'>استان</label>
+            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان' required>
               <option value=''>لطفا استان را انتخاب کنید</option>
               {{#each provincesListData}}
                 <option value='{{this.id}}'>{{this.title}} </option>
               {{/each}}
             </select>
+            </div>
           </div>
+        </div>  
 
           <div class='form-floating mb-3' style='margin-top:15px; '>
             <textarea class='form-control' id='description' name='description' placeholder='توضیحات را وارد کنید.' autocomplete='off'></textarea>
@@ -140,7 +149,7 @@
 
         <!-- دکمه‌های ثبت و انصراف -->
         <div class='col-12 my-2 text-center'>
-          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit'>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit' disabled>
             ثبت
           </button>
           <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='./index'>
@@ -148,8 +157,10 @@
           </a>
         </div>
       </form>
-    </div>
   </div>
+  
+  </div>
+
 </main>
 
 <style>
@@ -286,7 +297,6 @@
     function createDigitBoxes(number) {
       const container = document.getElementById('generatedAccountNumber');
       container.innerHTML = ''; // Clear previous boxes
-      console.log('test 2 . second  ')
       
       // ایجاد 16 باکس
       for (let i = 0; i < 16; i++) {
@@ -648,9 +658,6 @@
       return checkDigit;
     }
 
-
-
-
     // Add click event listener for the check digit button
     $('#btnCheckDigit').on('click', function() {
       const selectedBankId = $('#cmbBankList').val();
@@ -675,7 +682,6 @@
           i = 3
       }
       for (i ; i < boxes.length - 1; i++) {
-        console.log(`‍‍‍boxes[${i}].textContent = `,boxes[i].textContent )
         if (!boxes[i].textContent) {
           allFilled = false;
           break;
@@ -692,8 +698,25 @@
       if (checkDigit !== null) {
         boxes[boxes.length - 1].textContent = checkDigit;
       }
+
+      const accountNumber = getAccountNumber()
+      document.getElementById('accountNo').value = accountNumber
+      const btnSubmit = document.getElementById('btnSubmit')
+      btnSubmit.disabled = false
+      
     });
   });
+
+  function getAccountNumber() {
+    const boxes = document.getElementsByClassName('digit-box');
+    let accountNumber = '';
+
+    for (let i = 3; i < boxes.length; i++) {
+      accountNumber += boxes[i].textContent || '0'; // اگر باکس خالی بود، 0 قرار می‌دهیم
+    }
+
+    return accountNumber;
+  }
 </script>
 
 <script src='/static/assets/js/formValidation.js'></script>

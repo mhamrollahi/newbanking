@@ -33,7 +33,12 @@ exports.getData = async (req, res, next) => {
         {
           model: BankBranchModel,
           as: 'bankBranch',
-          attributes: ['branchName', 'branchCode']
+          attributes: ['branchName', 'branchCode'],
+          include : [{
+            model : CodingDataModel,
+            as : 'bank',
+            attributes : ['title'],
+          }]
         },
         {
           model: CodeOnlineModel,
@@ -43,13 +48,32 @@ exports.getData = async (req, res, next) => {
         {
           model: OrganizationMasterDataModel,
           as: 'organization',
-          attributes: ['organizationName']
+          attributes: ['organizationName','nationalCode','budgetRow']
         }
       ]
     });
     // console.log(result);
 
-    res.json(result);
+  // ایجاد رشته ترکیبی و اضافه کردن به هر رکورد
+  const  formattedResults = result.map(item => {
+    let bankBranchName_Code = ''
+    if(item.bankBranch){
+
+      const bankTitle = item.bankBranch.bank.title == null ? '' : item.bankBranch.bank.title ; // نام بانک
+      const branchName = item.bankBranch.branchName == null ? '' : item.bankBranch.branchName; // نام شعبه
+      const branchCode = item.bankBranch.branchCode == null ? '' : item.bankBranch.branchCode; // کد شعبه
+  
+      // ایجاد فیلد ترکیبی
+       bankBranchName_Code = `${bankTitle} - ${branchName} - کد ${branchCode}`;
+    } 
+
+    return {
+      ...item.toJSON(), // تبدیل رکورد به JSON
+      bankBranchName_Code // اضافه کردن فیلد ترکیبی
+    };
+  });
+
+    res.json(formattedResults);
   } catch (error) {
     next(error);
   }
@@ -135,39 +159,38 @@ exports.create = async (req, res, next) => {
 // ذخیره دستگاه جدید
 exports.store = async (req, res, next) => {
   try {
-    const { nationalCode, organizationName, budgetRow, registerDate, registerNo, postalCode, address, parentOrganizationId, provinceId, organizationTypeId, organizationCategoryId, description } = req.body;
+    const { bankId, bankBranchId, organizationId, codeOnlineId, requestLetterNo, requestLetterDate, accountTitle,accountNumber, accountTypeId, provinceId, description } = req.body;
 
-    const validationResult = organizationSchema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true
-    });
+    // const validationResult = organizationSchema.validate(req.body, {
+    //   abortEarly: false,
+    //   stripUnknown: true
+    // });
 
-    if (validationResult.error) {
-      req.flash(
-        'errors',
-        validationResult.error.details.map((err) => err.message)
-      );
-      return res.redirect('./create');
-    }
+    // if (validationResult.error) {
+    //   req.flash(
+    //     'errors',
+    //     validationResult.error.details.map((err) => err.message)
+    //   );
+    //   return res.redirect('./create');
+    // }
 
-    const { id } = await OrganizationMasterDataModel.create({
-      nationalCode,
-      organizationName,
-      budgetRow,
-      registerDate,
-      registerNo: registerNo == '' ? null : registerNo,
-      postalCode: postalCode == '' ? null : postalCode,
-      address: address == '' ? null : address,
-      parentOrganizationId: parentOrganizationId == '' ? null : parentOrganizationId,
+    const { id } = await AccountInfoModel.create({
+      bankId,
+      bankBranchId,
+      organizationId,
+      codeOnlineId,
+      requestLetterNo,
+      requestLetterDate,
+      accountTitle,
+      accountNumber,
+      accountTypeId,
       provinceId: provinceId == '' ? null : provinceId,
-      organizationTypeId: organizationTypeId == '' ? null : organizationTypeId,
-      organizationCategoryId: organizationCategoryId == '' ? null : organizationCategoryId,
       description,
       creatorId: req.session.user.id
     });
 
     if (id) {
-      req.flash('success', 'اطلاعات دستگاه با موفقیت ثبت شد.');
+      req.flash('success', 'اطلاعات حساب با موفقیت ثبت شد.');
       return res.redirect('./index');
     }
   } catch (error) {
@@ -356,7 +379,7 @@ exports.delete = async (req, res, next) => {
 };
 
 // تابع دریافت شماره حساب بعدی موجود
-exports.getNextAvailableAccountNumber = async (req, res) => {
+exports.getNextAvailableAccountNumber1 = async (req, res) => {
   try {
     const { bankId, onlineCode } = req.params;
 
@@ -397,6 +420,74 @@ exports.getNextAvailableAccountNumber = async (req, res) => {
         nextNumber: '001'
       });
     }
+
+    // جستجوی خالی در دنباله
+    for (let i = 0; i < lastThreeDigits.length - 1; i++) {
+      if (lastThreeDigits[i + 1] - lastThreeDigits[i] > 1) {
+        nextNumber = lastThreeDigits[i] + 1;
+        foundGap = true;
+        break;
+      }
+    }
+
+    // اگر خالی پیدا نشد، از آخرین عدد + 1 استفاده می‌کنیم
+    if (!foundGap) {
+      nextNumber = lastThreeDigits[lastThreeDigits.length - 1] + 1;
+    }
+
+    // اگر به 999 رسیدیم، خطا برگردانیم
+    if (nextNumber > 999) {
+      return res.status(400).json({
+        success: false,
+        message: 'ظرفیت شماره حساب‌های این دستگاه پر شده است'
+      });
+    }
+
+    res.json({
+      success: true,
+      nextNumber: nextNumber.toString().padStart(3, '0')
+    });
+  } catch (error) {
+    console.error('Error in getNextAvailableAccountNumber:', error);
+    res.status(500).json({
+      success: false,
+      message: 'خطا در دریافت شماره حساب بعدی'
+    });
+  }
+};
+
+exports.getNextAvailableAccountNumber = async (req, res) => {
+  try {
+    const { bankId, onlineCode } = req.params;
+
+    // دریافت تمام شماره حساب‌های موجود برای این بانک و کد آنلاین
+    const existingAccounts = await AccountInfoModel.findAll({
+      where: {
+        bankId: bankId,
+        organizationId: onlineCode
+      },
+      attributes: ['accountNumber']
+    });
+
+    // تبدیل شماره حساب‌ها به آرایه و استخراج 3 رقم آخر
+    const lastThreeDigits = existingAccounts
+      .map((account) => {
+        const accountNumber = account.accountNumber.toString();
+        return parseInt(accountNumber.substr(7, 3)); // استخراج 3 رقم از موقعیت 7 تا 9
+      })
+      .sort((a, b) => a - b); // مرتب‌سازی اعداد
+
+    // اگر هیچ شماره حسابی وجود نداشت
+    if (lastThreeDigits.length === 0) {
+      return res.json({
+        success: true,
+        nextNumber: '001'
+      });
+    }
+
+    // پیدا کردن اولین خالی در دنباله
+    let nextNumber = 1; // از 1 شروع می‌کنیم
+    let foundGap = false;
 
     // جستجوی خالی در دنباله
     for (let i = 0; i < lastThreeDigits.length - 1; i++) {

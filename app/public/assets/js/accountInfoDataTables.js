@@ -15,10 +15,11 @@ $(document).ready(function () {
       { data: 'accountTitle' },
       { data: 'organization.organizationName' },
       { data: 'organization.nationalCode' },
+      { data: 'organization.budgetRow' },
       { data: 'accountType.title' },
       { data: 'requestLetterDate' },
       { data: 'requestLetterNo' },
-      { data: 'bankBranch.branchName'},
+      { data: 'bankBranchName_Code'},
       { data: 'province.title' },
       { data: 'creator.fullName' },
       {
@@ -53,6 +54,7 @@ $(document).ready(function () {
       { target: 9, className: 'text-center' },
       { target: 10, className: 'text-center' },
       { target: 11, className: 'text-center' },
+      { target: 12, className: 'text-center' },
     ],
     order: [[0, 'desc']], // مرتب‌سازی پیش‌فرض بر اساس ردیف به صورت نزولی
     lengthMenu: [15, 25, 50, 100], // مقادیر سفارشی
