@@ -34,11 +34,13 @@ exports.getData = async (req, res, next) => {
           model: BankBranchModel,
           as: 'bankBranch',
           attributes: ['branchName', 'branchCode'],
-          include : [{
-            model : CodingDataModel,
-            as : 'bank',
-            attributes : ['title'],
-          }]
+          include: [
+            {
+              model: CodingDataModel,
+              as: 'bank',
+              attributes: ['title']
+            }
+          ]
         },
         {
           model: CodeOnlineModel,
@@ -48,30 +50,41 @@ exports.getData = async (req, res, next) => {
         {
           model: OrganizationMasterDataModel,
           as: 'organization',
-          attributes: ['organizationName','nationalCode','budgetRow']
+          attributes: ['organizationName', 'nationalCode', 'budgetRow']
         }
       ]
     });
     // console.log(result);
 
-  // ایجاد رشته ترکیبی و اضافه کردن به هر رکورد
-  const  formattedResults = result.map(item => {
-    let bankBranchName_Code = ''
-    if(item.bankBranch){
+    // ایجاد رشته ترکیبی و اضافه کردن به هر رکورد
+    const formattedResults = result.map((item) => {
+      let bankBranchName_Code = '';
+      if (item.bankBranch) {
+        const bankTitle = item.bankBranch.bank.title == null ? '' : item.bankBranch.bank.title; // نام بانک
+        const branchName = item.bankBranch.branchName == null ? '' : item.bankBranch.branchName; // نام شعبه
+        const branchCode = item.bankBranch.branchCode == null ? '' : item.bankBranch.branchCode; // کد شعبه
 
-      const bankTitle = item.bankBranch.bank.title == null ? '' : item.bankBranch.bank.title ; // نام بانک
-      const branchName = item.bankBranch.branchName == null ? '' : item.bankBranch.branchName; // نام شعبه
-      const branchCode = item.bankBranch.branchCode == null ? '' : item.bankBranch.branchCode; // کد شعبه
-  
-      // ایجاد فیلد ترکیبی
-       bankBranchName_Code = `${bankTitle} - ${branchName} - کد ${branchCode}`;
-    } 
+        // ایجاد فیلد ترکیبی
+        bankBranchName_Code = `${bankTitle} - ${branchName} - کد ${branchCode}`;
+      }
 
-    return {
-      ...item.toJSON(), // تبدیل رکورد به JSON
-      bankBranchName_Code // اضافه کردن فیلد ترکیبی
-    };
-  });
+      // تبدیل تاریخ‌ها به فارسی
+      const itemData = item.toJSON();
+      if (itemData.requestLetterDate) {
+        itemData.fa_requestLetterDate = dateService.toPersianDate(itemData.requestLetterDate);
+      }
+      if (itemData.openDate) {
+        itemData.fa_openDate = dateService.toPersianDate(itemData.openDate);
+      }
+      if (itemData.requestObstructDate) {
+        itemData.fa_requestObstructDate = dateService.toPersianDate(itemData.requestObstructDate);
+      }
+
+      return {
+        ...itemData, // تبدیل رکورد به JSON
+        bankBranchName_Code // اضافه کردن فیلد ترکیبی
+      };
+    });
 
     res.json(formattedResults);
   } catch (error) {
@@ -137,7 +150,7 @@ exports.create = async (req, res, next) => {
     });
 
     const organizationListData = await OrganizationMasterDataModel.findAll({
-      attributes: ['id', 'organizationName','nationalCode','budgetRow'],
+      attributes: ['id', 'organizationName', 'nationalCode', 'budgetRow'],
       raw: true,
       nest: true
     });
@@ -159,7 +172,7 @@ exports.create = async (req, res, next) => {
 // ذخیره دستگاه جدید
 exports.store = async (req, res, next) => {
   try {
-    const { bankId, bankBranchId, organizationId, codeOnlineId, requestLetterNo, requestLetterDate, accountTitle,accountNumber, accountTypeId, provinceId, description } = req.body;
+    const { bankId, bankBranchId, organizationId, codeOnlineId, requestLetterNo, requestLetterDate, accountTitle, accountNumber, accountTypeId, provinceId, description } = req.body;
 
     // const validationResult = organizationSchema.validate(req.body, {
     //   abortEarly: false,
@@ -393,13 +406,12 @@ exports.getNextAvailableAccountNumber1 = async (req, res) => {
     });
 
     // تبدیل شماره حساب‌ها به آرایه و استخراج 3 رقم آخر
-    const lastThreeDigits = existingAccounts
-      .map((account) => {
-        const accountNumber = account.accountNumber.toString();
-        return parseInt(accountNumber.substr(7,3)); // تبدیل به عدد برای مقایسه
-        //return parseInt(accountNumber.slice(-7)); // تبدیل به عدد برای مقایسه
-      })
-      //.sort((a, b) => a - b); // مرتب‌سازی اعداد
+    const lastThreeDigits = existingAccounts.map((account) => {
+      const accountNumber = account.accountNumber.toString();
+      return parseInt(accountNumber.substr(7, 3)); // تبدیل به عدد برای مقایسه
+      //return parseInt(accountNumber.slice(-7)); // تبدیل به عدد برای مقایسه
+    });
+    //.sort((a, b) => a - b); // مرتب‌سازی اعداد
 
     // اگر هیچ شماره حسابی وجود نداشت
     if (lastThreeDigits.length === 0) {

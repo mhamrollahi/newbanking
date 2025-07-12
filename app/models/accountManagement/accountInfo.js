@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const BaseModel = require('@models/baseModel');
+const dateService = require('@services/dateService.js');
 
 class AccountInfo extends BaseModel {}
 
@@ -70,7 +71,7 @@ module.exports = (sequelize) => {
       },
 
       openDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATE
       },
 
       requestLetterDate: {
@@ -82,6 +83,22 @@ module.exports = (sequelize) => {
           },
           notEmpty: {
             msg: 'لطفا  تاریخ نامه درخواست حساب را وارد کنید.'
+          },
+          isValidDate(value) {
+            if (value && (isNaN(value.getTime()) || value.toString() === 'Invalid Date')) {
+              throw new Error('تاریخ وارد شده معتبر نیست.');
+            }
+          },
+          isPersianDate(value) {
+            // اگر مقدار خالی است، validation را رد نکن
+            if (!value) return;
+
+            // اگر مقدار string است، احتمالاً تاریخ فارسی است
+            if (typeof value === 'string') {
+              if (!dateService.isValidPersianDate(value)) {
+                throw new Error('فرمت تاریخ فارسی معتبر نیست.');
+              }
+            }
           }
         }
       },
@@ -108,7 +125,7 @@ module.exports = (sequelize) => {
         onUpdate: 'RESTRICT',
         onDelete: 'RESTRICT'
       },
-      
+
       accountTypeId: {
         type: DataTypes.INTEGER,
         references: {
@@ -202,10 +219,10 @@ module.exports = (sequelize) => {
           msg: 'این شماره حساب  تکراری می‌باشد.... '
         },
         {
-          name:'ix_accountNumber_organizationId',
-          unique:true,
-          fields:['accountNumber','organizationId'],
-          msg:'این شماره حساب در برای این دستگاه تکراری می باشد.'
+          name: 'ix_accountNumber_organizationId',
+          unique: true,
+          fields: ['accountNumber', 'organizationId'],
+          msg: 'این شماره حساب در برای این دستگاه تکراری می باشد.'
         }
       ],
 
