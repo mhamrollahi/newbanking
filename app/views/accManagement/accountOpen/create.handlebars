@@ -71,6 +71,7 @@
                 {{/each}}
               </select>
             </div>
+            
             <div class='mb-3 col-6'>
                 <label for='codeOnlineId' class='mandatory'>
                   کد آنلاین دستگاه
@@ -320,28 +321,6 @@
       }
     }
 
-    // تابع بهبود یافته برای دریافت شماره حساب بعدی با تلاش مجدد
-    async function getNextAccountNumberWithRetry(bankId, organizationId, currentNumber = null) {
-      try {
-        const response = await fetch(`/accManagement/accountOpen/api/getNextAvailableAccountNumber/${bankId}/${organizationId}`);
-        const data = await response.json();
-        console.log('API Response for retry:', data);
-        
-        // اگر شماره فعلی همان شماره قبلی است، دوباره تلاش کن
-        if (currentNumber && data.nextNumber === currentNumber) {
-          console.log('شماره حساب تکراری، تلاش مجدد...');
-          // کمی صبر کن و دوباره تلاش کن
-          await new Promise(resolve => setTimeout(resolve, 100));
-          return await getNextAccountNumberWithRetry(bankId, organizationId, currentNumber);
-        }
-        
-        return data.nextNumber || '001';
-      } catch (error) {
-        console.error('Error in retry function:', error);
-        return '001';
-      }
-    }
-
     // تابع به‌روزرسانی شماره حساب با حفظ کد آنلاین
     async function updateAccountNumber() {
       const selectedBankId = $('#cmbBankList').val();
@@ -434,12 +413,12 @@
       updateAccountNumber();
     });
 
-    // Add click event listeners to all form inputs
-    document.querySelectorAll('input, select').forEach(element => {
-      element.addEventListener('click', function() {
-        updateAccountNumber();
-      });
-    });
+    // Add click event listeners to all form inputs - REMOVED TO PREVENT INFINITE LOOP
+    // document.querySelectorAll('input, select').forEach(element => {
+    //   element.addEventListener('click', function() {
+    //     updateAccountNumber();
+    //   });
+    // });
 
     // Add click event listener for the next account button
     $('#btnNextAccount').on('click', async function() {
@@ -562,9 +541,9 @@
           
           swq = swq % 11;
           if (swq) swq = 11 - swq;
-          if (swq.toString().length > 1) {
-            // به جای خطا دادن، شماره حساب بعدی را دریافت کن
-            console.log('کد دیجیت نامعتبر، دریافت شماره حساب بعدی...');
+          if (swq === 10) {
+            // اگر کد دیجیت 10 شد، شماره حساب بعدی را دریافت کن
+            console.log('کد دیجیت نامعتبر (10)، دریافت شماره حساب بعدی...');
             return 'NEXT_ACCOUNT';
           }
           checkDigit = swq;
@@ -626,9 +605,9 @@
                  (parseInt(boxes[13].textContent) * 7);
           
           swq = (qwa + 101) % 97;
-          if (swq.toString().length > 1) {
-            // به جای خطا دادن، شماره حساب بعدی را دریافت کن
-            console.log('کد دیجیت نامعتبر، دریافت شماره حساب بعدی...');
+          if (swq === 0) {
+            // اگر کد دیجیت 0 شد، شماره حساب بعدی را دریافت کن
+            console.log('کد دیجیت نامعتبر (0)، دریافت شماره حساب بعدی...');
             return 'NEXT_ACCOUNT';
           } else {
             checkDigit = parseInt(swq.toString().substring(0, 1));
@@ -735,7 +714,8 @@
           const currentAccountNumber = getAccountNumber();
           console.log('شماره حساب فعلی:', currentAccountNumber);
           
-          const nextNumber = await getNextAccountNumberWithRetry(selectedBankId, selectedOrgId, currentAccountNumber);
+          // دریافت شماره حساب بعدی از سرور
+          const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
           console.log('شماره حساب بعدی دریافت شد:', nextNumber);
           
           // قرار دادن شماره حساب بعدی در 3 رقم آخر
@@ -754,21 +734,38 @@
             console.log('کد دیجیت معتبر قرار داده شد:', newCheckDigit);
           } else {
             console.log('کد دیجیت هنوز نامعتبر است، تلاش مجدد...');
-            // اگر هنوز نامعتبر است، دوباره تلاش کن
-            const nextNextNumber = await getNextAccountNumberWithRetry(selectedBankId, selectedOrgId, nextNumber);
-            console.log('شماره حساب بعدی دوم دریافت شد:', nextNextNumber);
+            // اگر هنوز نامعتبر است، محلی شماره حساب را افزایش دهیم
+            let currentSuffix = parseInt(nextNumber);
+            let attempts = 0;
+            const maxAttempts = 10; // حداکثر تلاش برای پیدا کردن شماره حساب معتبر
             
-            for (let i = 0; i < 3; i++) {
-              if (boxes[i + 10]) {
-                boxes[i + 10].textContent = nextNextNumber[i];
+            while (attempts < maxAttempts) {
+              currentSuffix++;
+              const newSuffix = currentSuffix.toString().padStart(3, '0');
+              
+              // قرار دادن شماره حساب جدید در 3 رقم آخر
+              for (let i = 0; i < 3; i++) {
+                if (boxes[i + 10]) {
+                  boxes[i + 10].textContent = newSuffix[i];
+                }
               }
+              
+              // محاسبه کد دیجیت جدید
+              const finalCheckDigit = calculateCheckDigit(selectedBankId);
+              console.log('کد دیجیت جدید محاسبه شد:', finalCheckDigit);
+              
+              if (finalCheckDigit !== null && finalCheckDigit !== 'NEXT_ACCOUNT') {
+                boxes[boxes.length - 1].textContent = finalCheckDigit;
+                console.log('کد دیجیت معتبر قرار داده شد:', finalCheckDigit);
+                break; // پیدا کردن کد دیجیت معتبر
+              }
+              
+              attempts++;
             }
-            const finalCheckDigit = calculateCheckDigit(selectedBankId);
-            console.log('کد دیجیت نهایی محاسبه شد:', finalCheckDigit);
             
-            if (finalCheckDigit !== null && finalCheckDigit !== 'NEXT_ACCOUNT') {
-              boxes[boxes.length - 1].textContent = finalCheckDigit;
-              console.log('کد دیجیت نهایی معتبر قرار داده شد:', finalCheckDigit);
+            if (attempts >= maxAttempts) {
+              alert('پیدا کردن شماره حساب معتبر با تلاش‌های متوالی ممکن نبود. لطفا دستی شماره حساب را تغییر دهید.');
+              return;
             }
           }
           
@@ -797,7 +794,21 @@
     const boxes = document.getElementsByClassName('digit-box');
     let accountNumber = '';
 
-    for (let i = 3; i < boxes.length; i++) {
+    // برای بانک‌های مختلف، از موقعیت‌های مختلف شروع می‌کنیم
+    const selectedBankId = $('#cmbBankList').val();
+    let startIndex = 3; // پیش‌فرض
+    
+    switch(selectedBankId) {
+      case '360002': // ملی
+      case '360003': // سپه
+      case '360009': // کشاورزی
+        startIndex = 3;
+        break;
+      default:
+        startIndex = 3;
+    }
+
+    for (let i = startIndex; i < boxes.length; i++) {
       accountNumber += boxes[i].textContent || '0'; // اگر باکس خالی بود، 0 قرار می‌دهیم
     }
 
