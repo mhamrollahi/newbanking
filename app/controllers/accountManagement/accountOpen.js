@@ -191,7 +191,7 @@ exports.store = async (req, res, next) => {
       bankId,
       bankBranchId,
       organizationId,
-      codeOnlineId,
+      codeOnlineId: codeOnlineId == '' ? null : codeOnlineId,
       requestLetterNo,
       requestLetterDate,
       accountTitle,

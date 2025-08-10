@@ -73,10 +73,12 @@
             </div>
             
             <div class='mb-3 col-6'>
-                <label for='codeOnlineId' class='mandatory'>
+                <label for='codeOnlineDisplay' class='mandatory'>
                   کد آنلاین دستگاه
                 </label>
-                <input type='text' class='form-control' id='codeOnlineId' readOnly name='codeOnlineId'  autocomplete='off' />
+                <input type='text' class='form-control' id='codeOnlineDisplay' readOnly autocomplete='off' />
+                <input type='hidden' id='codeOnlineId' name='codeOnlineId' />
+                <input type='hidden' id='codeOnlineCode' name='codeOnlineCode' />
 
               {{!-- <label for='cmbCodeOnlineList' class='mandatory'>کد آنلاین دستگاه</label>
               <select id='cmbCodeOnlineList' name='codeOnlineId' style='position: relative;' data-farsiname='کد آنلاین دستگاه' required>
@@ -150,6 +152,7 @@
 
         <!-- دکمه‌های ثبت و انصراف -->
         <div class='col-12 my-2 text-center'>
+          <button type="button" id="btnCheckDigit" class="btn btn-sm btn-info" style="height: 38px;">محاسبه کد دیجیت</button>
           <button class='btn btn-success custom-btn' type='submit' id='btnSubmit' disabled>
             ثبت
           </button>
@@ -348,7 +351,11 @@
           if (data.code) {
             const boxes = document.getElementsByClassName('digit-box');
             const codeOnlineId = document.getElementById('codeOnlineId');
-            codeOnlineId.value = data.code;
+            const codeOnlineCode = document.getElementById('codeOnlineCode');
+            const codeOnlineDisplay = document.getElementById('codeOnlineDisplay');
+            codeOnlineId.value = data.id; // ذخیره id
+            codeOnlineCode.value = data.code; // ذخیره code برای نمایش
+            codeOnlineDisplay.value = data.code; // نمایش code
             
             // قرار دادن کد آنلاین از رقم هفتم به بعد
             const code = data.code.padStart(4, '0');

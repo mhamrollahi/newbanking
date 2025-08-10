@@ -38,10 +38,10 @@ exports.getOnlineCodeByOrganizationId = async (req, res, next) => {
 
     const codeOnline = await CodeOnlineModel.findOne({
       where: { organizationId },
-      attributes: ['code']
+      attributes: ['id', 'code']
     });
 
-    res.json(codeOnline || { code: '0' });
+    res.json(codeOnline || { id: null, code: '0' });
   } catch (error) {
     next(error);
   }
@@ -50,7 +50,7 @@ exports.getOnlineCodeByOrganizationId = async (req, res, next) => {
 exports.nextCode = async (req, res, next) => {
   try {
     console.log('nextCode');
-    
+
     // دریافت همه کدهای موجود
     const existingCodes = await CodeOnlineModel.findAll({
       attributes: ['code'],
