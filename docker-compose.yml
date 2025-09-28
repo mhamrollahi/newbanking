@@ -2,32 +2,75 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:8
-    restart: always
+    image: mysql:8.0
+    container_name: newbanking_mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: 904957
       MYSQL_DATABASE: newbanking
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 904957
+      MYSQL_USER: newbanking_user
+      MYSQL_PASSWORD: newbanking_pass
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./database/newBanking_Database.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - newbanking_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   app:
     build: .
+    container_name: newbanking_app
+    restart: unless-stopped
     ports:
       - "3000:3000"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
-      DB_HOST: mysql
-      DB_USER: root
-      DB_PASSWORD: 904957
-      DB_NAME: newbanking
+      # Application
+      APP_PORT: 3000
+      NODE_ENV: production
+      
+      # MySQL Database
+      MYSQL_HOST: mysql
+      MYSQL_USER: newbanking_user
+      MYSQL_PASSWORD: newbanking_pass
+      MYSQL_DATABASE: newbanking
+      MYSQL_PORT: 3306
+      
+      # Session
+      SESSION_SECRET: your-session-secret-key-change-this-in-production
+      
+      # Uploads
+      UPLOAD_PATH: /app/uploads
+      LOG_LEVEL: info
     volumes:
-      - .:/app
-    command: ["node", "server.js"]
+      - uploads_data:/app/uploads
+      - logs_data:/app/logs
+    networks:
+      - newbanking_network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+  logs_data:
+    driver: local
+
+networks:
+  newbanking_network:
+    driver: bridge
