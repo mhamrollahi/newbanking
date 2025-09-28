@@ -31,7 +31,7 @@
         <li class="has-sub-menu account-management" {{#if menuState.account-management}}open{{/if}}><a href="#"  data-menu="account-management"><i class="ti-briefcase"></i>
             <span>مدیریت حساب</span></a>
           <ul class="side-header-sub-menu">
-            <li><a href="/accManagement/index"><i class="ti-pencil-alt"></i><span>افتتاح حساب</span></a></li>
+            <li><a href="/accManagement/accountOpen/index"><i class="ti-pencil-alt"></i><span>افتتاح حساب</span></a></li>
             <li><a href="/accManagement/block/index"><i class="ti-na"></i><span>انسداد حساب</span></a></li>
             <li><a href="/accManagement/batchBlock/index"><i class="fa fa-window-close"></i><span>انسداد حساب دسته‌ای</span></a></li>
           </ul>
@@ -43,8 +43,25 @@
             {{#if (hasPermissionAction userPermissionLists 'codetablelists' 'read')}}
               <li><a href="/baseInformation/codeTableList/index"><i class="fa fa-pencil-square-o"></i><span>جدول کدینگ اصلی</span></a></li>
             {{/if}}  
+
             {{#if (hasPermissionAction userPermissionLists 'codingdata' 'read')}}
               <li><a href="/baseInformation/codingData/index/1"><i class="zmdi zmdi-collection-text"></i><span>جزییات کدینگ داده</span></a></li>
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'organizationmasterdata' 'read')}}
+              <li><a href="/baseInformation/organization/masterData/index"><i class="fa fa-sitemap"></i><span>اطلاعات پایه دستگاه‌ها</span></a></li>
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'codeOnlines' 'read')}}
+              <li><a href="/baseInformation/account/codeOnline/index"><i class="fa fa-sort-numeric-asc"></i><span>اطلاعات کد آنلاین</span></a></li>
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'cities' 'read')}}
+              <li><a href="/baseInformation/account/city/index"><i class="fa fa-building"></i><span>اطلاعات شهرها</span></a></li>
+            {{/if}}  
+
+            {{#if (hasPermissionAction userPermissionLists 'bankBranches' 'read')}}
+              <li><a href="/baseInformation/account/bankBranch/index"><i class="fa fa-university"></i><span>اطلاعات شعب بانک‌ها</span></a></li>
             {{/if}}  
           </ul>
         </li>
@@ -58,6 +75,7 @@
             {{#if (hasPermissionName userPermissionLists 'importaccountdata_read')}}
               <li><a href="##"><i class="fa fa-thumbs-up"></i><span>اطلاعات حساب‌ها</span></a></li>
             {{/if}}  
+              <li><a href="/importFiles/test"><i class="fa fa-thumbs-up"></i><span>Test</span></a></li>
           </ul>
         </li>
 
@@ -93,7 +111,7 @@
         <li class="has-sub-menu reports"  {{#if menuState.reports}}open{{/if}}><a href="#" data-menu="reports"><i class="fa fa-bar-chart"></i>
             <span>گزارشات</span></a>
           <ul class="side-header-sub-menu">
-            {{#if (hasPermissionAction userPermissionLists 'accountInfo' 'report')}}
+            {{#if (hasPermissionAction userPermissionLists 'accountInfos' 'report')}}
               <li><a href="##"><span>گزارش حساب‌ها</span></a></li>
             {{/if}} 
 

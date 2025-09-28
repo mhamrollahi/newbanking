@@ -1,4 +1,9 @@
 const { Model, DataTypes } = require('sequelize');
+// const db = require('../../../database/mysql');
+// const CodingDataModel  = require('../baseInformation/codingData');
+// const CodeTableListModel  = require('../baseInformation/codeTableList');
+const coding = require('@constants/codingDataTables.js');
+
 const dateService = require('@services/dateService');
 
 class BaseModel extends Model {
@@ -47,33 +52,76 @@ class BaseModel extends Model {
         }
       }
     };
-    
-    return super.init(
+
+    const defaultHooks = {
+      beforeCreate: (instance, options) => {
+        if (options.userId) instance.creatorId = options.userId;
+        instance.updatedAt = null;
+      },
+      beforeUpdate: (instance, options) => {
+        if (options.userId) instance.updaterId = options.userId;
+        instance.updatedAt = new Date();
+      }
+    };
+
+    const mergedHooks = {
+      ...defaultHooks,
+      ...(options?.hooks || {})
+    };
+
+    const model = super.init(
       { ...attributes, ...commonFields },
       {
         ...options,
-        timestamps: true,
-        hooks: {
-          beforeCreate: (instance, options) => {
-            if (options.userId) {
-              instance.creatorId = options.userId;
-            }
-            instance.updatedAt = null;
-          },
-          beforeUpdate: (instance, options) => {
-            if (options.userId) {
-              instance.updaterId = options.userId;
-            }
-            instance.updatedAt = new Date();
-          }
-        }
+        hooks: mergedHooks,
+        timestamps: true
       }
     );
+
+    model.afterSync = async (models) => {
+      console.log(`✅ Table ${model.tableName} is new. Creating permissions....`);
+      if (typeof model.createPermissions === 'function') {
+        await model.createPermissions(models);
+        console.log(`✅ Permissions created for ${model.name}`);
+      } else {
+        console.log(`🟢 Table [${model.getTableName()}] already exists. Skipping permission creation.`);
+      }
+    };
+    return model;
   }
 
   static associate(models) {
     this.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     this.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
+  }
+
+  static async createPermissions(models) {
+    const CodingDataModel = models.CodingDataModel;
+    const CodeTableListModel = models.CodeTableListModel;
+
+    const actionListData = await CodingDataModel.findAll({
+      attributes: ['id', 'title'],
+      include: [
+        {
+          model: CodeTableListModel,
+          where: { en_TableName: coding.CODING_Action_Permission }
+        }
+      ]
+    });
+
+    for (const action of actionListData) {
+      // console.log(`action.id: ${action.id}, action.name: ${action.title}, permission name: ${this.getTableName().toLowerCase()} - ${action.title.toLowerCase()} , entity_type: ${this.getTableName().toLowerCase()}`);
+      await models.PermissionModel.findOrCreate({
+        where: {
+          actionId: action.id,
+          entity_type: this.getTableName().toLowerCase()
+        },
+        defaults: {
+          name: `${this.getTableName().toLowerCase()}_${action.title.toLowerCase()}`,
+          creatorId: 1 // Admin user id
+        }
+      });
+    }
   }
 }
 

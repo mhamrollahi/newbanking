@@ -8,9 +8,11 @@ const permissionModel = require('./admin/permission');
 const roleModel = require('./admin/role');
 const userRoleModel = require('./admin/userRole');
 const rolePermissionModel = require('./admin/rolePermission');
-
-// const contactModel = require('./auth/contact')
-// const contactCategoryModel = require('./auth/contactCategory')
+const bankBranchModel = require('./baseInformation/account/bankBranch');
+const cityModel = require('./baseInformation/account/city');
+const organizationMasterDataModel = require('./baseInformation/organization/masterData');
+const codeOnlineModel = require('./baseInformation/account/codeOnline');
+const accountInfoModel = require('./accountManagement/accountInfo');
 
 const sequelize = new Sequelize({
   host: process.env.MYSQL_HOST || 'mysql_db',
@@ -19,7 +21,8 @@ const sequelize = new Sequelize({
   database: process.env.MYSQL_DATABASE,
   dialect: process.env.APP_DIALECT,
   logging: false,
-  port: process.env.MYSQL_PORT
+  port: process.env.MYSQL_PORT,
+  host: process.env.MYSQL_HOST,
 });
 
 async function getConnection() {
@@ -44,7 +47,11 @@ const models = {
   RoleModel: roleModel(sequelize),
   UserRoleModel: userRoleModel(sequelize),
   RolePermissionModel: rolePermissionModel(sequelize),
-  
+  BankBranchModel: bankBranchModel(sequelize),
+  CityModel: cityModel(sequelize),
+  OrganizationMasterDataModel: organizationMasterDataModel(sequelize),
+  CodeOnlineModel: codeOnlineModel(sequelize),
+  AccountInfoModel: accountInfoModel(sequelize),
 };
 
 Object.values(models).forEach((model) => {
@@ -52,6 +59,36 @@ Object.values(models).forEach((model) => {
     model.associate(models);
   }
 });
+
+async function initApp() { 
+  try {
+    await sequelize.authenticate()
+    console.log('Database connected successfully.')
+    const existingTables = await sequelize.getQueryInterface().showAllTables()
+
+    await sequelize.sync({ force: false })
+    console.log('All models were synchronized successfully');
+
+    for (const model of Object.values(models)) {
+      if (typeof model.afterSync === 'function') {
+        try {
+          const tableName = model.getTableName().toLowerCase();
+          const wasCreateNow = !existingTables.includes(tableName);
+          if(wasCreateNow) {
+            await model.afterSync(models);
+          }
+          // console.log(`✅ Permissions created for ${model.name}`);
+        } catch (err) {
+          console.error(`❌ Failed to create permissions for ${model.name}:`, err.message);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error initializing the application:', error.message);
+  }
+};
+
+initApp();
 
 module.exports = {
   sequelize,

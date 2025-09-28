@@ -1,10 +1,11 @@
-const { DataTypes, } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const BaseModel = require('../baseModel');
 
 class Person extends BaseModel {}
 
 module.exports = (sequelize) => {
-  Person.init({
+  Person.init(
+    {
       firstName: {
         type: DataTypes.STRING(50),
         allowNull: false,
@@ -45,7 +46,7 @@ module.exports = (sequelize) => {
           return `${this.firstName} ${this.lastName}`;
         }
       },
-      
+
       nationalCode: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -87,6 +88,17 @@ module.exports = (sequelize) => {
         }
       },
 
+      profilePicture: {
+        type: DataTypes.STRING(100),
+        defaultValue: 'default-avatar.jpg',
+        validate: {
+          len: {
+            args: [0, 100],
+            msg: 'نام فایل تصویر نباید بیشتر از ۱۰۰ کاراکتر باشد.'
+          }
+        }
+      },
+
       Description: {
         type: DataTypes.STRING(255),
         validate: {
@@ -95,37 +107,22 @@ module.exports = (sequelize) => {
             msg: 'توضیحات باید کمتر از ۲۵۵ کاراکتر باشد.'
           }
         }
-      },
-
+      }
     },
     {
       timestamps: true,
       sequelize,
-      validate: {},
-      // virtualFields: {
-      //   fa_createdAt: {
-      //     type: DataTypes.STRING,
-      //     get() {
-      //       return this.createdAt ? dateService.toPersianDate(this.createdAt) : null;
-      //     }
-      //   },
-      //   fa_updatedAt: {
-      //     type: DataTypes.STRING,
-      //     get() {
-      //       return this.updatedAt ? dateService.toPersianDate(this.updatedAt) : null;
-      //     }
-      //   }
-      // },
-
+      validate: {}
     }
   );
 
-  Person.associate = (models)=>{
-    Person.hasMany(models.UserModel,{foreignKey:'PersonId'})
-    
+  Person.sequelize = sequelize;
+
+  Person.associate = (models) => {
+    Person.hasMany(models.UserModel, { foreignKey: 'PersonId' });
+
     Person.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });
     Person.belongsTo(models.UserViewModel, { foreignKey: 'updaterId', as: 'updater' });
-
-  }
+  };
   return Person;
 };

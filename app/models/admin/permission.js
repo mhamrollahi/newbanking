@@ -63,13 +63,15 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      //tableName: 'Permissions',
+      //freezeTableName: true,
       indexes:[
-        {
-          name: 'ix_permissionName',
-          unique: true,
-          fields: ['name'],
-          msg: 'این مجوز  تکراری می‌باشد... '
-        },
+        // {
+        //   name: 'ix_permissionName',
+        //   unique: true,
+        //   fields: ['name'],
+        //   msg: 'این مجوز  تکراری می‌باشد... '
+        // },
         {
           name: 'ix_entity_type_actionId',
           unique: true,
@@ -83,6 +85,7 @@ module.exports = (sequelize) => {
 
     }
   );
+  Permission.sequelize = sequelize;
 
   Permission.associate = (models)=>{
     

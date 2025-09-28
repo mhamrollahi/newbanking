@@ -6,7 +6,7 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/adomax/favicon.ico"/>
+    {{!-- <link rel="shortcut icon" type="image/x-icon" href="/static/assets/images/favicon.ico"/> --}}
 
     <!-- CSS
 	============================================ -->
@@ -33,6 +33,7 @@
 
     <script src="/static/assets/adomax/js/vendor/jquery-3.3.1.min.js"></script>
     <script src="/static/assets/vendor/DataTables/datatables.js"></script>
+    <link rel="stylesheet" href="/static/assets/vendor/persianDatePicker/css/persian-datepicker.min.css" />  
 
     <link rel="stylesheet" href="/static/assets/css/style.css" />
   </head>
@@ -74,10 +75,13 @@
     <!--Plugins JS-->
     <script src="/static/assets/adomax/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="/static/assets/adomax/js/plugins/tippy4.min.js.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    {{!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
     
     <!--Main JS-->
     <script src="/static/assets/adomax/js/main.js"></script>
+    <script src="/static/assets/vendor/persianDatePicker/js/persian-date.min.js"></script>
+    <script src="/static/assets/vendor/persianDatePicker/js/persian-datepicker.min.js"></script>
+
     <script src="/static/assets/js/menu-state.js"></script>
 
     <script src="/static/assets/vendor/select2/dist/js/select2.min.js"></script>
@@ -90,6 +94,13 @@
     <script src="/static/assets/js/permissionListDataTables.js"></script>
     <script src="/static/assets/js/rolePermissionListDataTables.js"></script>
     <script src="/static/assets/js/userRoleListDataTables.js"></script>
+    <script src="/static/assets/js/cityListDataTables.js"></script>
+    <script src="/static/assets/js/bankBranchListDataTables.js"></script>
+    <script src="/static/assets/js/organizationMasterData_DataTables.js"></script>
+    <script src="/static/assets/js/codeOnlineListDataTables.js"></script>
+    <script src="/static/assets/js/accountInfoDataTables.js"></script>
+    
+    <script src="/static/assets/js/formNavigation.js"></script>
 
 
     <script>
@@ -99,6 +110,16 @@
       $(document).ready(function(){ $('#cmbAllTables').select2(); })
       $(document).ready(function(){ $('#cmbRoleList').select2(); })
       $(document).ready(function(){ $('#cmbPermissionList').select2(); })
+      $(document).ready(function(){ $('#cmbProvinceList').select2(); })
+      $(document).ready(function(){ $('#cmbBankList').select2(); })
+      $(document).ready(function(){ $('#cmbCityList').select2(); })
+      $(document).ready(function(){ $('#cmbOrganizationType').select2(); })
+      $(document).ready(function(){ $('#cmbOrganizationCategory').select2(); })
+      $(document).ready(function(){ $('#cmbOrganizationList').select2(); })
+      $(document).ready(function(){ $('#cmbparentOrganizationId').select2(); })
+      $(document).ready(function(){ $('#cmbAccountTypeList').select2(); })  
+      $(document).ready(function(){ $('#cmbBankBranchList').select2(); })
+      $(document).ready(function(){ $('#cmbCodeOnlineList').select2(); })
     </script>
   </body>
 

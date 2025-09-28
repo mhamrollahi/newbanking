@@ -1,0 +1,826 @@
+  <link rel='stylesheet' href='/static/assets/css/style.css' />
+
+
+<main class='container myform-section-wrapper my-4 mt-5'>
+  <div class='row justify-content-between align-items-center mb-10'>
+    <!-- Page Heading Start -->
+    <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
+      <div class='page-heading page-heading-custom'>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+      </div>
+    </div><!-- Page Heading End -->
+  </div>
+
+  <div class='row accountInfo-form'>
+    <div class='col-12 col-sm-12 col-md-12'>
+      <form method='POST' name='frmOpenAccount' id='frmOpenAccount' action='./store' class='row g-3 needs-validation' data-frmValidation novalidate>
+
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>
+                {{this}}
+              </small>
+            {{/each}}
+          </div>
+        {{/if}}
+
+        <div id="accountNumberDisplay" class="account-number-display" style="display: block;">
+          <div  div class="account-number-header"> 
+            <span>شماره حساب: </span>
+            <button type="button" id="btnNextAccount" class="btn btn-sm btn-primary">شماره حساب بعدی</button>
+            <button type="button" id="btnCheckDigit" class="btn btn-sm btn-info">محاسبه کد دیجیت</button>
+          </div>
+          <div id="generatedAccountNumber" class="account-number-boxes"></div>
+
+          <div id="generatedAccountNumber" class="account-number-boxes"></div>
+          <input type="hidden" name="accountNumber" id="accountNo">
+        </div>
+
+        <div class="col-12">
+          <div class="row" style='margin-top:5px;'>
+            <div  class="col-6">
+              <label for='bankId' class='mandatory'>نام بانک</label>
+              <select id='cmbBankList' name='bankId' style='position: relative;' data-farsiname='بانک' required>
+                <option value=''>لطفا نام بانک را انتخاب کنید</option>
+                {{#each banksListData}}
+                  <option value='{{this.id}}'>{{this.title}} </option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="col-6">
+              <label for='bankBranchId' class='mandatory'>شعبه بانک</label>
+              <select id='cmbBankBranchList' name='bankBranchId' style='position: relative;' data-farsiname='شعبه بانک' required>
+                <option value=''>لطفا شعبه بانک را انتخاب کنید</option>
+                {{#each bankBranchesListData}}
+                  <option value='{{this.id}}'>{{this.branchName}} ({{this.branchCode}}) </option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="row" style='margin-top:15px;' >
+            <div class="col-6">
+              <label for='cmbOrganization' class='mandatory'>نام دستگاه</label>
+              <select id='cmbOrganizationList' name='organizationId' style='position: relative;' data-farsiname='نام دستگاه' required>
+                <option value=''>لطفا نام دستگاه را انتخاب کنید</option>
+                {{#each organizationListData}}
+                  <option value='{{this.id}}'>{{this.organizationName}} - {{this.nationalCode}} - {{this.budgetRow}}</option>
+                {{/each}}
+              </select>
+            </div>
+            
+            <div class='mb-3 col-6'>
+                <label for='codeOnlineDisplay' class='mandatory'>
+                  کد آنلاین دستگاه
+                </label>
+                <input type='text' class='form-control' id='codeOnlineDisplay' readOnly autocomplete='off' />
+                <input type='hidden' id='codeOnlineId' name='codeOnlineId' />
+                <input type='hidden' id='codeOnlineCode' name='codeOnlineCode' />
+
+              {{!-- <label for='cmbCodeOnlineList' class='mandatory'>کد آنلاین دستگاه</label>
+              <select id='cmbCodeOnlineList' name='codeOnlineId' style='position: relative;' data-farsiname='کد آنلاین دستگاه' required>
+                <option value=''>لطفا کد آنلاین دستگاه را انتخاب کنید</option>
+                {{#each codeOnlineListData}}
+                  <option value='{{this.id}}'>{{this.organizationName}} </option>
+                {{/each}}
+              </select> --}}
+            </div>
+
+          </div>
+        </div>
+
+
+
+        <div class="col-12" >
+          <div class="row" style='margin-top:15px;'>
+            <div class='form-floating mb-3 col-6'>
+              <input type='text' class='form-control' id='requestLetterNo' name='requestLetterNo' placeholder='شماره حساب را وارد کنید.' autocomplete='off' />
+              <label for='requestLetterNo' class='mandatory'>
+                 شماره نامه درخواست
+              </label>
+            </div>  
+            <div class='form-floating mb-3 col-6'>
+              <input type='text' class='form-control' id='requestLetterDate' name='requestLetterDate' placeholder='___/__/__' autocomplete='off' />
+              <label for='requestLetterDate' class='mandatory'>
+                تاریخ نامه درخواست
+              </label>
+            </div>
+          </div>
+        </div>  
+
+        <div class='form-floating mb-3' style='margin-top:15px; '>
+          <input type='text' class='form-control' id='accountTitle' name='accountTitle' placeholder='عنوان حساب را وارد کنید.' autocomplete='off' required/>
+          <label for='accountTitle' class='mandatory'>
+             عنوان حساب
+          </label>
+        </div>  
+        
+        <div class="col-12" >
+          <div class="row" style='margin-top:5px;'>
+            <div class='mb-3 col-6'>
+             <label for='accountTypeId'  class='mandatory'>نوع حساب </label>
+            <select id='cmbAccountTypeList' name='accountTypeId' style='position: relative;' data-farsiname='نوع حساب' required>
+              <option value=''>لطفا نوع حساب را انتخاب کنید</option>
+              {{#each accountTypesListData}}
+                <option value='{{this.id}}'>{{this.title}} </option>
+              {{/each}}
+            </select>
+            </div>  
+            <div class='mb-3 col-6'>
+               <label for='provinceId'  class='mandatory'>استان</label>
+            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان' required>
+              <option value=''>لطفا استان را انتخاب کنید</option>
+              {{#each provincesListData}}
+                <option value='{{this.id}}'>{{this.title}} </option>
+              {{/each}}
+            </select>
+            </div>
+          </div>
+        </div>  
+
+          <div class='form-floating mb-3' style='margin-top:15px; '>
+            <textarea class='form-control' id='description' name='description' placeholder='توضیحات را وارد کنید.' autocomplete='off'></textarea>
+            <label for='description'>
+              توضیحات
+            </label>
+          </div>
+
+    </div>
+
+        <!-- دکمه‌های ثبت و انصراف -->
+        <div class='col-12 my-2 text-center'>
+          <button type="button" id="btnCheckDigit" class="btn btn-sm btn-info" style="height: 38px;">محاسبه کد دیجیت</button>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit' disabled>
+            ثبت
+          </button>
+          <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='./index'>
+            انصراف
+          </a>
+        </div>
+      </form>
+  </div>
+  
+  </div>
+
+</main>
+
+<style>
+.account-number-display {
+  background-color: #f8f9fa;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  direction: rtl;
+  color: #380101;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.account-number-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#btnNextAccount, #btnCheckDigit {
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.account-number-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+  direction: ltr;
+}
+
+.digit-box {
+  width: 35px;
+  height: 45px;
+  background: #fff;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #007bff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.7s ease;
+}
+
+.digit-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+</style>
+
+<script>
+  $(document).ready(function() {
+    console.log('test 1 , first ')
+    $('#requestLetterDate').persianDatepicker({
+      format: 'YYYY/MM/DD',
+      initialValue: false,
+      autoClose: true,
+      position: 'auto',
+      calendar: {
+        persian: {
+          locale: 'fa'
+        }
+      },
+      onSelect: function(unix) {
+        const date = new persianDate(unix);
+        $('#requestLetterDate').val(date.format('YYYY/MM/DD'));
+      }
+    });
+
+    
+    // کدهای بانک‌ها و الگوهای شماره حساب
+    const bankPatterns = {
+      '360001': { // بانک مرکزی
+        pattern: [4, '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      },
+      '360002': { // بانک ملی
+        pattern: ['', '', '', 2, 1, 7, '', '', '', '', '', '', '', '0', '0', ''],
+      },
+      '360003': { // بانک سپه
+        pattern: ['', '', '', 5, 1, 5, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360004': { // بانک صادرات
+          pattern: ['', '', '', 2, 1, 9, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360005': { // بانک تجارت
+        pattern: ['', '', '', '', '', '', 7, 8, '', '', '', '', '', '', '', ''],
+      },
+      '360006': { // بانک ملت
+         pattern: ['', '', '', '', '', '', 2, '', '', '', '', '', '', '', '', ''],
+      },
+      '360007': { // بانک مسکن
+        pattern: ['', '', '', 8, 8, 7, 7, 4, '', '', '', '', '', 0, 0, ''],
+      },
+      '360008': { // بانک رفاه
+        pattern: ['', '', '', 2, 1, 3, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360009': { // بانک کشاورزی
+        pattern: ['', '', '', 2, 1, 6, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360010': { // بانک صنعت و معدن
+        pattern: ['', '', '', 2, 1, 6, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360011': { // بانک توسعه صادرات
+        pattern: ['', '', '', 2, 1, 6, '', '', '', '', '', '', '', 0, 0, ''],
+      },
+      '360012': { // پست بانک
+         pattern: ['', '', '', '', 2, 2, 1, '', '', '', '', '', '', 0, 0, 1],
+      },
+      '360013': { // بانک توسعه تعاون
+        pattern: ['', '', '', '', '', 9, '', '', '', '', '', '', '', '', '', 1],
+      }
+    };
+
+    // تابع تولید شماره حساب با در نظر گرفتن کد بانک
+    function generateAccountNumber(bankId) {
+      console.log('generate')
+      const bankPattern = bankPatterns[bankId] || {
+        pattern: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+      };
+
+      return bankPattern.pattern;
+    }
+
+    // Function to create digit boxes
+    function createDigitBoxes(number) {
+      const container = document.getElementById('generatedAccountNumber');
+      container.innerHTML = ''; // Clear previous boxes
+      
+      // ایجاد 16 باکس
+      for (let i = 0; i < 16; i++) {
+        const box = document.createElement('div');
+        box.className = 'digit-box';
+        box.textContent = number[i] || '';
+        container.appendChild(box);
+      }
+    }
+
+    // تابع پیدا کردن اولین شماره حساب خالی
+    async function findNextAvailableAccountNumber(bankId, organizationId) {
+      try {
+        const response = await fetch(`/accManagement/accountOpen/api/getNextAvailableAccountNumber/${bankId}/${organizationId}`);
+        const data = await response.json();
+        console.log('API Response:', data);
+        return data.nextNumber || '001';
+      } catch (error) {
+        console.error('Error finding next account number:', error);
+        return '001';
+      }
+    }
+
+    // تابع به‌روزرسانی شماره حساب با حفظ کد آنلاین
+    async function updateAccountNumber() {
+      const selectedBankId = $('#cmbBankList').val();
+      const selectedOrgId = $('#cmbOrganizationList').val();
+      const accountNumberDisplay = document.getElementById('accountNumberDisplay');
+      accountNumberDisplay.style.display = 'block';
+       // ایجاد باکس‌ها با الگوی کامل بانک
+      const container = document.getElementById('generatedAccountNumber');
+      container.innerHTML = ''; // Clear previous boxes
+      
+
+      const bankPattern = bankPatterns[selectedBankId] || {
+        pattern: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+      };
+      
+      // ایجاد باکس‌ها با استفاده از تابع createDigitBoxes
+      createDigitBoxes(bankPattern.pattern);
+
+      // اگر دستگاه انتخاب شده است، کد آنلاین را دریافت و اعمال کن
+      if (selectedOrgId) {
+        try {
+          const response = await fetch(`/baseInformation/account/codeOnline/api/getOnlineCodeByOrganizationId/${selectedOrgId}`);
+          const data = await response.json();
+          
+          if (data.code) {
+            const boxes = document.getElementsByClassName('digit-box');
+            const codeOnlineId = document.getElementById('codeOnlineId');
+            const codeOnlineCode = document.getElementById('codeOnlineCode');
+            const codeOnlineDisplay = document.getElementById('codeOnlineDisplay');
+            codeOnlineId.value = data.id; // ذخیره id
+            codeOnlineCode.value = data.code; // ذخیره code برای نمایش
+            codeOnlineDisplay.value = data.code; // نمایش code
+            
+            // قرار دادن کد آنلاین از رقم هفتم به بعد
+            const code = data.code.padStart(4, '0');
+            for (let i = 0; i < 4; i++) {
+              if (boxes[i + 6]) {
+                boxes[i + 6].textContent = code[i];
+              }
+            }
+
+            // برای بانک‌های 13 رقمی، شماره حساب بعدی را پیدا کن
+            if (['360002', '360003', '360009'].includes(selectedBankId)) {
+              const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
+              // قرار دادن شماره حساب بعدی در 3 رقم آخر
+              for (let i = 0; i < 3; i++) {
+                if (boxes[i + 10]) {
+                  boxes[i + 10].textContent = nextNumber[i];
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching online code:', error);
+        }
+      }
+    }
+
+    // اضافه کردن event listener برای تغییر بانک
+    $('#cmbBankList').on('change', function() {
+      const selectedBankId = $(this).val();
+      
+      
+      // دریافت شعبه‌های بانک انتخاب شده
+      if (selectedBankId) {
+        fetch(`/baseInformation/account/bankbranch/api/getBranchesByBankId/${selectedBankId}`)
+          .then(response => response.json())
+          .then(branches => {
+            const branchSelect = $('#cmbBankBranchList');
+            branchSelect.empty();
+            branchSelect.append('<option value="">لطفا شعبه بانک را انتخاب کنید</option>');
+            
+            branches.forEach(branch => {
+              branchSelect.append(`<option value="${branch.id}">${branch.branchName} (${branch.branchCode})</option>`);
+            });
+          })
+          .catch(error => {
+            console.error('Error fetching bank branches:', error);
+          });
+      } else {
+        // اگر بانکی انتخاب نشده باشد، لیست شعبه‌ها را خالی می‌کنیم
+        const branchSelect = $('#cmbBankBranchList');
+        branchSelect.empty();
+        branchSelect.append('<option value="">لطفا شعبه بانک را انتخاب کنید</option>');
+      }
+
+      console.log('test 4', selectedBankId )
+      // فراخوانی تابع به‌روزرسانی شماره حساب
+      updateAccountNumber();
+    });
+
+    // اضافه کردن event listener برای تغییر دستگاه
+    $('#cmbOrganizationList').on('change', function() {
+      updateAccountNumber();
+    });
+
+    // Add click event listeners to all form inputs - REMOVED TO PREVENT INFINITE LOOP
+    // document.querySelectorAll('input, select').forEach(element => {
+    //   element.addEventListener('click', function() {
+    //     updateAccountNumber();
+    //   });
+    // });
+
+    // Add click event listener for the next account button
+    $('#btnNextAccount').on('click', async function() {
+      const selectedBankId = $('#cmbBankList').val();
+      const selectedOrgId = $('#cmbOrganizationList').val();
+
+      if (!selectedBankId || !selectedOrgId) {
+        alert('لطفا ابتدا بانک و دستگاه را انتخاب کنید');
+        return;
+      }
+
+      try {
+        const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
+        const boxes = document.getElementsByClassName('digit-box');
+        
+        // قرار دادن شماره حساب بعدی در 3 رقم آخر
+        for (let i = 0; i < 3; i++) {
+          if (boxes[i + 10]) {
+            boxes[i + 10].textContent = nextNumber[i];
+          }
+        }
+      } catch (error) {
+        console.error('Error getting next account number:', error);
+        alert('خطا در دریافت شماره حساب بعدی');
+      }
+    });
+
+    // تابع محاسبه کد دیجیت
+    function calculateCheckDigit(bankId) {
+      const boxes = document.getElementsByClassName('digit-box');
+      let checkDigit = 0;
+
+      switch(bankId) {
+        case '360008': // رفاه
+          let r = (parseInt(boxes[3].textContent) * 13) + 
+                 (parseInt(boxes[4].textContent) * 12) + 
+                 (parseInt(boxes[5].textContent) * 11) + 
+                 (parseInt(boxes[6].textContent) * 10) + 
+                 (parseInt(boxes[7].textContent) * 9) + 
+                 (parseInt(boxes[8].textContent) * 8) + 
+                 (parseInt(boxes[9].textContent) * 7) + 
+                 (parseInt(boxes[10].textContent) * 6) + 
+                 (parseInt(boxes[11].textContent) * 5) + 
+                 (parseInt(boxes[12].textContent) * 4) + 
+                 (parseInt(boxes[13].textContent) * 3) + 
+                 (parseInt(boxes[14].textContent) * 2);
+          
+          if (r < 10) checkDigit = r;
+          else if (r === 10 || r === 11) checkDigit = 0;
+          else {
+            r = r % 11;
+            checkDigit = r === 10 ? 0 : r;
+          }
+          break;
+
+        case '360003': // سپه
+          let de = (parseInt(boxes[3].textContent) * 41) + 
+                 (parseInt(boxes[4].textContent) * 37) + 
+                 (parseInt(boxes[5].textContent) * 31) + 
+                 (parseInt(boxes[6].textContent) * 29) + 
+                 (parseInt(boxes[7].textContent) * 23) + 
+                 (parseInt(boxes[8].textContent) * 19) + 
+                 (parseInt(boxes[9].textContent) * 17) + 
+                 (parseInt(boxes[10].textContent) * 13) + 
+                 (parseInt(boxes[11].textContent) * 7) + 
+                 (parseInt(boxes[12].textContent) * 5) + 
+                 (parseInt(boxes[13].textContent) * 3);
+          
+          let s1 = de;
+          de = de % 14;
+          
+          if (de > 0 && de < 13) {
+            if (de.toString().length === 2) {
+              boxes[14].textContent = de.toString().substring(0, 1);
+              checkDigit = parseInt(de.toString().substring(1, 1));
+            } else {
+              boxes[14].textContent = "0";
+              checkDigit = de;
+            }
+          } else if (de === 0 || de === 13) {
+            de = (s1 % 11) + 1;
+            if (de.toString().length === 2) {
+              boxes[14].textContent = de.toString().substring(0, 1);
+              checkDigit = parseInt(de.toString().substring(1, 1));
+            } else {
+              boxes[14].textContent = "0";
+              checkDigit = de;
+            }
+          }
+          break;
+
+        case '360009': // کشاورزی
+          let tempNo = 0;
+          let mult2 = 1;
+          let q = boxes[3].textContent + boxes[4].textContent + boxes[5].textContent + 
+                 boxes[6].textContent + boxes[7].textContent + boxes[8].textContent + 
+                 boxes[9].textContent + boxes[10].textContent + boxes[11].textContent + 
+                 boxes[12].textContent + boxes[13].textContent + boxes[14].textContent;
+          
+          for (let i = de.length - 1; i >= 0; i--) {
+            tempNo += (parseInt(de.substring(i, 1)) * mult2) % 11;
+            mult2 *= 2;
+          }
+          checkDigit = tempNo % 10;
+          break;
+
+        case '360002': // ملی
+          let swq = (parseInt(boxes[3].textContent) * 47) + 
+                 (parseInt(boxes[4].textContent) * 43) + 
+                 (parseInt(boxes[5].textContent) * 41) + 
+                 (parseInt(boxes[6].textContent) * 37) + 
+                 (parseInt(boxes[7].textContent) * 31) + 
+                 (parseInt(boxes[8].textContent) * 29) + 
+                 (parseInt(boxes[9].textContent) * 23) + 
+                 (parseInt(boxes[10].textContent) * 19) + 
+                 (parseInt(boxes[11].textContent) * 17) + 
+                 (parseInt(boxes[12].textContent) * 13) + 
+                 (parseInt(boxes[13].textContent) * 7) + 
+                 (parseInt(boxes[14].textContent) * 5);
+          
+          swq = swq % 11;
+          if (swq) swq = 11 - swq;
+          if (swq === 10) {
+            // اگر کد دیجیت 10 شد، شماره حساب بعدی را دریافت کن
+            console.log('کد دیجیت نامعتبر (10)، دریافت شماره حساب بعدی...');
+            return 'NEXT_ACCOUNT';
+          }
+          checkDigit = swq;
+          break;
+
+        case '360004': // صادرات
+          let a = (parseInt(boxes[3].textContent) * 47) + 
+                 (parseInt(boxes[4].textContent) * 43) + 
+                 (parseInt(boxes[5].textContent) * 41) + 
+                 (parseInt(boxes[6].textContent) * 37) + 
+                 (parseInt(boxes[7].textContent) * 31) + 
+                 (parseInt(boxes[8].textContent) * 29) + 
+                 (parseInt(boxes[9].textContent) * 23) + 
+                 (parseInt(boxes[10].textContent) * 19) + 
+                 (parseInt(boxes[11].textContent) * 17) + 
+                 (parseInt(boxes[12].textContent) * 13) + 
+                 (parseInt(boxes[13].textContent) * 7) + 
+                 (parseInt(boxes[14].textContent) * 5);
+          
+          a = a % 11;
+          if (a > 1) a = 11 - a;
+          checkDigit = a;
+          break;
+
+        case '360007': // مسکن
+          let wer = (parseInt(boxes[3].textContent) * 43) + 
+                 (parseInt(boxes[4].textContent) * 41) + 
+                 (parseInt(boxes[5].textContent) * 37) + 
+                 (parseInt(boxes[6].textContent) * 31) + 
+                 (parseInt(boxes[7].textContent) * 29) + 
+                 (parseInt(boxes[8].textContent) * 23) + 
+                 (parseInt(boxes[9].textContent) * 19) + 
+                 (parseInt(boxes[10].textContent) * 17) + 
+                 (parseInt(boxes[11].textContent) * 13) + 
+                 (parseInt(boxes[12].textContent) * 11) + 
+                 (parseInt(boxes[13].textContent) * 7) + 
+                 (parseInt(boxes[14].textContent) * 3);
+          
+          let m = swq;
+          while (m > 9) {
+            let n = 0;
+            let w = m.toString();
+            for (let i = 0; i < w.length; i++) {
+              n += parseInt(w.substring(i, 1));
+            }
+            m = n;
+          }
+          checkDigit = m;
+          break;
+
+        case '360006': // ملت
+          let qwa = (parseInt(boxes[6].textContent) * 3) + 
+                 (parseInt(boxes[7].textContent) * 7) + 
+                 (parseInt(boxes[8].textContent) * 3) + 
+                 (parseInt(boxes[9].textContent) * 7) + 
+                 (parseInt(boxes[10].textContent) * 3) + 
+                 (parseInt(boxes[11].textContent) * 7) + 
+                 (parseInt(boxes[12].textContent) * 3) + 
+                 (parseInt(boxes[13].textContent) * 7);
+          
+          swq = (qwa + 101) % 97;
+          if (swq === 0) {
+            // اگر کد دیجیت 0 شد، شماره حساب بعدی را دریافت کن
+            console.log('کد دیجیت نامعتبر (0)، دریافت شماره حساب بعدی...');
+            return 'NEXT_ACCOUNT';
+          } else {
+            checkDigit = parseInt(swq.toString().substring(0, 1));
+          }
+          break;
+
+        case '360005': // تجارت
+          let t = (parseInt(boxes[6].textContent) * 4) + 
+                 (parseInt(boxes[7].textContent) * 3) + 
+                 (parseInt(boxes[8].textContent) * 2) + 
+                 (parseInt(boxes[9].textContent) * 7) + 
+                 (parseInt(boxes[10].textContent) * 6) + 
+                 (parseInt(boxes[11].textContent) * 5) + 
+                 (parseInt(boxes[12].textContent) * 4) + 
+                 (parseInt(boxes[13].textContent) * 3) + 
+                 (parseInt(boxes[14].textContent) * 2);
+          
+          t = t % 11;
+          checkDigit = t === 0 ? 0 : 10 - t;
+          break;
+
+        case '360001': // مرکزی
+          let ss = 0;
+          let h, k, b;
+
+          // محاسبه برای ارقام فرد
+          for (let i = 0; i < 8; i++) {
+            h = parseInt(boxes[i * 2].textContent) * 2;
+            k = Math.floor(h / 10);
+            b = h % 10;
+            ss += k + b;
+          }
+
+          // اضافه کردن ارقام زوج
+          for (let i = 1; i < 8; i++) {
+            ss += parseInt(boxes[i * 2 - 1].textContent);
+          }
+
+          while (ss > 10) {
+            ss = ss % 10;
+          }
+
+          checkDigit = ss === 0 ? 0 : 10 - ss;
+          break;
+
+        default:
+          alert('بانک انتخاب شده پشتیبانی نمی‌شود');
+          return null;
+      }
+
+      return checkDigit;
+    }
+
+    // Add click event listener for the check digit button
+    $('#btnCheckDigit').on('click', async function() {
+      const selectedBankId = $('#cmbBankList').val();
+      if (!selectedBankId) {
+        alert('لطفا ابتدا بانک را انتخاب کنید');
+        return;
+      }
+
+      const boxes = document.getElementsByClassName('digit-box');
+      if (boxes.length === 0) {
+        alert('شماره حساب موجود نیست');
+        return;
+      }
+
+      // بررسی اینکه آیا همه ارقام به جز آخرین رقم پر شده‌اند
+      let allFilled = true;
+      let i
+      switch(selectedBankId){
+        case '360002': // ملی 
+        case '360003': // سپه
+        case '360009': // کشاورزی
+          i = 3
+      }
+      for (i ; i < boxes.length - 1; i++) {
+        if (!boxes[i].textContent) {
+          allFilled = false;
+          break;
+        }
+      }
+
+      if (!allFilled) {
+        alert('لطفا ابتدا تمام ارقام شماره حساب را به جز رقم آخر پر کنید');
+        return;
+      }
+
+      // محاسبه و قرار دادن کد دیجیت در آخرین باکس
+      const checkDigit = calculateCheckDigit(selectedBankId);
+      
+      if (checkDigit === 'NEXT_ACCOUNT') {
+        // اگر کد دیجیت نامعتبر بود، شماره حساب بعدی را دریافت کن
+        const selectedOrgId = $('#cmbOrganizationList').val();
+        if (!selectedOrgId) {
+          alert('لطفا ابتدا دستگاه را انتخاب کنید');
+          return;
+        }
+
+        try {
+          console.log('دریافت شماره حساب بعدی...');
+          
+          // دریافت شماره حساب فعلی برای مقایسه
+          const currentAccountNumber = getAccountNumber();
+          console.log('شماره حساب فعلی:', currentAccountNumber);
+          
+          // دریافت شماره حساب بعدی از سرور
+          const nextNumber = await findNextAvailableAccountNumber(selectedBankId, selectedOrgId);
+          console.log('شماره حساب بعدی دریافت شد:', nextNumber);
+          
+          // قرار دادن شماره حساب بعدی در 3 رقم آخر
+          for (let i = 0; i < 3; i++) {
+            if (boxes[i + 10]) {
+              boxes[i + 10].textContent = nextNumber[i];
+            }
+          }
+          
+          // حالا دوباره کد دیجیت را محاسبه کن
+          const newCheckDigit = calculateCheckDigit(selectedBankId);
+          console.log('کد دیجیت جدید محاسبه شد:', newCheckDigit);
+          
+          if (newCheckDigit !== null && newCheckDigit !== 'NEXT_ACCOUNT') {
+            boxes[boxes.length - 1].textContent = newCheckDigit;
+            console.log('کد دیجیت معتبر قرار داده شد:', newCheckDigit);
+          } else {
+            console.log('کد دیجیت هنوز نامعتبر است، تلاش مجدد...');
+            // اگر هنوز نامعتبر است، محلی شماره حساب را افزایش دهیم
+            let currentSuffix = parseInt(nextNumber);
+            let attempts = 0;
+            const maxAttempts = 10; // حداکثر تلاش برای پیدا کردن شماره حساب معتبر
+            
+            while (attempts < maxAttempts) {
+              currentSuffix++;
+              const newSuffix = currentSuffix.toString().padStart(3, '0');
+              
+              // قرار دادن شماره حساب جدید در 3 رقم آخر
+              for (let i = 0; i < 3; i++) {
+                if (boxes[i + 10]) {
+                  boxes[i + 10].textContent = newSuffix[i];
+                }
+              }
+              
+              // محاسبه کد دیجیت جدید
+              const finalCheckDigit = calculateCheckDigit(selectedBankId);
+              console.log('کد دیجیت جدید محاسبه شد:', finalCheckDigit);
+              
+              if (finalCheckDigit !== null && finalCheckDigit !== 'NEXT_ACCOUNT') {
+                boxes[boxes.length - 1].textContent = finalCheckDigit;
+                console.log('کد دیجیت معتبر قرار داده شد:', finalCheckDigit);
+                break; // پیدا کردن کد دیجیت معتبر
+              }
+              
+              attempts++;
+            }
+            
+            if (attempts >= maxAttempts) {
+              alert('پیدا کردن شماره حساب معتبر با تلاش‌های متوالی ممکن نبود. لطفا دستی شماره حساب را تغییر دهید.');
+              return;
+            }
+          }
+          
+          // نمایش پیام به کاربر
+          const finalAccountNumber = getAccountNumber();
+          console.log('شماره حساب نهایی:', finalAccountNumber);
+          
+        } catch (error) {
+          console.error('Error getting next account number:', error);
+          alert('خطا در دریافت شماره حساب بعدی');
+          return;
+        }
+      } else if (checkDigit !== null) {
+        boxes[boxes.length - 1].textContent = checkDigit;
+      }
+
+      const accountNumber = getAccountNumber()
+      document.getElementById('accountNo').value = accountNumber
+      const btnSubmit = document.getElementById('btnSubmit')
+      btnSubmit.disabled = false
+      
+    });
+  });
+
+  function getAccountNumber() {
+    const boxes = document.getElementsByClassName('digit-box');
+    let accountNumber = '';
+
+    // برای بانک‌های مختلف، از موقعیت‌های مختلف شروع می‌کنیم
+    const selectedBankId = $('#cmbBankList').val();
+    let startIndex = 3; // پیش‌فرض
+    
+    switch(selectedBankId) {
+      case '360002': // ملی
+      case '360003': // سپه
+      case '360009': // کشاورزی
+        startIndex = 3;
+        break;
+      default:
+        startIndex = 3;
+    }
+
+    for (let i = startIndex; i < boxes.length; i++) {
+      accountNumber += boxes[i].textContent || '0'; // اگر باکس خالی بود، 0 قرار می‌دهیم
+    }
+
+    return accountNumber;
+  }
+</script>
+
+<script src='/static/assets/js/formValidation.js'></script>

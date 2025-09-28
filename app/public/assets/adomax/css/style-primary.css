@@ -12564,7 +12564,7 @@ body.side-header-green .side-header .side-header-close {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 50px 0;
+  padding: 50px 50px;
 }
 
 .error-wrap .error-image, .error-wrap-2 .error-image {
@@ -12630,7 +12630,8 @@ body.side-header-green .side-header .side-header-close {
 
 .error-wrap-2 .error-content .display-1 {
   display: block;
-  font-size: 300px;
+  font-size: 250px;
+  margin-top:50px;
   line-height: 0.95;
   font-weight: 800;
   color: #ffffff;

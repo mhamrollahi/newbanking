@@ -1,10 +1,4 @@
 {
-  "editor.fontFamily": "'Operator Mono Lig Light'",
-  "terminal.integrated.fontFamily": "'Operator Mono Lig Light'",
-  "editor.fontLigatures": true,
-  "editor.tabSize": 2,
-  "editor.fontSize": 15,
-  "reactSnippets.settings.prettierEnabled": true,
   "sqltools.connections": [
     {
       "mysqlOptions": {
@@ -15,10 +9,48 @@
       "server": "localhost",
       "port": 3306,
       "driver": "MySQL",
-      "name": "MyDatabase",
+      "name": "NewBanking",
+      "database": "NewBanking",
       "username": "root",
-      "password": "904957",
-      "database": "NewBanking"
+      "password": "904957"
+    },
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "Daraei",
+      "database": "NewBanking",
+      "username": "root",
+      "password": "904957"
     }
+  ],
+  "cSpell.words": [
+    "اساس",
+    "اطلاعات",
+    "اکسل",
+    "باشد",
+    "پایه",
+    "پیام",
+    "تعداد",
+    "تنظیم",
+    "خطایی",
+    "دارای",
+    "دیتابیس",
+    "ذخیره",
+    "شروع",
+    "عملیات",
+    "فایل",
+    "فرمت",
+    "مدیریت",
+    "مسیر",
+    "معتبر",
+    "موفقیت",
+    "نبود",
+    "نیست"
   ]
 }

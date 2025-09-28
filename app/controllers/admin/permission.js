@@ -3,6 +3,7 @@ const { models, sequelize } = require('@models/');
 const { PermissionModel, UserViewModel,CodingDataModel,CodeTableListModel } = models;
 const errMessages = require('@services/errorMessages');
 const Joi = require('joi');
+const coding = require('@constants/codingDataTables.js');
 
 exports.getData = async (req, res, next) => {
   try {
@@ -15,8 +16,8 @@ exports.getData = async (req, res, next) => {
         },
         {
           model:CodingDataModel,
-         as:'action',
-         attributes:['title']
+          as:'action',
+          attributes:['title']
         }
       ]
     });
@@ -46,7 +47,7 @@ exports.create = async (req, res, next) => {
       attributes:['id','title'],
       include: [{
         model: CodeTableListModel,
-        where: {en_TableName: 'actionpermission'}
+        where: {en_TableName: coding.CODING_Action_Permission}
       }],
       raw: true,
       nest: true
@@ -185,6 +186,13 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const permissionId = req.params.id;
+
+    if(req.session.permissions.some(item => item.roleName.toLowerCase() === 'admin')){
+      req.flash('errors', 'امکان حذف اطلاعات برای کاربر ادمین وجود ندارد .');
+      return res.redirect('../index');
+    }
+
+
     const rowsAffected = await PermissionModel.destroy({
       where: { id: permissionId }
     });

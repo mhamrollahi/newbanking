@@ -41,6 +41,9 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      //tableName: 'rolePermissions',
+      //freezeTableName: true,
+
       indexes:[
         {
           name: 'ix_roleId_permissionId',
@@ -53,6 +56,7 @@ module.exports = (sequelize) => {
 
     }
   );
+  RolePermission.sequelize = sequelize;
 
   RolePermission.associate = (models)=>{
 

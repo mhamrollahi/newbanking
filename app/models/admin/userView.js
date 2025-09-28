@@ -26,6 +26,10 @@ module.exports = (sequelize) => {
         type: DataTypes.BOOLEAN,
         allowNull: false, 
         defaultValue: 1
+      },
+      profilePicture: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
       }
     },
     {

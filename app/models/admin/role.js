@@ -35,6 +35,9 @@ module.exports = (sequelize) => {
     {
       timestamps: true,
       sequelize,
+      //tableName: 'roles',
+      //freezeTableName: true,
+
       indexes:[
         {
           name: 'ix_roleName',
@@ -48,6 +51,8 @@ module.exports = (sequelize) => {
 
     }
   );
+
+  Role.sequelize = sequelize;
 
   Role.associate = (models)=>{
     Role.hasMany(models.UserRoleModel, { foreignKey: 'roleId', as: 'userRoles' });

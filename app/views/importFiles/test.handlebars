@@ -1,0 +1,109 @@
+{{> header}}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">تست نوار پیشرفت</h3>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3">
+                        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" style="width: 0%" 
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                    </div>
+                    <div id="progress-text" class="text-center mb-3">
+                        منتظر شروع پردازش...
+                    </div>
+                    <div class="text-center">
+                        <button id="startButton" class="btn btn-primary">شروع پردازش</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// تست لود شدن فایل
+console.log('=== test.handlebars loaded ===');
+
+// تست وجود المان‌ها
+console.log('Progress bar element:', document.getElementById('progress-bar'));
+console.log('Progress text element:', document.getElementById('progress-text'));
+console.log('Start button element:', document.getElementById('startButton'));
+
+document.getElementById('startButton').addEventListener('click', async function() {
+    console.log('=== Button clicked ===');
+    
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const startButton = document.getElementById('startButton');
+    
+    console.log('Elements found:', {
+        progressBar: progressBar,
+        progressText: progressText,
+        startButton: startButton
+    });
+    
+    // غیرفعال کردن دکمه
+    startButton.disabled = true;
+    progressText.textContent = 'در حال شروع پردازش...';
+    console.log('Button disabled and text updated');
+    
+    try {
+        console.log('=== Sending start request ===');
+        const startResponse = await fetch('/importFiles/test/startProgress', {
+            method: 'POST'
+        });
+        console.log('Start response status:', startResponse.status);
+        console.log('Start response ok:', startResponse.ok);
+        
+        if (!startResponse.ok) {
+            throw new Error('خطا در شروع پردازش');
+        }
+        
+        // شروع چک کردن وضعیت پیشرفت
+        const checkProgress = async () => {
+            console.log('=== Checking progress ===');
+            const statusResponse = await fetch('/importFiles/test/getProgress');
+            console.log('Status response status:', statusResponse.status);
+            
+            const data = await statusResponse.json();
+            console.log('Progress data received:', data);
+            
+            if (data.status === 'completed') {
+                console.log('=== Progress completed ===');
+                progressBar.style.width = '100%';
+                progressBar.textContent = '100%';
+                progressText.textContent = 'پردازش با موفقیت انجام شد';
+                startButton.disabled = false;
+                return;
+            }
+            
+            console.log('current : ',data.current , ' ,data.total : ',data.total )
+            
+            const percent = Math.round((data.current / data.total) * 100);
+            console.log('Updating progress bar to:', percent + '%');
+            console.log('Current progress:', data.current, 'of', data.total);
+            
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+            progressText.textContent = `در حال پردازش... ${data.current} از ${data.total}`;
+            
+            // ادامه چک کردن تا اتمام پردازش
+            setTimeout(checkProgress, 500);
+        };
+        
+        console.log('=== Starting progress check ===');
+        checkProgress();
+    } catch (error) {
+        console.error('=== Error occurred ===', error);
+        progressText.textContent = 'خطا در پردازش';
+        startButton.disabled = false;
+    }
+});
+</script>
+
+{{> footer}} 

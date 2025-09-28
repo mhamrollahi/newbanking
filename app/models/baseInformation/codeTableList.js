@@ -50,10 +50,15 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
+//    tableName: 'codeTableLists',
+//    freezeTableName: true,
+
       validate: {}
     }
   );
 
+  CodeTableList.sequelize = sequelize;
+  
   CodeTableList.associate = (models) => {
     CodeTableList.hasMany(models.CodingDataModel, { foreignKey: 'codeTableListId' });
     CodeTableList.belongsTo(models.UserViewModel, { foreignKey: 'creatorId', as: 'creator' });

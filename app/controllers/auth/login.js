@@ -54,6 +54,7 @@ exports.doLogin = async (req, res, next) => {
               include: [
                 {
                   model: RolePermissionModel,
+                  required : false,
                   as: 'rolePermissions',
                   include: [
                     {
@@ -63,6 +64,7 @@ exports.doLogin = async (req, res, next) => {
                       include: [
                         {
                           model: CodingDataModel,
+                          required : false,
                           as: 'action',
                           attributes: ['id', 'title']
                         }
@@ -77,11 +79,10 @@ exports.doLogin = async (req, res, next) => {
       ]
     });
 
-
     const userPermissionLists = userRoles.userRoles.flatMap((userRole) =>
       userRole.roles.rolePermissions.map((rolePerm) => ({
         userFullname: userRoles.fullName, // نام کامل کاربر
-        username: userRoles.username, // نام کامل کاربر
+        username: userRoles.username, // نام  کاربر
         permissionId: rolePerm.permissions.id, // آی‌دی مجوز
         permissionName: rolePerm.permissions.name, // نام مجوز
         permissionEntity_type: rolePerm.permissions.entity_type, // نام مجوزe, // نام مجوز
@@ -91,7 +92,7 @@ exports.doLogin = async (req, res, next) => {
       }))
     );
 
-    // console.log(userPermissionLists);
+    // console.log(userPermissionLists[0].roleName);
 
     req.session.user = user;
     req.session.permissions = userPermissionLists;

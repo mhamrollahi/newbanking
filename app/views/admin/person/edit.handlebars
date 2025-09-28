@@ -47,6 +47,20 @@
         </div>
 
         <div class='form-floating mb-1'>
+          <select class='form-select' id='profilePicture' name='profilePicture'>
+            <option value=''>انتخاب تصویر پروفایل</option>
+            {{#each profilePictures}}
+              <option value='{{value}}' {{isSelected value ../personData.profilePicture}}>{{label}}</option>
+            {{/each}}
+          </select>
+          <label for='profilePicture'>عکس پروفایل</label>
+        </div>
+
+        <div class='mb-3 text-center'>
+          <img id='profilePreview' src='/static/assets/images/avatars/{{personData.profilePicture}}' alt='پیش‌نمایش تصویر پروفایل' style='max-width: 150px;' class='rounded-circle border p-1' />
+        </div>
+
+        <div class='form-floating mb-1'>
           <input type='text' class='form-control' name='Description' value='{{personData.Description}}' />
           <label for='Description'>توضیحات</label>
         </div>
@@ -81,3 +95,6 @@
 </main>
 
 <script src='/static/assets/js/formValidation.js'></script>
+<script>
+  document.getElementById('profilePicture').addEventListener('change', function() { const preview = document.getElementById('profilePreview'); const selectedValue = this.value; if (selectedValue) { preview.src = `/static/assets/images/avatars/${selectedValue}`; preview.style.display = 'inline-block'; } else { preview.style.display = 'none'; } });
+</script>

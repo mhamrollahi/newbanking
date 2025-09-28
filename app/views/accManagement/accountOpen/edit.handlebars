@@ -1,0 +1,256 @@
+ <link rel='stylesheet' href='/static/assets/css/style.css' />
+
+<div class='box-codingdata'></div>
+
+<main class='container myform-section-wrapper my-4 mt-5'>
+  <div class='row justify-content-between align-items-center mb-10'>
+    <!-- Page Heading Start -->
+    <div class='col-12 col-lg-auto mb-20' style='margin:20px 0;'>
+      <div class='page-heading page-heading-custom'>
+        <h3 class='title'>{{title}} <span>/ {{subTitle}} </span></h3>
+      </div>
+    </div><!-- Page Heading End -->
+  </div>
+  <div class='row organization-form'>
+    <div class='col-12 col-sm-12 col-md-12'>
+      <form method='POST' name='frmOrganization' id='frmOrganization' action='../update/{{organization.id}}' class='row g-3 needs-validation' data-frmValidation novalidate>
+        {{#if hasError}}
+          <div class='alert alert-danger'>
+            {{#each errors}}
+              <small class='errMessage'>
+                {{this}}
+              </small>
+            {{/each}}
+          </div>
+        {{/if}}
+
+        <!-- ستون سمت چپ -->
+        <div class='col-md-6'>
+          <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='nationalCode' name='nationalCode' maxlength='11' minlength='11' placeholder='شناسه ملی را وارد کنید.' value='{{organization.nationalCode}}' autocomplete='off' required />
+            <label for='nationalCode' class='mandatory'>
+              شناسه ملی
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='organizationName' name='organizationName' placeholder='نام دستگاه را وارد کنید.' value='{{organization.organizationName}}' autocomplete='off' required />
+            <label for='organizationName' class='mandatory'>
+              نام دستگاه
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='budgetRow' name='budgetRow' maxlength='8' minlength='8' placeholder='ردیف بودجه را وارد کنید.' value='{{organization.budgetRow}}' autocomplete='off' required />
+            <label for='budgetRow' class='mandatory'>
+              ردیف بودجه
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='registerDate' name='registerDate' placeholder='تاریخ ثبت را وارد کنید.' value='{{organization.registerDate}}' autocomplete='off' />
+            <label for='registerDate'>
+              تاریخ ثبت
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='registerNo' name='registerNo' placeholder='شماره ثبت را وارد کنید.' value='{{organization.registerNo}}' autocomplete='off' />
+            <label for='registerNo'>
+              شماره ثبت
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
+            <input type='text' class='form-control' id='postalCode' name='postalCode' placeholder='کد پستی را وارد کنید.' value='{{organization.postalCode}}' autocomplete='off' />
+            <label for='postalCode'>
+              کد پستی
+            </label>
+          </div>
+
+          <div class='form-floating mb-3'>
+            <textarea class='form-control' id='address' name='address' placeholder='آدرس را وارد کنید.' autocomplete='off'>{{organization.address}}</textarea>
+            <label for='address'>
+              آدرس
+            </label>
+          </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updater' value='{{organization.updater.fullName}}' />
+          <label for='updater' class='mandatory'>اصلاح کننده</label>
+        </div>
+
+        <div class='form-floating mb-1'>
+          <input type='text' class='form-control' readonly name='updated_at' value='{{organization.fa_updatedAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ اصلاح</label>
+        </div>
+
+
+
+          {{!-- <div class='mb-3'>
+            <label for='filePathStatute' class='form-label'>اساسنامه دستگاه</label>
+            <input type='file' class='form-control' id='filePathStatute' name='filePathStatute' accept='.pdf' />
+            <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
+            {{#if organization.filePathStatute}}
+              <div class='mt-2'>
+                <a href='{{organization.filePathStatute}}' target='_blank' class='btn btn-info btn-sm'>
+                  <i class='lni lni-eye'></i> مشاهده فایل فعلی
+                </a>
+              </div>
+            {{/if}}
+          </div>--}}
+        </div> 
+
+        <!-- ستون سمت راست -->
+        <div class='col-md-6'>
+          <div style='margin-top:15px; '>
+            <label for='parentOrganizationId' >نام دستگاه مادر</label>
+            <select id='cmbparentOrganizationId' name='parentOrganizationId' style='position: relative;' data-farsiname='نام دستگاه مادر' >
+              <option value=''>لطفا نام دستگاه مادر را انتخاب کنید</option>
+              {{#each parentOrganizationsListData}}
+                <option value='{{this.id}}' {{isSelected id ../organization.parentOrganization.id}}>{{this.organizationName}} -- {{this.nationalCode}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div style='margin-top:15px; '>
+            <label for='provinceId' >استان</label>
+            <select id='cmbProvinceList' name='provinceId' style='position: relative;' data-farsiname='استان' >
+              <option value=''>لطفا استان را انتخاب کنید</option>
+              {{#each provincesListData}}
+                <option value='{{this.id}}' {{isSelected id ../organization.province.id}}>{{this.title}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div style='margin-top:15px; '>
+            <label for='organizationTypeId' >جنس دستگاه</label>
+            <select id='cmbOrganizationType' name='organizationTypeId' style='position: relative;' data-farsiname='حنس دستگاه' >
+              <option value=''>لطفا جنس دستگاه را انتخاب کنید</option>
+              {{#each organizationTypesListData}}
+                <option value='{{this.id}}'   {{isSelected id ../organization.organizationType.id}}>{{this.title}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div style='margin-top:15px; '>
+            <label for='organizationCategoryId' >نوع دستگاه</label>
+            <select id='cmbOrganizationCategory' name='organizationCategoryId' style='position: relative;' data-farsiname='نوع دستگاه' >
+              <option value=''>لطفا نوع دستگاه را انتخاب کنید</option>
+              {{#each organizationCategoriesListData}}
+                <option value='{{this.id}}' {{isSelected id ../organization.organizationCategory.id}}>{{this.title}} </option>
+              {{/each}}
+            </select>
+          </div>
+
+          {{!-- <div class='mb-3'>
+            <label for='filePathFinancial' class='form-label'>گزارش مالی</label>
+            <input type='file' class='form-control' id='filePathFinancial' name='filePathFinancial' accept='.pdf' />
+            <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
+            {{#if organization.filePathFinancial}}
+              <div class='mt-2'>
+                <a href='{{organization.filePathFinancial}}' target='_blank' class='btn btn-info btn-sm'>
+                  <i class='lni lni-eye'></i> مشاهده فایل فعلی
+                </a>
+              </div>
+            {{/if}}
+          </div> --}}
+
+          {{!-- <div class='mb-3'>
+            <label for='filePathFoundationAd' class='form-label'>آگهی تأسیس</label>
+            <input type='file' class='form-control' id='filePathFoundationAd' name='filePathFoundationAd' accept='.pdf' />
+            <div class='form-text'>حداکثر حجم فایل: 5 مگابایت - فرمت مجاز: PDF</div>
+            {{#if organization.filePathFoundationAd}}
+              <div class='mt-2'>
+                <a href='{{organization.filePathFoundationAd}}' target='_blank' class='btn btn-info btn-sm'>
+                  <i class='lni lni-eye'></i> مشاهده فایل فعلی
+                </a>
+              </div>
+            {{/if}}
+          </div> --}}
+
+          <div class='form-floating mb-5' style='margin-top:15px;'>
+            <textarea class='form-control' id='description' name='description' placeholder='توضیحات را وارد کنید.' autocomplete='off'>{{organization.description}}</textarea>
+            <label for='description'>
+              توضیحات
+            </label>
+          </div>
+
+                  <div class='form-floating mb-5'>
+          <input type='text' class='form-control' readonly name='creator' value='{{organization.creator.fullName}}' />
+          <label for='creator' class='mandatory'>ایجاد کننده</label>
+        </div>
+        <div class='form-floating mb-5'>
+          <input type='text' class='form-control' readonly name='created_at' value='{{organization.fa_createdAt}}' />
+          <label for='created_at' class='mandatory'>تاریخ ایجاد</label>
+        </div>
+
+
+        </div>
+
+        <!-- دکمه‌های ثبت و انصراف -->
+        <div class='col-12 my-2 text-center'>
+          <button class='btn btn-success custom-btn' type='submit' id='btnSubmit'>
+            ویرایش
+          </button>
+          <a class='btn btn-secondary custom-btn' type='reset' id='btnCancel' href='../index'>
+            انصراف
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+{{!-- <script>
+  // اعتبارسنجی فایل‌ها
+  document.getElementById('frmOrganization').addEventListener('submit', function(e) {
+    const files = [
+      { input: 'filePathStatute', name: 'اساسنامه' },
+      { input: 'filePathFinancial', name: 'گزارش مالی' },
+      { input: 'filePathFoundationAd', name: 'آگهی تأسیس' }
+    ];
+
+    for (const file of files) {
+      const input = document.getElementById(file.input);
+      if (input.files.length > 0) {
+        const fileSize = input.files[0].size;
+        const fileType = input.files[0].type;
+        
+        // بررسی حجم فایل
+        if (fileSize > 5 * 1024 * 1024) {
+          alert(`حجم فایل ${file.name} نباید بیشتر از 5 مگابایت باشد.`);
+          e.preventDefault();
+          return;
+        }
+        
+        // بررسی نوع فایل
+        if (fileType !== 'application/pdf') {
+          alert(`فایل ${file.name} باید از نوع PDF باشد.`);
+          e.preventDefault();
+          return;
+        }
+      }
+    }
+  });
+</script> --}}
+<script>
+  $(document).ready(function() {
+    $('#registerDate').persianDatepicker({
+      format: 'YYYY/MM/DD',
+      initialValue: false,
+      autoClose: true,
+      position: 'auto',
+      calendar: {
+        persian: {
+          locale: 'fa'
+        }
+      },
+      onSelect: function(unix) {
+        const date = new persianDate(unix);
+        $('#registerDate').val(date.format('YYYY/MM/DD'));
+      }
+    });
+  });
+</script>
+<script src='/static/assets/js/formValidation.js'></script>

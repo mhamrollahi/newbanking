@@ -16,13 +16,14 @@ const dateFormatter = (req, res, next) => {
     if (options && typeof options === 'object') {
       Object.keys(options).forEach((key) => {
         if (options[key] && typeof options[key] === 'object') {
-          // Check for createdAt and updatedAt fields
-          if (options[key].createdAt) {
-            options[key].fa_createdAt = dateService.toPersianDate(options[key].createdAt);
-          }
-          if (options[key].updatedAt) {
-            options[key].fa_updatedAt = dateService.toPersianDate(options[key].updatedAt);
-          }
+          // Check for common date fields
+          const dateFields = ['createdAt', 'updatedAt', 'requestLetterDate', 'openDate', 'requestObstructDate', 'registerDate', 'birthDate', 'expiryDate'];
+
+          dateFields.forEach((field) => {
+            if (options[key][field]) {
+              options[key][`fa_${field}`] = dateService.toPersianDate(options[key][field]);
+            }
+          });
         }
       });
     }
